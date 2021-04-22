@@ -29,16 +29,7 @@ export default {
   },
   data() {
     return {
-      title: "Administracion",
-      items: [
-        {
-          text: "Gestión corporativa"
-        },
-        {
-          text: "Terceros",
-          active: true
-        }
-      ],
+      title: "Organigrama",
      dropzoneOptions: {
         thumbnailWidth: 150,
         maxFilesize: 0.5,

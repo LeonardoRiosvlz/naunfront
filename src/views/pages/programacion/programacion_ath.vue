@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Programaciónnpm install vue-simple-notify  </b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Programaciónnpm   </b-button>
     </div>
     <div class="row">
       <div class="col-12">

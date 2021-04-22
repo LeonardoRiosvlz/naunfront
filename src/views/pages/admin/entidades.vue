@@ -647,8 +647,8 @@ export default {
           console.log('error' + e);
         })
       },
-      listarentidades(){
-        this.axios.get('api/entidades')
+   async  listarentidades(){
+      await  this.axios.get('api/entidades')
         .then((response) => {
           this.entidades = response.data.rows;
         })
@@ -656,8 +656,8 @@ export default {
           console.log('error' + e);
         })
       },
-      listarUsers(){
-        this.axios.get('user/coordinadores')
+   async  listarUsers(){
+     await  this.axios.get('user/coordinadores')
         .then((response) => {
           this.users = response.data;
         }).catch((e)=>{

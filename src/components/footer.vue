@@ -8,7 +8,7 @@
         <div class="col-sm-6">
           <div class="text-sm-right d-none d-sm-block">
             Creado por
-            <i class="mdi mdi-heart text-danger"></i> BIOSCENTER S.A.S.
+            © Bios Technology Center SAS
           </div>
         </div>
       </div>

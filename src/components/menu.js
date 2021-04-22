@@ -48,80 +48,97 @@ export const menuItems = [
                 id: 9,
                 label: 'Entidades',
                 link: '/entidades'
+            },
+            {
+                id: 10,
+                label: 'Imputaciones',
+                link: '/codigos_imputacion'
             }
         ]
     },
     {
-        id: 10,
+        id: 11,
         label: 'Procesos',
         icon: 'ri-arrow-left-right-line',
         subItems: [
             {
-                id: 11,
+                id: 12,
                 label: 'Cajeros',
                 link: '/cajeros'
             },
             {
-                id: 12,
+                id: 13,
                 label: 'F.T.S.',
-                link: ''
+                link: 'fst'
             },
             {
-                id: 13,
+                id: 14,
                 label: 'Programación',
                 link: '/programacion'
             },
             {
-                id: 14,
+                id: 16,
                 label: 'Presupuesto',
                 link: ''
             },
             {
-                id: 15,
+                id: 16,
                 label: 'Cotizaciones',
                 link: ''
             },
             {
-                id: 16,
+                id: 17,
                 label: 'Pagos',
                 link: ''
             },
             {
-                id: 17,
+                id: 18,
                 label: 'Servicios Adicionales',
                 link: ''
             },
             {
-                id: 18,
+                id: 19,
                 label: 'Abonos',
                 link: ''
             }
         ]
     },    {
-        id: 19,
+        id: 20,
         label: 'Contables',
         icon: 'ri-pie-chart-2-line',
         subItems: [
             {
-                id:  20,
+                id:  21,
                 label: 'Productos',
                 link: ''
             },
             {
-                id: 21,
+                id: 22,
                 label: 'Categorias',
                 link: ''
             },
             {
-                id: 22,
+                id: 23,
                 label: 'Programación',
                 link: ''
             },
             {
-                id: 23,
+                id: 24,
                 label: 'Presupuesto',
                 link: ''
             }
         ]
+    },
+    {
+        id: 25,
+        label: 'Mensajes',
+        icon: 'ri-chat-4-line',
+        link: '/chat'
+    },
+    {
+        id: 26,
+        label: 'Organigrama',
+        icon: 'ri-git-merge-fill',
+        link: '/organigrama'
     },
 ]

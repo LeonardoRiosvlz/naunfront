@@ -259,6 +259,23 @@ export default [
         },
     },
     {
+        path: '/fst',
+        name: 'fst',
+        component: () => import('../views/pages/procesos/fst'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/programacion_ath',
         name: 'programacion_ath',
         component: () => import('../views/pages/programacion/programacion_ath'),
@@ -279,6 +296,23 @@ export default [
         path: '/organigrama',
         name: 'organigrama',
         component: () => import('../views/pages/admin/organigrama'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/codigos_imputacion',
+        name: 'codigos_imputacion',
+        component: () => import('../views/pages/admin/imputaciones'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
