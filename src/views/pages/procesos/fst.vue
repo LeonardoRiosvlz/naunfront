@@ -55,9 +55,6 @@
                 <template v-slot:cell(ENTIDAD)="data">
                   {{data.item.entidad.empresa}}
                 </template>
-                <template v-slot:cell(CODIGO)="data">
-                 {{data.item.codigo_imputacion}}
-                </template>
                 <template v-slot:cell(CONSECUTIVO)="data">
                   {{data.item.consecutivo}}
                 </template>
@@ -111,27 +108,44 @@
 
 
     <b-modal id="modal_abonar" false size="lg"  :title="'Abonar F.S.T'+' '+form.consecutivo" hide-footer>
+       <b-card no-body v-if="tecnico.length>0">
+        <b-row no-gutters class="align-items-center">
+          <b-col md="4">
+            <b-card-img :src="tecnico[0].imagen" class="rounded-0"></b-card-img>
+          </b-col>
+          <b-col md="8">
+            <b-card-body :title="'Técnico:'+tecnico[0].nombre+''+ tecnico[0].apellido">
+              <b-card-text style="margin:0">Tipo : {{tecnico[0].tipo_tecnico}}</b-card-text>
+              <b-card-text style="margin:0">Codigo : {{tecnico[0].codigo}}</b-card-text>
+              <b-card-text style="margin:0">Dirección : {{tecnico[0].direccion}}</b-card-text>
+              <b-card-text style="margin:0">Teléfono : {{tecnico[0].telefono}}</b-card-text>
+              <b-card-text style="margin:0">Email : {{tecnico[0].email}}</b-card-text>
+              <p class="card-text">
+              </p>
+            </b-card-body>
+          </b-col>
+        </b-row>
+      </b-card>
 
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>#</th>
               <th>Pago</th>
               <th>Modo</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-             <tr>
-              <th></th>
-              <th></th>
-              <th></th>
+             <tr v-for="abonos in abonos" :key="abonos.id">
+           
+              <th>{{abonos.valor_abono}}</th>
+              <th>{{abonos.tipo}}</th>
               <th></th>
             </tr>
             <tr>
-              <td>Total: {{form.valor}} $</td>
-              <td>Abonado: 0</td>
-              <td colspan="2">Restante: {{form.valor}} $</td>
+              <th>Total: {{form.valor}} $</th>
+              <th>Abonado:{{total_abonado}} $</th>
+              <th colspan="2">Restante: {{form.valor-total_abonado}} $</th>
             </tr>
           </tbody>
         </table>
@@ -143,7 +157,7 @@
                   <div class="form-group">
                     <label>Valor</label>
                     <ValidationProvider name="valor" rules="required" v-slot="{ errors }">
-                          <input v-model="abono.valor"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="abono.valor_abono"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -152,8 +166,7 @@
                     <div class="form-group">
                     <label>Modo</label>
                     <ValidationProvider name="modo" rules="required" v-slot="{ errors }">
-                          <select v-model="abono.modo"  name="modo" class="form-control" :disabled="ver" >
-                              <option value="Efectivo">Efectivo</option>
+                          <select v-model="abono.tipo"  name="modo" class="form-control" :disabled="ver" >
                               <option value="Transferencia">Transferencia</option>
                               <option value="Giro">Giro</option>
                           </select>
@@ -170,7 +183,7 @@
                     <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                             <b-form-textarea
                               id="descripcion"
-                              v-model="form.descripcion_formato"
+                              v-model="abono.descripcion_abono"
                               placeholder="Enter something..."
                               rows="3"
                               max-rows="6"
@@ -196,7 +209,7 @@
                </b-col>
             </b-row>  
         </ValidationObserver>
-        <button class="btn btn-block float-right btn-success" @click="cancelFormato()" v-if="!ver && !editMode">Abonar</button>
+        <button class="btn btn-block float-right btn-success" @click="abonar()" v-if="!ver && !editMode">Abonar</button>
      </b-modal>
 
 
@@ -236,31 +249,6 @@
           <ValidationObserver ref="form">
               <b-row>
                 <b-col>
-                    <div class="form-group">
-                    <label>Pago a terceros</label>
-                    <ValidationProvider name="Pago a terceros" rules="required" v-slot="{ errors }">
-                          <select v-model="form.pago_terceros"  name="pago_terceros" class="form-control" :disabled="ver" >
-                              <option value="Si">Si</option>
-                              <option value="No">No</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col> 
-                <b-col v-if="form.pago_terceros=='Si'">
-                    <div class="form-group">
-                    <label>Tercero</label>
-                    <ValidationProvider name="terceros" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tercero_id"  name="id_terceros" class="form-control " :disabled="ver">
-                              <option v-for="terceros in terceros" :key="terceros.id" :value="terceros.id">{{terceros.nombre_tercero}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col> 
-              </b-row>
-              <b-row>
-                <b-col>
                   <div class="form-group">
                     <label>Código Tecnico</label>
                     <ValidationProvider name="codigo tecnico" rules="required" v-slot="{ errors }">
@@ -275,37 +263,24 @@
                    </div>
                 </b-col>
               </b-row>
-             <b-row v-if="tecnico.length>0">
-              <div class="col-md-12">
-                <b-card>
-                  <h5 slot="header" class="mb-0">Tecnico: {{tecnico[0].nombre}} {{tecnico[0].apellido}}</h5>
-                  <table class="table table-sm table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tipo tecnico</th>
-                        <td scope="col">{{tecnico[0].tipo_tecnico}}</td>
-                        <th scope="col">Codigo</th>
-                        <td scope="col">{{tecnico[0].codigo}}</td>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">DIRECCION</th>
-                        <th scope="col" colspan="3">{{tecnico[0].direccion}}</th>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">TELEFONO</th>
-                        <td scope="col">{{tecnico[0].telefono}}</td>
-                        <th scope="col">EMAIL</th>
-                        <td scope="col">{{tecnico[0].email}}</td>
-                      </tr>
-                    </thead>
-                  </table>
+                 <b-card no-body v-if="tecnico.length>0">
+                  <b-row no-gutters class="align-items-center">
+                    <b-col md="4">
+                      <b-card-img :src="tecnico[0].imagen" class="rounded-0"></b-card-img>
+                    </b-col>
+                    <b-col md="8">
+                      <b-card-body :title="'Técnico:'+tecnico[0].nombre+''+ tecnico[0].apellido">
+                        <b-card-text style="margin:0">Tipo : {{tecnico[0].tipo_tecnico}}</b-card-text>
+                        <b-card-text style="margin:0">Codigo : {{tecnico[0].codigo}}</b-card-text>
+                        <b-card-text style="margin:0">Dirección : {{tecnico[0].direccion}}</b-card-text>
+                        <b-card-text style="margin:0">Teléfono : {{tecnico[0].telefono}}</b-card-text>
+                        <b-card-text style="margin:0">Email : {{tecnico[0].email}}</b-card-text>
+                        <p class="card-text">
+                        </p>
+                      </b-card-body>
+                    </b-col>
+                  </b-row>
                 </b-card>
-              </div>
-            </b-row>
             <b-row>
                 <b-col>
                   <div class="form-group">
@@ -319,49 +294,57 @@
             </b-row>
             <b-row>
                 <b-col>
-                  <div class="form-group">
-                    <label>Otro</label>
-                    <ValidationProvider name="Otro" rules="required" v-slot="{ errors }">
-                          <input v-model="form.otros" name="otro"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
                     <div class="form-group">
                     <label>Entidad</label>
                     <ValidationProvider name="Entidades" rules="required" v-slot="{ errors }">
-                          <select v-model="form.entidad_id"  name="entidad_id" class="form-control "  :disabled="ver">
-                              <option :value="form.entidad_id" v-for="entidades in entidades" :key="entidades.id">{{entidades.empresa}}</option>
+                          <select v-model="form.entidad_id" @change="listarimputaciones()"  name="entidad_id" class="form-control "  :disabled="ver">
+                              <option></option>
+                              <option :value="entidades.id" v-for="entidades in entidades" :key="entidades.id">{{entidades.empresa}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>
+
             </b-row> 
-            <hr>   
-              <b-row>
-                
-                        <button style="float:right" class="btn btn-success m-3" type="button" @click="cargar()"  name="button" :disabled="ver" v-if="!ver">Agregar Contacto</button>
-                              <table id="example2" class="table table-striped"  v-show="form.items.length>0">
-                                 <thead>
-                                   <tr>
-                                     <th>Nombre Contacto</th>
-                                     <th>Email</th>
-                                     <th>Teléfono</th>
-                                     <th>Estado</th>
-                                     <th v-if="!ver"></th>
-                                   </tr>
-                                 </thead>
-                                 <tbody>
-                                   <tr v-for="(items , index) in form.items" :key="items.id">
-                                     <td><input type="text" v-model="codigo"  name="nombre" class="form-control form-control-sm" id="nombre"  :disabled="ver"></td>
-                                     <td><input type="text" v-model="nombre"  name="telefono" class="form-control form-control-sm" id="telefono"  :disabled="ver"></td>
-                                     <td><input type="text" v-model="precio"  name="email" class="form-control form-control-sm" id="email"  :disabled="ver"></td>
-                                     <td v-if="!ver"><button class="btn btn-danger" @click="eliminarContacto(index)" style="border-radius:0px;" type="button"><span class="mbri-trash"></span></button></td>
-                                   </tr>
-                                 </tbody>
-                               </table>
+            <hr>  
+            <b-row>
+              <b-col>
+                <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
+                  <label>Codigos de imputacion </label>
+                    <v-select @click="setImputacion()" v-model="imputacion_id" :options="imputaciones" :reduce="imputaciones => imputaciones.id" label="nombre" :disabled="ver"></v-select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-col>  
+              <b-col>
+                <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar()"  name="button" v-if="!ver && imputacion_id" >Agregar Item</button>
+              </b-col>
+            </b-row> 
+              <b-row>    
+                <table id="example2" class="table table-striped"  v-show="form.items.length>0">
+                   <thead>
+                     <tr>
+                       <th>Codigo</th>
+                       <th>Nombre</th>
+                       <th>Descripción</th>
+                        <th>Precio</th>
+                       <th v-if="!ver"></th>
+                     </tr>
+                   </thead>
+                    <tbody>
+                     <tr v-for="(items , index) in form.items" :key="items.id">
+                       <td>{{items.codigo}}</td>
+                       <td>{{items.nombre}}</td>
+                        <td><input :id="index+'descripcion'" type="text" v-model="items.descripcion"   class="form-control form-control-sm"   :disabled="ver"></td>
+                        <td><input :id="index+'precio'" type="text" v-model="items.precio" @change="sumarItems()"  class="form-control form-control-sm"  :disabled="ver"></td>
+                       <td v-if="!ver">
+                        <a href="javascript:void(0);" @click="eliminarItem(index)" class="text-danger" v-b-tooltip.hover title="Borrar">
+                            <i class="mdi mdi-trash-can font-size-18"></i>
+                        </a>
+                      </td>
+                     </tr>
+                    </tbody>
+                  </table>
                 </b-row>    
               <b-row>
                 <b-col>
@@ -384,26 +367,6 @@
               <b-row> 
                 <b-col>
                   <div class="form-group">
-                    <label>Código imputación </label>
-                    <ValidationProvider name="Código imputación" rules="required" v-slot="{ errors }">
-                          <input v-model="form.codigo_imputacion"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                    <label>Descripción del código</label>
-                    <ValidationProvider name="descripcion del codigo" rules="required" v-slot="{ errors }">
-                          <input v-model="form.descripcion_codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-            </b-row>  
-              <b-row> 
-                <b-col>
-                  <div class="form-group">
                     <label>Valor</label>
                     <ValidationProvider name="Valor" rules="required" v-slot="{ errors }">
                           <input v-model="form.valor"  type="text" class="form-control" placeholder=" " :disabled="ver">
@@ -421,8 +384,10 @@
             </b-row>    
           
         </ValidationObserver>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear Programación</button>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar Programación</button>
+
+
+        <button v-b-tooltip.hover title="Agregar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear FST</button>
+        <button v-b-tooltip.hover title="Editar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar FST</button>
      </b-modal>
 
   </Layout>
@@ -474,18 +439,23 @@ export default {
       nombre: "",
       precio: "",
       password: "",
+      total_abonado: 0,
       totalRows: 1,
       currentPage: 1,
       perPage: 10,
       pageOptions: [10, 25, 50, 100],
       filter: null,
+      consecutivo:"",
       filterOn: [],
       terceros: [],
       entidades: [],
+      abonos: [],
+      imputaciones: [],
+      imputacion_id: "",
       users: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["TECNICO","ENTIDAD","CODIGO","CONSECUTIVO","VALOR","ESTADO","LEGALIZACION/ABONOS","actions"],
+      fields: ["TECNICO","ENTIDAD","CONSECUTIVO","VALOR","ESTADO","LEGALIZACION/ABONOS","actions"],
       formatos: [], 
       cajero: [],
       tecnico: [],
@@ -493,6 +463,8 @@ export default {
       form:{
           'id':'',
           'items':[],
+          'id_entidad':'',
+          'valor':'',
       },
       abono:{
           'id':'',
@@ -503,37 +475,32 @@ export default {
         ...mapState(['counter'])
    },
   methods: {
-             cargar(){
-             this.form.items.push({
-               nombre:"",
-               telefono: "",
-               email:"",
-               estado: "Activo",
+
+    cargar(){
+         for (let index = 0; index < this.imputaciones.length; index++) {
+            if( this.imputacion_id===this.imputaciones[index].id){
+              console.log(this.imputacion_id);
+              console.log(this.imputaciones[index].id);
+              this.form.items.push({
+               nombre:this.imputaciones[index].nombre,
+               codigo:this.imputaciones[index].codigo,
+               descripcion:"",
+               precio:"",
              });
-           },
-           eliminarContacto(index){
-            Swal({
-              title: '¿Estás seguro?',
-              text: "¡ será eliminado para siempre!",
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: '¡Si! ¡eliminar!',
-              cancelButtonText: '¡No! ¡cancelar!',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-                this.form.items.splice(index, 1);
-              } else if (
-                result.dismiss === Swal.DismissReason.cancel
-              ) {
-                Swal(
-                  'Cancelado',
-                  'No fue eliminado.',
-                  'success'
-                )
-              }
-            })
-          },
+            }
+        }
+      },
+    eliminarItem(index){
+       this.form.items.splice(index, 1);  
+    },
+    sumarItems(){
+      console.log("hey");
+      this.form.valor=0;
+      for (let index = 0; index < this.form.items.length; index++) {
+        this.form.valor=this.form.valor+parseFloat(this.form.items[index].precio)
+        console.log(this.form.valor);
+      }
+    },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -564,11 +531,60 @@ export default {
         }});
       }
     },
+      abonar(id){
+        this.$swal({
+          title: 'Desea agregar este abono?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.subirAbono(id);
+          }
+        })
+      },
+    async subirAbono(){
+     let data = new FormData();
+      var formulario = this.abono;
+        for ( var key in formulario) {
+            data.append(key,formulario[key]);
+        }
+        if (this.file) {
+          data.append('filename',this.file);
+         }
+       await this.axios.post('api/abonos', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listarAbonos(this.abono.formato_id);
+               this.file=null;
+               this.url="";
+               this.abono.valor_abono="";
+               this.abono.descripcion_abono="";
+               this.abono.descripcion_abono="";
+               ///limpiar el formulario
+              }
+            }).catch(e => {
+              this.$swal(e.response.data);
+          });
+      },
    async agregarFormato(){
      let data = new FormData();
       var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
         }
        await this.axios.post('api/formatos', data, {
            headers: {
@@ -604,8 +620,12 @@ export default {
     async editarFormato(){
      let data = new FormData();
        var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
         }
         await this.axios.put('api/formatos', data).then(response => {
             if (response.status==200) {
@@ -697,7 +717,7 @@ export default {
                 console.log(response);
                 this.tecnico=response.data;
                 if (this.tecnico.length>0) {
-                  this.form.id_tecnico=this.tecnico[0].id;
+                  this.form.tecnico_id=this.tecnico[0].id;
                 }else{
                   this.$swal('No existe tecnico con este codigo','','warning');
                 }
@@ -786,8 +806,8 @@ export default {
             this.form.otros=this.formatos[index].otros;
             this.form.observacion=this.formatos[index].observacion;
             this.form.descripcion_formato=this.formatos[index].descripcion_formato;
-            this.form.codigo_imputacion=this.formatos[index].codigo_imputacion;
-            this.form.descripcion_codigo=this.formatos[index].descripcion_codigo;
+            this.form.items=JSON.parse(this.formatos[index].items);
+            this.form.items=JSON.parse(this.form.items);
             this.form.valor=this.formatos[index].valor;
             this.form.tecnico_id=this.formatos[index].tecnico_id;
             this.form.autorizador_id=this.formatos[index].autorizador_id;
@@ -826,11 +846,28 @@ export default {
             this.form.codigo_tecnico=this.formatos[index].Tecnico.codigo;
             this.form.tercero_id=this.formatos[index].tercero_id;
             this.form.id=this.formatos[index].id;
+            this.abono.formato_id=this.formatos[index].id;
             this.$root.$emit("bv::show::modal", "modal_abonar", "#btnShow");
             this.buscarTecnico();
+            this.listarAbonos(this.form.id);
             return;
           }
         }        
+      },
+    async  listarAbonos(index){
+      let data = new FormData();
+      data.append('id',index);
+      await  this.axios.post('api/abonos/formato',data)
+        .then((response) => {
+          this.abonos = response.data;
+          this.total_abonado=0;
+          for (let index = 0; index < this.abonos.length; index++) {
+            this.total_abonado=parseFloat(this.abonos[index].valor_abono)+parseFloat(this.total_abonado);
+          }
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
       },
     async  listarentidades(){
       await  this.axios.get('api/entidades')
@@ -845,6 +882,17 @@ export default {
       await  this.axios.get('/api/formatos')
         .then((response) => {
           this.formatos = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+    async  listarimputaciones(){
+      let data = new FormData();
+      data.append('id',this.form.entidad_id);
+      await  this.axios.post('api/imputaciones/find',data)
+        .then((response) => {
+          this.imputaciones = response.data;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -886,14 +934,35 @@ export default {
           }else{
           this.$router.push({ name: 'Home' });
           }
+        },
+
+      loadConsectivo(){
+        if (localStorage.getItem('consecutivo')) {
+        this.$bvModal.show('modal')
+        this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
+          console.log(this.consecutivo);
+          this.form.consecutivo=this.consecutivo.consecutivo;
+          this.form.tecnico_id=this.consecutivo.tecnico_id;
+          this.form.entidad_id=1;
+          this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
+          this.listarimputaciones();
+          this.buscarTecnico();
+          localStorage.removeItem('consecutivo');
         }
+
+      }
   },
+  mounted(){
+    this.loadConsectivo();
+  }, 
     created(){
         this.session();
         this.listarFormato();
         this.listarterceros();
         this.listarentidades();
         this.listarUsers();
+     
+        
       },
     computed: {
     rows() {

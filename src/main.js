@@ -16,9 +16,10 @@ import store from '@/state/store'
 import i18n from './i18n'
 import VueMeta from 'vue-meta'
 import Notifications from 'vue-notification'
+import moment from 'moment'
 
 import "@/assets/scss/app.scss";
-
+Vue.prototype.moment = moment;
 Vue.use(Notifications)
 Vue.use(VueMeta, {
   // optional pluginOptions

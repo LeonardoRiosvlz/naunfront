@@ -309,8 +309,8 @@ export default {
           }
         }
       },
-      listarcategorias(){
-        this.axios.get('api/categorias')
+    async  listarcategorias(){
+     await   this.axios.get('api/categorias')
         .then((response) => {
           this.categorias = response.data.rows;
         })

@@ -3,13 +3,13 @@
     <PageHeader :title="title" :items="items" />
     
     <div class="row">
-      <div v-for="entidades in entidades" class="col-lg-6 col-xl-3">
+      <div v-for="entidades in entidades" :key="entidades.id" class="col-lg-6 col-xl-3">
         <!-- Simple card -->
         <b-card :img-src="entidades.imagen" img-alt="Card image" img-top>
           <b-card-title>
             <h2 class="card-title">{{entidades.empresa}}</h2>
           </b-card-title>
-          <b-button class="btn-block" href="javascript:void(0);" variant="primary" :to="'programacion_'+entidades.empresa">Ir</b-button>
+          <b-button class="btn-block" href="javascript:void(0);" variant="primary" :to="'llamadas_'+entidades.empresa">Ir</b-button>
         </b-card>
       </div>
       <!-- end col -->

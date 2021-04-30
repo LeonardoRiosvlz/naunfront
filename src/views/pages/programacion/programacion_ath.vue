@@ -2,11 +2,11 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Programaciónnpm   </b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Programación  </b-button>
     </div>
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card" >
           <div class="card-body">
             <h4 class="card-title"></h4>
             <div class="row mt-4">
@@ -35,7 +35,7 @@
               <!-- End search -->
             </div>
             <!-- Table -->
-            <div class="table-responsive mb-0">
+            <div class="table-responsive mb-0" style="min-height:552px">
               <b-table
                 :items="programas"
                 :fields="fields"
@@ -50,19 +50,19 @@
                 @filtered="onFiltered"
               >
                 <template v-slot:cell(CONSECUTIVO)="data">
-                  {{data.item.consecutivo}}
+                  ATH-{{data.item.id}}
                 </template>
                 <template v-slot:cell(LLAMADA)="data">
                   {{data.item.llamada}}
                 </template>
                 <template v-slot:cell(CIUDAD)="data">
-                 {{data.item.cajero_ath.ciudad}}
+                 {{data.item.cajero_ath.ciudad.ciudad}}
                 </template>
                 <template v-slot:cell(ATM)="data">
                   {{data.item.cajero_ath.codigo}}
                 </template>
                 <template v-slot:cell(VENCIMIENTO)="data">
-                  {{data.item.fecha_vencimiento}}
+                  {{ data.item.fecha_vencimiento | capitalize }}
                 </template>
                  <template v-slot:cell(DESCRIPCION)="data">
                   {{data.item.descripcion}}
@@ -79,6 +79,7 @@
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarProgramacion(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="solicitud(data.item)">Gestionar</b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -103,184 +104,50 @@
 
 
     <b-modal id="modal" false size="lg"  title="Programación de ATH" hide-footer>
+
+
+        
+
+
           <ValidationObserver ref="form">
-              <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Consecutivo</label>
-                    <ValidationProvider name="consecutivo" rules="required" v-slot="{ errors }">
-                          <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                    <label>Código Tecnico</label>
-                    <ValidationProvider name="codigo tecnico" rules="required" v-slot="{ errors }">
-                          <input v-model="form.codigo_tecnico"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col class="p-2" >
-                  <div class="form-group" style="margin-top:20px">
-                    <button class="btn btn-info btn-block" @click="buscarTecnico()"> Buscar Tecnico</button>
-                   </div>
-                </b-col>
-              </b-row>
-             <b-row v-if="tecnico.length>0">
-              <div class="col-md-12">
-                <b-card>
-                  <h5 slot="header" class="mb-0">Tecnico: {{tecnico[0].nombre}} {{tecnico[0].apellido}}</h5>
-                  <table class="table table-sm table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tipo tecnico</th>
-                        <td scope="col">{{tecnico[0].tipo_tecnico}}</td>
-                        <th scope="col">Codigo</th>
-                        <td scope="col">{{tecnico[0].codigo}}</td>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">DIRECCION</th>
-                        <th scope="col" colspan="3">{{tecnico[0].direccion}}</th>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">TELEFONO</th>
-                        <td scope="col">{{tecnico[0].telefono}}</td>
-                        <th scope="col">EMAIL</th>
-                        <td scope="col">{{tecnico[0].email}}</td>
-                      </tr>
-                    </thead>
-                  </table>
-                </b-card>
-              </div>
-            </b-row>
-            <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Llamada</label>
-                    <ValidationProvider name="llamada" rules="required" v-slot="{ errors }">
-                          <input v-model="form.llamada"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                    <label>Código Cajero</label>
-                    <ValidationProvider name="codigo cajero" rules="required" v-slot="{ errors }">
-                          <input v-model="form.codigo_cajero"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col class="p-2" >
-                  <div class="form-group" style="margin-top:20px">
-                    <button class="btn btn-info btn-block" @click="buscarCajero()"> Buscar</button>
-                   </div>
-                </b-col>
-            </b-row>
-            <b-row v-if="cajero.length>0">
-              <div class="col-md-12">
-                <b-card>
-                  <h5 slot="header" class="mb-0">NOMBRE:{{cajero[0].tipo}}</h5>
-                  <table class="table table-sm table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col">CIUDAD</th>
-                        <td scope="col">{{cajero[0].ciudad}}</td>
-                        <th scope="col">TIPOLOGIA</th>
-                        <td scope="col">{{cajero[0].tipologia}}</td>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">DIRECCION</th>
-                        <th scope="col" colspan="3">{{cajero[0].direccion}}</th>
-                      </tr>
-                    </thead>
-                    <thead>
-                      <tr>
-                        <th scope="col">APERTURA</th>
-                        <td scope="col">{{cajero[0].apertura}}</td>
-                        <th scope="col">CIERRE</th>
-                        <td scope="col">{{cajero[0].cierre}}</td>
-                      </tr>
-                    </thead>
-                  </table>
-                </b-card>
-              </div>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Cotización Visita</label>
-                    <ValidationProvider name="cotizacion visita" rules="required" v-slot="{ errors }">
-                          <select v-model="form.cotizacion_visita"  name="cotizacion_visita" class="form-control " >
-                              <option value="Si">Si</option>
-                              <option value="No">No</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col  v-if="form.cotizacion_visita==='Si'">
-                  <div class="form-group">
-                    <label>Fecha de visita</label>
-                    <ValidationProvider name="fecha visita" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_visita" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col v-if="form.cotizacion_visita==='No'">
-                  <div class="form-group">
-                    <label>Fecha de programación</label>
-                    <ValidationProvider name="fecha programacion" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_programacion" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-            </b-row> 
-            <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Fecha de llamada</label>
-                    <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_llamada" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                    <label>Fecha de vencimiento</label>
-                    <ValidationProvider name="fecha vencimiento" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_vencimiento" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
+
+                <b-row>
                  <b-col>
                     <div class="form-group">
-                    <label>Requiere Productos</label>
+                    <label>Tipo de llamada</label>
                     <ValidationProvider name="requiere producto" rules="required" v-slot="{ errors }">
-                          <select v-model="form.requiere_producto"  name="requiere_producto" class="form-control" >
-                              <option value="Si">Si</option>
-                              <option value="No">No</option>
+                          <select v-model="form.tipo_llamada"  name="requiere_producto" class="form-control" >
+                              <option value="RF">RF</option>
+                              <option value="RFT">RFT</option>
+                              <option value="OTP">OTP</option>
+                              
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
-                </b-col>             
-            </b-row>            
-              <b-row>
+                </b-col>  
+                 <b-col>
+                      <div class="form-group">
+                        <label> Codigo de Llamada</label>
+                        <ValidationProvider name="llamada" rules="required" v-slot="{ errors }">
+                              <input v-model="form.llamada"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                  </b-col> 
+                </b-row>  
+                <b-row> 
+                  <b-col>
+                    <div class="form-group">
+                      <label>Titulo</label>
+                      <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
+                            <input v-model="form.titulo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                    </div>
+                  </b-col>                         
+               </b-row>  
+               <b-row>
                 <b-col>
                     <div class="form-group">
                     <label>Descripción</label>
@@ -296,68 +163,133 @@
                     </ValidationProvider>
                     </div>
                 </b-col>
-              </b-row>  
-              <hr>
-              <b-row>
-                <b-col  >
-                  <div class="form-group">
-                    <label>Fecha de ilumunación</label>
-                    <ValidationProvider name="fecha iluminacion" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_iluminacion" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                    <label>Fecha de vencimiento</label>
-                    <ValidationProvider name="fecha vencimiento" rules="required" v-slot="{ errors }">
-                          <b-form-input v-model="form.fecha_vencimiento" id="date" value="2019-08-19" type="date" :disabled="ver"></b-form-input>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
+              </b-row> 
+               <b-row>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Código Cajero</label>
+                        <ValidationProvider name="codigo cajero" rules="required" v-slot="{ errors }">
+                              <input v-model="form.codigo_cajero"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+                    <b-col class="p-2" >
+                      <div class="form-group" style="margin-top:20px">
+                        <button class="btn btn-info btn-block" @click="buscarCajero()"> Buscar</button>
+                      </div>
+                    </b-col>
+                </b-row>
+    
+                <b-card no-body v-if="cajero.length>0">
+                  <b-row no-gutters class="align-items-center">
+                    <b-col md="4">
+                      <b-card-img :src="cajero[0].entidad.imagen" class="rounded-0"></b-card-img>
+                    </b-col>
+                    <b-col md="8">
+                      <b-card-body :title="cajero[0].tipo+'-'+cajero[0].codigo">
+                        <b-card-text style="margin:0">Tipologia : {{cajero[0].tipologia}}</b-card-text>
+                        <b-card-text style="margin:0">Ciudad : {{cajero[0].ciudad.ciudad}}</b-card-text>
+                        <b-card-text style="margin:0">Administra : {{cajero[0].ciudad.Administra}}</b-card-text>
+                        <b-card-text style="margin:0">Direccion : {{cajero[0].direccion}}</b-card-text>
+                        <b-card-text style="margin:0">Apertura : {{cajero[0].apertura}} {{cajero[0].hora_apertura}}</b-card-text>
+                        <b-card-text style="margin:0">Cierre : {{cajero[0].cierre}}</b-card-text>
+                        <p class="card-text">
+                          <small class="text-muted">Cumpleaños: {{cajero[0].cumpleanos}}</small>
+                        </p>
+                      </b-card-body>
+                    </b-col>
+                  </b-row>
+                </b-card>
+    
+            <b-row v-show="cajero.length>0">
                 <b-col>
                     <div class="form-group">
-                    <label>Servicio a cobro</label>
-                    <ValidationProvider name="servicio cobro" rules="required" v-slot="{ errors }">
-                          <select v-model="form.servicio_cobro"  name="servicio_cobro" class="form-control " >
+                    <label>Tipo de servicio</label>
+                    <ValidationProvider name="servicio" rules="required" v-slot="{ errors }">
+                          <select v-model="form.tipo_servicio"  name="cotizacion_visita" @change="setPrioridad()"  class="form-control " >
+                              <option :value="servicios.servicio" v-for="servicios in servicios" :key="servicios.servicio">{{servicios.servicio}}</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row> 
+             <b-row v-show="cajero.length>0">
+                <b-col>
+                    <div class="form-group">
+                    <label>Prioridad</label>
+                    <ValidationProvider name="servicio" rules="required" v-slot="{ errors }">
+                          <select v-model="form.prioridad"  name="cotizacion_visita" @change="setPrioridad()"  class="form-control " >
+                              <option value="Inmediata">Inmediata</option>
+                              <option value="Critico">Critico</option>
+                              <option value="Alto">Alto</option>
+                              <option value="Medio">Medio</option>
+                              <option value="Bajo">Bajo</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Margen</label>
+                        <ValidationProvider name="margen" rules="required" v-slot="{ errors }">
+                              <input v-model="form.margen"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+                <b-col>
+                  <div class="form-group">
+                    <label>Vencimiento </label>
+                    <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
+                      <b-form-input id="date-time" v-model="form.fecha_vencimiento"  type="datetime-local"></b-form-input>
+                       <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+            </b-row>
+            <b-row>
+                 <b-col>
+                    <div class="form-group">
+                    <label>Requiere Cita</label>
+                    <ValidationProvider name="requiere cita" rules="required" v-slot="{ errors }">
+                          <select v-model="form.requiere_cita"  name="requiere_producto" class="form-control" >
                               <option value="Si">Si</option>
                               <option value="No">No</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
-                </b-col>
+                </b-col>             
             </b-row>  
-            <b-row>
+              <b-row>
                 <b-col>
-                    <div class="form-group">
-                    <label>Codigo  parametro</label>
-                    <ValidationProvider name="codigo parametro" rules="required" v-slot="{ errors }">
-                          <select v-model="form.codigo_parametro"  name="codigo_parametro" class="form-control " >
-                              <option value="1231">123</option>
-                              <option value="1231">31231</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
+                   <div class="form-group links">
+                     <label>Categorias </label>
+                     <ValidationProvider name="categoria" rules="required" v-slot="{ errors }">
+                    <select v-model="form.categoria" name="categoria" @change="loadSubcategorias()" class="form-control" :disabled="ver" >
+                        <option v-for="categorias in categorias" :value="categorias.categoria" :key="categorias.categoria">{{categorias.categoria}}</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
-                    </div>
-                </b-col>  
-                 <b-col>
-                    <div class="form-group">
-                    <label>Parametro labor</label>
-                    <ValidationProvider name="parametro labor" rules="required" v-slot="{ errors }">
-                          <select v-model="form.parametro_labor"  name="parametro_labor" class="form-control " >
-                              <option value="1231231">312311</option>
-                              <option value="123131">1231231</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
+                  </div>
+               </b-col>
+                <b-col>
+                   <div class="form-group links">
+                     <label>Subcategorias </label>
+                     <ValidationProvider name="subcategorias" rules="required" v-slot="{ errors }">
+                    <select v-model="form.subcategoria" name="subcategorias" @change="loadSubcategorias()" class="form-control" :disabled="ver" >
+                        <option v-for="subcategorias in subcategorias" :value="subcategorias.subcategoria" :key="subcategorias.subcategorias">{{subcategorias.subcategoria}}</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
-                    </div>
-                </b-col>         
-              </b-row> 
-           
+                  </div>
+               </b-col>
+              </b-row>          
         </ValidationObserver>
+        <pre>{{form}}</pre>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear Programación</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar Programación</button>
      </b-modal>
@@ -367,11 +299,13 @@
 
 <script>
 
+import { FormWizard, TabContent } from "vue-form-wizard";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-
+import { servicios } from "./servicios";
+import moment from 'moment';
 
 /**
  * Dashboard component
@@ -381,10 +315,13 @@ export default {
     Layout,
     PageHeader,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    FormWizard,
+    TabContent
   },
   data() {
     return {
+      servicios:servicios,
       title: "Administracion",
       items: [
         {
@@ -423,13 +360,28 @@ export default {
       fields: ["CONSECUTIVO","LLAMADA","CIUDAD","ATM","VENCIMIENTO","DESCRIPCION","ESTADO","actions"],
       programas: [], 
       cajero: [],
+      subcategorias: [],
+      categorias: [],
       tecnico: [],
       editMode:false,
       form:{
           'id':'',
+           'margen':'',
+           'fecha_vencimiento':'',
+           'prioridad':'',
+           'categoria':'',
       }
     }
   },
+      filters: {
+        capitalize: function (value) {
+          if (!value) return ''
+          let fecha = moment();
+          value = fecha.diff(value, 'hours')+ " horas para caducar."; 
+          
+          return value
+        }
+    },
   computed:{
         ...mapState(['counter'])
    },
@@ -485,6 +437,62 @@ export default {
               this.$swal(e.response.data);
           });
       },
+    solicitud(data){
+      localStorage.setItem("consecutivo", JSON.stringify(data));
+      this.$router.push({ path: 'llamada_ath_tablero' })
+    },
+    setPrioridad(){
+      for (let index = 0; index < this.servicios.length; index++) {
+
+        if (this.form.tipo_servicio===this.servicios[index].servicio) {
+          if (this.servicios[index].prioridad==="inmediata") {
+              this.form.margen="0 horas";
+              this.form.prioridad="Inmediata"
+              this.form.fecha_vencimiento= moment().format("YYYY-MM-DDTHH:MM");
+          }
+           if(this.servicios[index].prioridad==="critico"){
+              this.form.margen=this.cajero[0].ciudad.valor_critico+" "+this.cajero[0].ciudad.metrica_critico;
+              this.form.prioridad="Critico";
+              if (this.cajero[0].ciudad.metrica_critico==="horas") {
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_critico, 'hours').format("YYYY-MM-DDTHH:MM");
+              }else{
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_critico, 'days').format("YYYY-MM-DDTHH:MM");
+              }
+          }
+           if(this.servicios[index].prioridad==="alto"){
+              this.form.margen=this.cajero[0].ciudad.valor_alto+" "+this.cajero[0].ciudad.metrica_alto;
+              this.form.prioridad="Alto";
+              if (this.cajero[0].ciudad.metrica_alto==="horas") {
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_alto, 'hours').format("YYYY-MM-DDTHH:MM");
+              }else{
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_alto, 'days').format("YYYY-MM-DDTHH:MM");
+              }
+            
+
+          }
+           if(this.servicios[index].prioridad==="medio"){
+              this.form.margen=this.cajero[0].ciudad.valor_mediano+" "+this.cajero[0].ciudad.metrica_mediano;
+              this.form.prioridad="Medio";
+              if (this.cajero[0].ciudad.metrica_mediano==="horas") {
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_mediano, 'hours').format("YYYY-MM-DDTHH:MM");
+              }else{
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_mediano, 'days').format("YYYY-MM-DDTHH:MM");
+              }
+
+          }
+           if(this.servicios[index].prioridad==="bajo"){
+              this.form.margen=this.cajero[0].ciudad.valor_bajo+" "+this.cajero[0].ciudad.metrica_bajo;
+              this.form.prioridad="Bajo";
+              if (this.cajero[0].ciudad.metrica_bajo==="horas") {
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_bajo, 'hours').format("YYYY-MM-DDTHH:MM");
+              }else{
+                this.form.fecha_vencimiento= moment().add(this.cajero[0].ciudad.valor_bajo, 'days').format("YYYY-MM-DDTHH:MM");
+              }
+              
+          }
+        }        
+      }
+    },
     async editarProgramacion(){
      let data = new FormData();
        var formulario = this.form;
@@ -586,6 +594,11 @@ export default {
         var formulario = this.form;
         for (var key in formulario) {
              this.form[key]="";
+                  this.$refs.wizard.maxStep = 0
+      this.$refs.wizard.tabs.forEach((tab)=>{
+     	 tab.checked = false
+      })
+      this.$refs.wizard.navigateToTab(0)
        }
       },
       setear(id) {
@@ -595,17 +608,12 @@ export default {
             this.form.codigo_tecnico=this.programas[index].codigo_tecnico;
             this.form.codigo_cajero=this.programas[index].codigo_cajero;
             this.form.llamada=this.programas[index].llamada;
-            this.form.fecha_llamada=this.programas[index].fecha_llamada;
-            this.form.cotizacion_visita=this.programas[index].cotizacion_visita;
-            this.form.requiere_producto=this.programas[index].requiere_producto;
-            this.form.fecha_programacion=this.programas[index].fecha_programacion;
-            this.form.fecha_vencimiento=this.programas[index].fecha_vencimiento;
-            this.form.fecha_visita=this.programas[index].fecha_visita;
-            this.form.fecha_iluminacion=this.programas[index].fecha_iluminacion;
+            this.form.tipo_llamada=this.programas[index].tipo_llamada;
+            this.form.tipo_servicio=this.programas[index].tipo_servicio;
+            this.form.fecha_vencimiento=moment(this.programas[index].fecha_vencimiento).format("YYYY-MM-DDTHH:MM");
+            this.form.fecha_creacion=moment(this.programas[index].fecha_creacion).format("YYYY-MM-DDTHH:MM");
+            this.form.requiere_cita=this.programas[index].requiere_cita;
             this.form.descripcion=this.programas[index].descripcion;
-            this.form.servicio_cobro=this.programas[index].servicio_cobro;
-            this.form.codigo_parametro=this.programas[index].codigo_parametro;
-            this.form.parametro_labor=this.programas[index].parametro_labor;
             this.form.id=this.programas[index].id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             this.buscarCajero();
@@ -614,15 +622,39 @@ export default {
           }
         }
       },
-      listarProgramacion(){
-        this.axios.get('/api/programacion/ath')
+    async  listarProgramacion(){
+      await  this.axios.get('/api/programacion/ath')
         .then((response) => {
           this.programas = response.data.rows;
+            console.log(this.programas);
         })
         .catch((e)=>{
           console.log('error' + e);
         })
       },
+     async  listarcategorias(){
+     await   this.axios.get('api/categorias')
+        .then((response) => {
+          this.categorias = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+        async loadSubcategorias(){
+        let data = new FormData();
+        data.append('categoria',this.form.categoria);
+        await this.axios.post('api/subcategorias/find',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                   this.subcategorias = response.data.rows;
+                }
+              }).catch(e => {
+                this.$swal(e.response.data);
+          });
+      }, 
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -660,6 +692,9 @@ export default {
     created(){
         this.session();
         this.listarProgramacion();
+        this.listarcategorias();
+        this.form.fecha_vencimiento=moment().format("YYYY-MM-DDTHH:MM");
+        moment.locale("es") 
       },
     computed: {
     rows() {

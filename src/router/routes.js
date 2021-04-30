@@ -157,6 +157,23 @@ export default [
         },
     }, 
     {
+        path: '/subcategorias',
+        name: 'subcategorias',
+        component: () => import('../views/pages/admin/subcategorias'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/terceros',
         name: 'terceros',
         component: () => import('../views/pages/admin/terceros'),
@@ -242,8 +259,42 @@ export default [
         },
     },
     {
-        path: '/programacion',
-        name: 'programacion',
+        path: '/cajero_details/:id/:entidad',
+        name: 'cajero_details',
+        component: () => import('../views/pages/procesos/cajero_details'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/llamada_ath_tablero',
+        name: 'llamada_ath_tablero',
+        component: () => import('../views/pages/programacion/dashboardProgramacionAth'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/llamadas',
+        name: 'llamadas',
         component: () => import('../views/pages/procesos/programacion'),
         meta: {
             beforeEnter: (to, from, next) => {
@@ -276,8 +327,8 @@ export default [
         },
     },
     {
-        path: '/programacion_ath',
-        name: 'programacion_ath',
+        path: '/llamadas_ath',
+        name: 'llamadas_ath',
         component: () => import('../views/pages/programacion/programacion_ath'),
         meta: {
             beforeEnter: (to, from, next) => {
@@ -296,6 +347,57 @@ export default [
         path: '/organigrama',
         name: 'organigrama',
         component: () => import('../views/pages/admin/organigrama'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/seguridad',
+        name: 'seguridad',
+        component: () => import('../views/pages/admin/seguridad'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/regional',
+        name: 'regional',
+        component: () => import('../views/pages/admin/regional'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/ciudades',
+        name: 'ciudades',
+        component: () => import('../views/pages/admin/ciudades'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

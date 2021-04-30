@@ -58,6 +58,7 @@
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarCajero(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;detalles(data.item)"> Detalles </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -78,16 +79,16 @@
     </div>
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión De Cajeros ATH" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión De Cajeros ATH" hide-footer>  
           <ValidationObserver ref="form">
             <b-row>
               <b-col>
                 <div class="form-group">
                   <label>Tipo </label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                          <select v-model="form.tipo"  name="tipo" class="form-control " :disabled="ver">
                               <option value="ATM">ATM</option>
-                              <option value="OTRO">OTRO</option>
+                              <option value="KIOSKO">KIOSKO</option>
                           </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -106,14 +107,26 @@
             <b-row>
               <b-col>
                 <div class="form-group">
-                  <label>Tipologia </label>
+                  <label>Entidad Bancaria</label>
+                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                          <select v-model="form.entidad_bancaria"  name="tipo" class="form-control " :disabled="ver">
+                              <option value="Banco de Bogotá">Banco de Bogotá</option>
+                              <option value="Banco AV Villas">Banco AV Villas</option>
+                              <option value="Banco de Occidente">Banco de Occidente</option>
+                              <option value="Banco Popular">Banco Popular</option>
+                          </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <div class="form-group">
+                  <label>Tipología </label>
                   <ValidationProvider name="tipologia" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipologia"  name="tipologia" class="form-control form-control-lg" :disabled="ver">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
+                          <select v-model="form.tipologia"  name="tipologia" class="form-control " :disabled="ver">
+                              <option v-for="tipologia in tipologia" :key="tipologia.tipo" :value="tipologia.tipo">{{tipologia.tipo}}</option>
                           </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -130,24 +143,25 @@
               </b-col> 
             </b-row>
              <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Ciudad </label>
-                  <ValidationProvider name="ciudad" rules="required" v-slot="{ errors }">
-                        <input v-model="form.ciudad"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              <b-col>
+                <b-col>
                 <div class="form-group">
                   <label>Regional </label>
-                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                        <input v-model="form.regional"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <ValidationProvider name="regional" rules="required" v-slot="{ errors }">
+                          <select v-model="form.regional_id" @change="listarCiudades()"  name="regional_id" class="form-control " :disabled="ver">
+                              <option></option>
+                              <option v-for="regional in regional" :key="regional.id" :value="regional.id">{{regional.nombre}}</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
-              </b-col>             
+              </b-col>     
+              <b-col>
+                <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
+                  <label>Ciudad</label>
+                    <v-select v-model="form.ciudades_id" :options="ciudades" :reduce="ciudades => ciudades.id" label="ciudad" ></v-select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-col>        
               </b-row>
             <b-row>
               <b-col>
@@ -165,9 +179,9 @@
 
                <b-col>
                 <div class="form-group">
-                  <label>Site </label>
-                  <ValidationProvider name="site" rules="required" v-slot="{ errors }">
-                        <input v-model="form.site"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <label>Numero Site </label>
+                  <ValidationProvider name="numero de site" rules="required" v-slot="{ errors }">
+                        <input v-model="form.numero_site"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -176,9 +190,10 @@
                 <div class="form-group">
                   <label>Tipo Site </label>
                   <ValidationProvider name="tipo site" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo_site"  name="tipo_site" class="form-control form-control-lg" :disabled="ver">
-                              <option value="CABINA">CABINA</option>
-                              <option value="SIN SITE">SIN SITE</option>
+                          <select v-model="form.tipo_site"  name="tipo_site" class="form-control " :disabled="ver">
+                              <option value="Cabina">Cabina</option>
+                              <option value="Cubículo independiente">Cubículo independiente</option>
+                              <option value="Sin site">Sin site</option>
                           </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -190,9 +205,10 @@
                 <div class="form-group">
                   <label>Comparte Site </label>
                   <ValidationProvider name="comparte site" rules="required" v-slot="{ errors }">
-                          <select v-model="form.comparte_site"  name="comparte_site" class="form-control form-control-lg" :disabled="ver">
+                          <select v-model="form.comparte_site"  name="comparte_site" class="form-control " :disabled="ver">
                               <option value="N/A">N/A</option>
                               <option value="SI">SI</option>
+                              <option value="NO">NO</option>
                           </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -201,8 +217,21 @@
                <b-col>
                 <div class="form-group">
                   <label>Cumpleaños </label>
-                  <ValidationProvider name="cumpleanos" rules="required" v-slot="{ errors }">
-                        <input v-model="form.cumpleanos"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <ValidationProvider name="cumpleaños" rules="required" v-slot="{ errors }">
+                          <select v-model="form.cumpleanos"  name="cumpleanos" class="form-control " :disabled="ver">
+                              <option value="Enero">Enero</option>
+                              <option value="Febrero">Febrero</option>
+                              <option value="Marzo">Marzo</option>
+                              <option value="Abril">Abril</option>
+                              <option value="Mayo">Mayo</option>
+                              <option value="Junio">Junio</option>
+                              <option value="Julio">Julio</option>
+                              <option value="Agosto">Agosto</option>
+                              <option value="Septiembre">Septiembre</option>
+                              <option value="Octubre">Octubre</option>
+                              <option value="Noviembre">Noviembre</option>
+                              <option value="Diciembre">Diciembre</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -212,8 +241,10 @@
               <b-col>
                 <div class="form-group">
                   <label>Administrado </label>
-                  <ValidationProvider name="administrado" rules="required" v-slot="{ errors }">
-                        <input v-model="form.administrado"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <ValidationProvider name="Administrador de seguridad" rules="required" v-slot="{ errors }">
+                          <select v-model="form.administrado"  name="administrado" class="form-control " :disabled="ver">
+                              <option v-for="seguridad in seguridad" :key="seguridad.nombre" :value="seguridad.nombre">{{seguridad.nombre}}</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -222,30 +253,44 @@
                 <div class="form-group">
                   <label>Cierre Nocturno </label>
                   <ValidationProvider name="cierre nocturno" rules="required" v-slot="{ errors }">
-                          <select v-model="form.cierre_nocturno"  name="cierre_nocturno" class="form-control form-control-lg" :disabled="ver">
-                              <option value="Si">Si</option>
-                              <option value="No">No</option>
+                          <select v-model="form.cierre_nocturno"  name="cierre_nocturno" class="form-control " :disabled="ver">
+                              <option value="DIARIO">DIARIO</option>
+                              <option value="FIN DE SEMANA">FIN DE SEMANA</option>
+                              <option value="NO">NO</option>
                           </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+              <b-col v-if="form.cierre_nocturno==='DIARIO'||form.cierre_nocturno==='FIN DE SEMANA'">
+                <div class="form-group">
+                  <label>Hora de cierre</label>
+                  <ValidationProvider name="cierre" rules="required" v-slot="{ errors }">
+                        <input v-model="form.hora_cierre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </b-col>
               </b-row>  
               <b-row>
-               <b-col>
+              <b-col>
                 <div class="form-group">
                   <label>Apertura </label>
-                  <ValidationProvider name="apertura" rules="required" v-slot="{ errors }">
-                        <input v-model="form.apertura"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <ValidationProvider name="cierre nocturno" rules="required" v-slot="{ errors }">
+                          <select v-model="form.apertura"  name="cierre_nocturno" class="form-control " :disabled="ver">
+                              <option value="DIARIO">DIARIO</option>
+                              <option value="FIN DE SEMANA">FIN DE SEMANA</option>
+                              <option value="N/A">N/A</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
-              </b-col>   
-              <b-col>
+              </b-col> 
+              <b-col v-if="form.apertura==='DIARIO'||form.apertura==='FIN DE SEMANA'">
                 <div class="form-group">
-                  <label>Cierre </label>
-                  <ValidationProvider name="cierre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.cierre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <label>Hora de apertura</label>
+                  <ValidationProvider name="Hora de apertura" rules="required" v-slot="{ errors }">
+                        <input v-model="form.hora_apertura"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -254,23 +299,31 @@
               <b-row>
               <b-col>
                 <div class="form-group">
-                  <label>Aseo</label>
-                  <ValidationProvider name="aseo" rules="required" v-slot="{ errors }">
-                        <input v-model="form.aseo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <label>Mantenimiento</label>
+                  <ValidationProvider name="Mantenimiento" rules="required" v-slot="{ errors }">
+                          <select v-model="form.mantenimiento"  name="cierre_nocturno" class="form-control " :disabled="ver">
+                              <option value="Aplica">Aplica</option>
+                              <option value="N/A">N/A</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </b-col>  
               <b-col>
                 <div class="form-group">
-                  <label>Dias de respuesta RF</label>
-                  <ValidationProvider name="Dias de respuesta rf" rules="required" v-slot="{ errors }">
-                        <input v-model="form.dias_respuesta"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <label>Aseo</label>
+                  <ValidationProvider name="aseo" rules="required" v-slot="{ errors }">
+                          <select v-model="form.aseo"  name="cierre_nocturno" class="form-control " :disabled="ver">
+                              <option value="DIARIO">DIARIO</option>
+                              <option value="DE LUNES A VIERNES">DE LUNES A VIERNES</option>
+                              <option value="DE LUNES A SABADO">DE LUNES A SABADO</option>
+                              <option value="NO">NO</option>
+                          </select>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </b-col>          
-              </b-row>             
+              </b-row>   
         </ValidationObserver>
 
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
@@ -282,11 +335,14 @@
 </template>
 
 <script>
+import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
+import Multiselect from "vue-multiselect";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-
+import { tipologia } from "./tipologia";
 
 /**
  * Dashboard component
@@ -296,10 +352,13 @@ export default {
     Layout,
     PageHeader,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    vSelect,
+    Multiselect
   },
   data() {
     return {
+      tipologia:tipologia,
       title: "Administracion",
       items: [
         {
@@ -336,14 +395,20 @@ export default {
       entidades: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["codigo","tipo","direccion","actions"],
+      fields: ["codigo","tipo","entidad_bancaria","direccion","actions"],
       cajeros: [], 
+      ciudades: [], 
+      regional: [], 
+      seguridad: [], 
       editMode:false,
       form:{
           'id':'',
           'nombre_tercero':'',
           'descripcion_tercero':'',
+          'ciudades_id':'',
           'cierre_nocturno':'',
+          'mantenimiento':'',
+          'compartido_con':null,
       }
     }
   },
@@ -371,6 +436,10 @@ export default {
           } else {
         }});
       }
+    },
+    detalles(data){
+      console.log(data);
+      this.$router.push({ name: 'cajero_details', params: { id: data.id,entidad: data.id_entidad }})
     },
    async agregarCajero(){
      let data = new FormData();
@@ -469,28 +538,34 @@ export default {
             this.form.tipo=this.cajeros[index].tipo;
             this.form.codigo=this.cajeros[index].codigo;
             this.form.tipologia=this.cajeros[index].tipologia;
+            this.form.entidad_bancaria=this.cajeros[index].entidad_bancaria;
             this.form.terminal=this.cajeros[index].terminal;
             this.form.direccion=this.cajeros[index].direccion;
             this.form.ciudad=this.cajeros[index].ciudad;
-            this.form.regional=this.cajeros[index].regional;
+            this.form.regional_id=this.cajeros[index].regional_id;
+            this.listarCiudades();
+            this.form.ciudades_id=this.cajeros[index].cuidades_id;
+            this.form.numero_site=this.cajeros[index].numero_site;
             this.form.site=this.cajeros[index].site;
             this.form.comparte_site=this.cajeros[index].comparte_site;
             this.form.cumpleanos=this.cajeros[index].cumpleanos;
             this.form.administrado=this.cajeros[index].administrado;
             this.form.tipo_site=this.cajeros[index].tipo_site;
             this.form.apertura=this.cajeros[index].apertura;
+            this.form.hora_apertura=this.cajeros[index].hora_apertura;
             this.form.cierre=this.cajeros[index].cierre;
+            this.form.hora_cierre=this.cajeros[index].hora_cierre;
             this.form.aseo=this.cajeros[index].aseo;
             this.form.id_entidad=this.cajeros[index].id_entidad;
             this.form.dias_respuesta=this.cajeros[index].dias_respuesta;
-
+            this.form.mantenimiento=this.cajeros[index].mantenimiento;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-      listarCajeros(){
-        this.axios.get('api/cajeros/ath')
+     async listarCajeros(){
+       await this.axios.get('api/cajeros/ath')
         .then((response) => {
           this.cajeros = response.data.rows;
         })
@@ -508,6 +583,35 @@ export default {
               this.form.id_entidad=this.entidades[index].id;
             }
           }
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+     async  listarregional(){
+      await  this.axios.get('api/regional')
+        .then((response) => {
+          this.regional = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+      async  listarCiudades(){
+      let data = new FormData();
+      data.append('id',this.form.regional_id);
+      await  this.axios.post('api/ciudad/find',data)
+        .then((response) => {
+          this.ciudades = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+      async  listarseguridad(){
+      await  this.axios.get('api/seguridad')
+        .then((response) => {
+          this.seguridad = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -537,6 +641,8 @@ export default {
         this.session();
         this.listarCajeros();
         this.listarEntidades();
+        this.listarregional();
+        this.listarseguridad();
       },
     computed: {
     rows() {

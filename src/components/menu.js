@@ -53,6 +53,16 @@ export const menuItems = [
                 id: 10,
                 label: 'Imputaciones',
                 link: '/codigos_imputacion'
+            },
+            {
+                id: 11,
+                label: 'Regional',
+                link: '/regional'
+            },
+            {
+                id: 11,
+                label: 'Ciudades',
+                link: '/ciudades'
             }
         ]
     },
@@ -73,8 +83,8 @@ export const menuItems = [
             },
             {
                 id: 14,
-                label: 'Programación',
-                link: '/programacion'
+                label: 'Llamadas',
+                link: '/llamadas',
             },
             {
                 id: 16,

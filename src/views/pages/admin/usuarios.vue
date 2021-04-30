@@ -234,7 +234,7 @@
                 </b-col>
                 <b-col>
                   <div class="form-group">
-                    <label>Nombre Cuenta</label>
+                    <label>Tipo De Cuenta</label>
                     <ValidationProvider name="tipo de cuenta" rules="required" v-slot="{ errors }">
                           <select v-model="form.tipo_cuenta"  name="tipo de cuenta" class="form-control form-control-lg" >
                               <option value="Ahorro">Ahorro</option>
@@ -272,7 +272,7 @@
                   <div class="form-group">
                     <label>Contraseña</label>
                     <ValidationProvider name="password" rules="required" v-slot="{ errors }">
-                          <input v-model="form.password"  type="text" class="form-control" placeholder=" ">
+                          <input v-model="form.password"  type="password" class="form-control" placeholder=" ">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -281,7 +281,7 @@
                   <div class="form-group">
                     <label>Confirmar contraseña</label>
                     <ValidationProvider name="repass" rules="required|confirmed:password" v-slot="{ errors }">
-                          <input v-model="form.repass"  type="text" class="form-control" placeholder=" ">
+                          <input v-model="form.repass"  type="password" class="form-control" placeholder=" ">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -292,13 +292,6 @@
                 <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
                   <label>Area dependiente</label>
                     <v-select v-model="form.dependencia" :options="users" :reduce="users => users.id" label="email" ></v-select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-col>
-              <b-col>
-                <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
-                  <label>Cargo</label>
-                    <v-select v-model="form.cargo" :options="cargos" :reduce="cargos => cargos.cargo" label="cargo" ></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </b-col>
@@ -328,7 +321,8 @@
                         @change="onFileChangeFirma"
                     ></b-form-file>
                </b-col>
-            </b-row>        
+            </b-row>  
+            <pre>{{regionales}}</pre>     
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -395,6 +389,7 @@ export default {
       users: [], 
       areas: [],
       cargos: [],
+      regional: [],
       editMode:false,
       form:{
           'id':'',
@@ -414,6 +409,7 @@ export default {
           'repass':'Alfayomega',
           'roles':'3',
           'direccion':'',
+          'regional':'',
           'status':'',
           
       }
@@ -549,6 +545,15 @@ export default {
       .catch((e)=>{
         console.log('error' + e);
       })
+    },
+    async  listarregional(){
+      await  this.axios.get('api/regional')
+        .then((response) => {
+          this.regionales = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
     },
    async listarCargos(){
       await  this.axios.get('api/cargos')

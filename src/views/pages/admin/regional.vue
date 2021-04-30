@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Imputaciones</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear administrador de regional</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="imputaciones"
+                :items="regional"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -59,7 +59,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarImputaciones(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarregional(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -90,19 +90,8 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de imputaciones" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de regional" hide-footer>
           <ValidationObserver ref="form">
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Codigo</label>
-                  <ValidationProvider name="Imputaciones" rules="required" v-slot="{ errors }">
-                        <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>
               <b-row>
               <b-col>
                 <div class="form-group">
@@ -124,21 +113,7 @@
                   </ValidationProvider>
                 </div>
               </b-col>
-              </b-row> 
-        
-              <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Entidad</label>
-                    <ValidationProvider name="Entidad" rules="required" v-slot="{ errors }">
-                          <select v-model="form.id_entidad"  name="id_entidad" class="form-control" :disabled="ver" >
-                              <option :value="entidades.id" v-for="entidades in entidades" :key="entidades.id">{{entidades.empresa}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col> 
-            </b-row>         
+              </b-row>        
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -175,7 +150,7 @@ export default {
           text: "Gestión corporativa"
         },
         {
-          text: "imputaciones",
+          text: "Administrador de regional",
           active: true
         }
       ],
@@ -200,15 +175,14 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","codigo","Entidad","actions"],
-      imputaciones: [], 
+      fields: ["nombre","descripcion","actions"],
+      regional: [], 
       entidades: [], 
       editMode:false,
       form:{
           'id':'',
-          'Imputaciones':'',
+          'regional':'',
           'descripcion':'',
-          'id_entidad':'1',
       }
     }
   },
@@ -230,24 +204,24 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarImputaciones();
+              this.agregarregional();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarimputaciones();
+            this.editarregional();
           } else {
         }});
       }
     },
-   async agregarImputaciones(){
+   async agregarregional(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/imputaciones', data, {
+       await this.axios.post('api/regional', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -256,7 +230,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarimputaciones();
+               this.listarregional();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -268,16 +242,16 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarimputaciones(){
+    async editarregional(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/imputaciones', data).then(response => {
+        await this.axios.put('api/regional', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarimputaciones();
+               this.listarregional();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -288,10 +262,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarimputaciones(id){
+     async eliminarregionals(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/imputaciones/delete',data, {
+        await this.axios.post('api/regional/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -301,16 +275,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarimputaciones();
+                this.listarregional();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarImputaciones(id){
+      eliminarregional(id){
         this.$swal({
-          title: 'Desea borrar este Imputaciones?',
+          title: 'Desea borrar este regional?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -319,7 +293,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarimputaciones(id);
+            this.eliminarregionals(id);
           }
         })
       },
@@ -330,22 +304,20 @@ export default {
        }
       },
       setear(id) {
-        for (let index = 0; index < this.imputaciones.length; index++) {
-          if (this.imputaciones[index].id===id) {
-            this.form.id=this.imputaciones[index].id;
-            this.form.nombre=this.imputaciones[index].nombre;
-            this.form.codigo=this.imputaciones[index].codigo;
-            this.form.id_entidad=this.imputaciones[index].entidad.id;
-            this.form.descripcion=this.imputaciones[index].descripcion;
+        for (let index = 0; index < this.regional.length; index++) {
+          if (this.regional[index].id===id) {
+            this.form.id=this.regional[index].id;
+            this.form.nombre=this.regional[index].nombre;
+            this.form.descripcion=this.regional[index].descripcion;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async  listarimputaciones(){
-      await  this.axios.get('api/imputaciones')
+    async  listarregional(){
+      await  this.axios.get('api/regional')
         .then((response) => {
-          this.imputaciones = response.data.rows;
+          this.regional = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -359,11 +331,11 @@ export default {
         if (this.form.tipo==="Administrador") {
             this.form.codigo="";
             this.form.entidad="No";
-            this.form.Imputaciones=""
+            this.form.regional=""
             this.form.roles="3"
         } else if(this.form.tipo==="Coordinador") {
             this.form.entidad="No";
-            this.form.Imputaciones="";
+            this.form.regional="";
             this.form.roles="2"
         }else{
             this.form.roles="1"
@@ -396,8 +368,8 @@ export default {
   },
     created(){
         this.session();
-        this.listarimputaciones();
-        this.listarentidades();
+        this.listarregional();
+       // this.listarentidades();
 
       },
      mounted() {
@@ -405,7 +377,7 @@ export default {
     },
     computed: {
     rows() {
-      return this.imputaciones.length;
+      return this.regional.length;
     },
   },
 }
