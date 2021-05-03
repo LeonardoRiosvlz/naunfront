@@ -1,8 +1,9 @@
+
 <template>
-  <Layout>
-    <PageHeader :title="title" :items="items" />
-    <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false">Crear F.S.T  </b-button>
+  <div  >
+    <pre>{{consecutivo.cajero_ath.entidad.id}}</pre>
+ <div class="clearfix">
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear F.S.T  </b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -35,7 +36,7 @@
               <!-- End search -->
             </div>
             <!-- Table -->
-            <div class="table-responsive mb-0" style="min-height:500px">
+            <div class="table-responsive mb-0" >
               <b-table
                 :items="formatos"
                 :fields="fields"
@@ -49,15 +50,6 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-                <template v-slot:cell(TECNICO)="data">
-                  {{data.item.Tecnico.nombre}} {{data.item.Tecnico.apellido}}
-                </template>
-                <template v-slot:cell(ENTIDAD)="data">
-                  {{data.item.entidad.empresa}}
-                </template>
-                <template v-slot:cell(CONSECUTIVO)="data">
-                  {{data.item.consecutivo}}
-                </template>
                 <template v-slot:cell(VALOR)="data">
                   {{data.item.valor | moneda}}
                 </template>
@@ -71,7 +63,7 @@
                   <b-badge variant="danger" v-if="data.item.status==='Rechazado'">{{data.item.status}}</b-badge>
                 </template>
                 <template v-slot:cell()="data">
-                   <button type="button" class="btn btn-success btn-sm rounded-pill" @click="abonarModal(data.item.id)"  :disabled="data.item.status==='Pendiente'||data.item.status==='Rechazado'"><i class="ri-hand-heart-fill"></i>  Abonar</button>
+                   <button type="button" class="btn btn-success btn-sm rounded-pill" @click="abonarModal(data.item.id,data.item.tecnico_id)" :disabled="data.item.status==='Pendiente'||data.item.status==='Rechazado'" ><i class="ri-hand-heart-fill"></i>  Abonar</button>
                 </template>
                 <template v-slot:cell(actions)="data">
 
@@ -83,8 +75,8 @@
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarFormato(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCancelado(data.item.id,data.item.solicitante_id,data.item.consecutivo)"> Rechazar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;aprobFormato(data.item.id,data.item.solicitante_id,data.item.consecutivo)"> Aprobado </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCancelado(data.item.id)"> Rechazar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=false;aprobFormato(data.item.id)"> Aprobado </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -105,7 +97,6 @@
  
     </div>
 
-<pre>{{formatos}}</pre>
 
 
     <b-modal id="modal_abonar" false size="lg"  :title="'Abonar F.S.T'+' '+form.consecutivo" hide-footer>
@@ -133,25 +124,37 @@
             <tr>
               <th>Pago</th>
               <th>Modo</th>
+              <th>Abono</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
              <tr v-for="abonos in abonos" :key="abonos.id">
            
-              <th>{{abonos.valor_abono}}</th>
+              <th>{{abonos.valor_abono | moneda}}</th>
               <th>{{abonos.tipo}}</th>
-              <th></th>
+              <th><a :href="abonos.archivo_abono" download target="_blank">Archivo</a></th>
+              <th>           
+                <a href="javascript:void(0);" @click="eliminarAbono(abonos.id,abonos.formato_id)"  class="text-danger" v-b-tooltip.hover title="Borrar abono">
+                  <i class="mdi mdi-trash-can font-size-18"></i>
+                </a>
+            </th>
             </tr>
             <tr>
-              <th>Total: {{form.valor}} $</th>
-              <th>Abonado:{{total_abonado}} $</th>
-              <th colspan="2">Restante: {{form.valor-total_abonado}} $</th>
+              <th>Total: {{form.valor | moneda}} </th>
+              <th>Abonado:{{total_abonado | moneda}} </th>
+              <th colspan="2">Restante: {{form.valor-total_abonado | moneda}} $</th>
             </tr>
           </tbody>
         </table>
-
-
+        <div v-if="form.valor<=total_abonado">
+          <b-card bg-variant="success" class="text-white-50">
+            <h5 class="mt-0  text-white">
+              <i class="mdi mdi-check-all mr-3"></i> Abonos completado
+            </h5>
+          </b-card>
+        </div>
+        <div v-else>
           <ValidationObserver ref="form">      
               <b-row>
                 <b-col>
@@ -211,6 +214,10 @@
             </b-row>  
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="abonar()" v-if="!ver && !editMode">Abonar</button>
+        </div>
+
+
+
      </b-modal>
 
 
@@ -383,32 +390,22 @@
                 </ValidationProvider>
               </b-col>
             </b-row>    
-          
         </ValidationObserver>
-
-
         <button v-b-tooltip.hover title="Agregar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear FST</button>
         <button v-b-tooltip.hover title="Editar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar FST</button>
      </b-modal>
-
-  </Layout>
+  </div>
 </template>
-
 <script>
-import "vue-select/dist/vue-select.css";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
-import Layout from "../../layouts/main";
-import PageHeader from "@/components/page-header";
 import vSelect from "vue-select";
-
+import "vue-select/dist/vue-select.css";
 /**
- * Dashboard component
+ * Transactions component
  */
 export default {
-  components: {
-    Layout,
-    PageHeader,
+    components: {
     ValidationProvider,
     ValidationObserver,
     vSelect
@@ -456,7 +453,7 @@ export default {
       users: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["TECNICO","ENTIDAD","CONSECUTIVO","VALOR","ESTADO","LEGALIZACION/ABONOS","actions"],
+      fields: ["VALOR","ESTADO","LEGALIZACION/ABONOS","actions"],
       formatos: [], 
       cajero: [],
       tecnico: [],
@@ -469,12 +466,24 @@ export default {
       },
       abono:{
           'id':'',
+          'tecnico_id':'',
       }
     }
   },
-  computed:{
-        ...mapState(['counter'])
-   },
+  computed: {
+    /**
+     * Total no. of records
+     */
+    rows() {
+      return this.transactionData.length;
+    }
+  },
+  mounted() {
+    // Set the initial number of items
+    this.totalRows = this.transactionData.length;
+    this.form.id_cajero = 2;
+    this.listar();
+  },
   filters: {
         moneda: function (value) {
           const formatterPeso = new Intl.NumberFormat('es-CO', {
@@ -532,7 +541,20 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarFormato();
+                this.$swal({
+                  title: 'Desea enviar esta solicitud?',
+                  icon: 'question',
+                  iconHtml: '',
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  showCancelButton: true,
+                  showCloseButton: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                     this.agregarFormato();
+                  }
+                })
+             
             } else {}
           });        
         }else{
@@ -557,6 +579,41 @@ export default {
             this.subirAbono(id);
           }
         })
+      },
+      eliminarAbono(id,formato){
+        this.$swal({
+          title: 'Desea eliminar este abono?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.deleteAbono(id,formato);
+          }
+        })
+      },
+    async deleteAbono(id,formato){
+     let data = new FormData();
+      data.append('id',id);
+ 
+       await this.axios.post('api/abonos/delete', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listarAbonos(formato);
+               ///limpiar el formulario
+              }
+            }).catch(e => {
+              this.$swal(e.response.data);
+          });
       },
     async subirAbono(){
      let data = new FormData();
@@ -619,16 +676,16 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async listarterceros(){
-      await  this.axios.get('api/terceros')
-        .then((response) => {
-          this.terceros = response.data.rows;
-          console.log("hola");
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
+    //async listarterceros(){
+    //  await  this.axios.get('api/terceros')
+    //    .then((response) => {
+    //      this.terceros = response.data.rows;
+    //      console.log("hola");
+    // //   })
+    //    .catch((e)=>{
+    //      console.log('error' + e);
+    //    })
+    //  },
     async editarFormato(){
      let data = new FormData();
        var formulario = this.form;
@@ -657,11 +714,10 @@ export default {
      let data = new FormData();
      var formulario = this.form;
        data.append("id",this.form.id);
-       data.append("solicitante_id",this.form.solicitante_id);
-       data.append("consecutivo",this.form.consecutivo);
        data.append("status","Rechazado");
        data.append("observacion",this.form.observacion);
         await this.axios.post('api/formatos/status', data).then(response => {
+
             if (response.status==200) {
                this.$swal('Rechazado con exito','','success');
                this.listarFormato();
@@ -676,12 +732,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
          });
       },
-    async aprobarFormato(id,solicitante,consecutivo){
+    async aprobarFormato(id){
      let data = new FormData();
      var formulario = this.form;
        data.append("id",id);
-       data.append("solicitante_id",solicitante);
-       data.append("consecutivo",consecutivo);
        data.append("status","Aprobado");
        data.append("observacion","");
         await this.axios.post('api/formatos/status', data).then(response => {
@@ -792,7 +846,7 @@ export default {
           }
         })
       },
-      aprobFormato(id,solicitante,consecutivo){
+      aprobFormato(id){
         this.$swal({
           title: 'Deseas aprobar esta solicitud?',
           icon: 'question',
@@ -803,7 +857,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.aprobarFormato(id,solicitante,consecutivo);
+            this.aprobarFormato(id);
           }
         })
       },
@@ -812,6 +866,11 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
+       this.form.consecutivo="ATH-"+this.consecutivo.id;
+       this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
+       this.form.entidad_id=this.consecutivo.cajero_ath.entidad.id;
+       this.buscarTecnico();
+       this.form.items=[];
       },
       setear(id) {
         for (let index = 0; index < this.formatos.length; index++) {
@@ -838,14 +897,12 @@ export default {
           }
         }
       },
-      setearCancelado(id,solicitante,consecutivo){
+      setearCancelado(id){
         this.form.id=id;
-        this.form.solicitante_id=solicitante;
-        this.form.consecutivo=consecutivo;
         this.$root.$emit("bv::show::modal", "modal_cancelar", "#btnShow");
       },
       abonarModal(id){
-                for (let index = 0; index < this.formatos.length; index++) {
+        for (let index = 0; index < this.formatos.length; index++) {
           if (this.formatos[index].id===id) {
             this.form.pago_terceros=this.formatos[index].pago_terceros;
             this.form.consecutivo=this.formatos[index].consecutivo;
@@ -864,6 +921,7 @@ export default {
             this.form.tercero_id=this.formatos[index].tercero_id;
             this.form.id=this.formatos[index].id;
             this.abono.formato_id=this.formatos[index].id;
+            this.abono.tecnico_id=this.formatos[index].tecnico_id;
             this.$root.$emit("bv::show::modal", "modal_abonar", "#btnShow");
             this.buscarTecnico();
             this.listarAbonos(this.form.id);
@@ -886,19 +944,23 @@ export default {
           console.log('error' + e);
         })
       },
-    async  listarentidades(){
-      await  this.axios.get('api/entidades')
+      async  listarFormato(){
+      let data = new FormData();
+      let id='ATH-'+this.consecutivo.id;
+      console.log(id);
+      data.append('consecutivo',id);
+      await  this.axios.post('api/formatos/find',data)
         .then((response) => {
-          this.entidades = response.data.rows;
+            this.formatos = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
         })
       },
-   async listarFormato(){
-      await  this.axios.get('/api/formatos')
+    async  listarentidades(){
+      await  this.axios.get('api/entidades')
         .then((response) => {
-          this.formatos = response.data.rows;
+          this.entidades = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -957,25 +1019,24 @@ export default {
         if (localStorage.getItem('consecutivo')) {
         this.$bvModal.show('modal')
         this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
-          console.log(this.consecutivo);
           this.form.consecutivo=this.consecutivo.consecutivo;
           this.form.tecnico_id=this.consecutivo.tecnico_id;
           this.form.entidad_id=1;
           this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
           this.listarimputaciones();
           this.buscarTecnico();
-          localStorage.removeItem('consecutivo');
+
         }
 
       }
   },
   mounted(){
     this.loadConsectivo();
+    this.listarFormato();
   }, 
     created(){
         this.session();
-        this.listarFormato();
-        this.listarterceros();
+        
         this.listarentidades();
         this.listarUsers();
      
@@ -986,6 +1047,5 @@ export default {
       return this.formatos.length;
     },
   },
-}
+};
 </script>
-

@@ -153,8 +153,8 @@
             <a v-for="(msg, index) in notificaciones" :key="index" href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs mr-3">
-                  <span class="avatar-title bg-primary rounded-circle font-size-16">
-                    <i class="ri-send-plane-fill"></i>
+                  <span :class="msg.color">
+                    <i :class="msg.icon"></i>
                   </span>
                 </div>
                 <div class="media-body">
@@ -163,7 +163,7 @@
                     <p class="mb-1">{{msg.descripcion}}</p>
                     <p class="mb-0">
                       <i class="mdi mdi-clock-outline"></i>
-                      Hora de la notificacion
+                      {{msg.created_at | capitalize }}
                     </p>
                   </div>
                 </div>
@@ -221,6 +221,7 @@ import io from 'socket.io-client';
 import simplebar from "simplebar-vue";
 import i18n from "../i18n";
 import {mapState,mapMutations, mapActions} from 'vuex'
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -239,6 +240,15 @@ export default {
   computed:{
     ...mapState(['usuarioDB'])
  },
+    filters: {
+        capitalize: function (value) {
+          if (!value) return ''
+          let fecha = moment();
+          value ="hace " +fecha.diff(value, 'minutes')+ " minutos."; 
+          
+          return value
+        }
+    },
   methods: {
     sendMessage(e) {
         e.preventDefault();

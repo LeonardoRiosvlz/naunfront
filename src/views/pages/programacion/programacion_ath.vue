@@ -104,13 +104,7 @@
 
 
     <b-modal id="modal" false size="lg"  title="Programación de ATH" hide-footer>
-
-
-        
-
-
           <ValidationObserver ref="form">
-
                 <b-row>
                  <b-col>
                     <div class="form-group">
@@ -542,7 +536,7 @@ export default {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
               if (response.status==200) {
-                console.log(response);
+     
                 this.tecnico=response.data;
                 if (this.tecnico.length>0) {
                   this.form.id_tecnico=this.tecnico[0].id;
@@ -626,7 +620,6 @@ export default {
       await  this.axios.get('/api/programacion/ath')
         .then((response) => {
           this.programas = response.data.rows;
-            console.log(this.programas);
         })
         .catch((e)=>{
           console.log('error' + e);
