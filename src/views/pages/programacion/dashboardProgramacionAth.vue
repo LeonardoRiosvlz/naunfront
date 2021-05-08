@@ -10,9 +10,9 @@
                   <i class="mdi mdi-dots-vertical"></i>
                 </template>
                 <!-- item-->
-                <b-dropdown-item  @click="setear()">PROGRAMAR</b-dropdown-item>
+                <b-dropdown-item  @click="setear();form.status='Programada'" v-if="!programacion[0].Tecnico_ath">PROGRAMAR</b-dropdown-item>
                 <!-- item-->
-                <b-dropdown-item>Export Report</b-dropdown-item>
+                <b-dropdown-item  @click="setear();form.status='Reprogramada'" v-if="programacion[0].Tecnico_ath">REPROGRAMAR</b-dropdown-item>
                 <!-- item-->
                 <b-dropdown-item>Profit</b-dropdown-item>
                 <!-- item-->
@@ -22,7 +22,7 @@
               <h4 class="card-title mb-3"> CONSECUTIVO ATH-{{programacion[0].id}}</h4>
                 <b-card no-body >
                   <b-row no-gutters class="align-items-center">
-                    <b-col md="4">
+                    <b-col md="4" v-if="programacion[0].cajero_ath.entidad">
                       <b-card-img :src="programacion[0].cajero_ath.entidad.imagen" class="rounded-0"></b-card-img>
                     </b-col>
                     <b-col md="8">
@@ -69,26 +69,16 @@
       <div class="col-lg-8">
        <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Custom Tabs</h4>
-            <p class="card-title-desc">Example of custom tabs</p>
+            <h4 class="card-title">Detalles de consecutivo</h4>
             <b-tabs justified nav-class="nav-tabs-custom" content-class="text-muted">
               <b-tab active>
                 <template v-slot:title>
                   <span class="d-inline-block d-sm-none">
                     <i class="fas fa-home"></i>
                   </span>
-                  <span class="d-none d-sm-inline-block">F.S.T.</span>
+                  <span class="d-none d-sm-inline-block">F.S.T./Abonos</span>
                 </template>
                 <Fst />
-              </b-tab>
-              <b-tab>
-                <template v-slot:title>
-                  <span class="d-inline-block d-sm-none">
-                    <i class="far fa-user"></i>
-                  </span>
-                  <span class="d-none d-sm-inline-block">Abonos</span>
-                </template>
-                {{ content }}
               </b-tab>
               <b-tab>
                 <template v-slot:title>
@@ -97,7 +87,7 @@
                   </span>
                   <span class="d-none d-sm-inline-block">Gestion</span>
                 </template>
-                {{ text }}
+                  <Gestion />
               </b-tab>
               <b-tab>
                 <template v-slot:title>
@@ -106,7 +96,7 @@
                   </span>
                   <span class="d-none d-sm-inline-block">Cierre</span>
                 </template>
-                {{ content }}
+         
               </b-tab>
             </b-tabs>
           </div>
@@ -203,6 +193,7 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import moment from 'moment';
 import Fst from './fst';
+import Gestion from './gestion';
 /**
  * Dashboard component
  */
@@ -213,11 +204,13 @@ export default {
     PageHeader,
     ValidationProvider,
     ValidationObserver,
-    Fst
+    Fst,
+    Gestion
   },
   data() {
    
      return {
+      fileSingle: [],
       title: "PROCESOS",
       items: [
         {
@@ -254,7 +247,13 @@ export default {
       tecnicos: [], 
       tecnico: [],
       consecutivo: [], 
-      programacion: [], 
+      programacion: [{
+        id:"",
+        cajero_ath:{
+          entidad:""
+        }
+        
+      }], 
       editMode:false,
       form:{
           'id':'',
@@ -262,6 +261,7 @@ export default {
           'descripcion':'',
           'tecnico_id':'',
           'codigo_Tecnico':'',
+          'status':'',
       }
     }
   },
@@ -417,24 +417,6 @@ export default {
         .catch((e)=>{
           console.log('error' + e);
         })
-      },
-      setEmail(){
-        this.form.username=this.form.email;
-
-      },
-      setRoles(){
-        if (this.form.tipo==="Administrador") {
-            this.form.codigo="";
-            this.form.entidad="No";
-            this.form.cargo=""
-            this.form.roles="3"
-        } else if(this.form.tipo==="Coordinador") {
-            this.form.entidad="No";
-            this.form.cargo="";
-            this.form.roles="2"
-        }else{
-            this.form.roles="1"
-        }
       },
       onFileChange(e) {
         const file = e.target.files[0];

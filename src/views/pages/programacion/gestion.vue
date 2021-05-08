@@ -1,44 +1,8 @@
-
 <template>
   <div  >
-    <div class="card-body border-top text-center m-0">
-        <div class="row align-items-center">
-          <div class="col">
-            <div class="card p-4">
-              <div class="d-inline-flex">
-                <h5 class="mr-2">FST</h5>
-                <div class="text-success">
-                  <i class="mdi mdi-menu-right font-size-14"></i>{{formatos.length}}
-                </div>
-              </div>
-             <p class="text-muted text-truncate mb-0">Abonos {{form.abonos_total}}</p>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card p-4">
-              <div class="d-inline-flex">
-                <h5 class="mr-2">Toltal</h5>
-                <div class="text-success">
-                  <i class="mdi mdi-menu-right font-size-14"></i>{{form.valor_total | moneda}}
-                </div>
-              </div>
-             <p class="text-muted text-truncate mb-0">Total abonado: {{form.abonados | moneda}}</p>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card p-4">
-
-                <h5 class="mr-2 text-danger">{{form.valor_total-form.abonados | moneda}}</h5>
-
-             <p class="text-muted text-truncate mb-0">Abonos pendientes</p>
-            </div>
-          </div>
-        </div>
-    <div class="clearfix m-0">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear F.S.T  </b-button>
+    <div class="clearfix my-4">
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal_gestion');editMode=false;resete();">Gestionar </b-button>
     </div>
-    </div>
-
     <div class="row">
       <div class="col-12">
         <div class="card">
@@ -84,8 +48,8 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-                <template v-slot:cell(VALOR)="data">
-                  {{data.item.valor | moneda}}
+                <template v-slot:cell(ASUNTO)="data">
+                  {{data.item.asunto}}
                 </template>
                  <template v-slot:cell(Legalizacion)="data">
                   {{data.item.descripcion}}
@@ -128,159 +92,9 @@
           </div>
         </div>
       </div>
- 
     </div>
 
-
-
-    <b-modal id="modal_abonar" false size="lg"  :title="'Abonar F.S.T'+' '+form.consecutivo" hide-footer>
-       <b-card no-body v-if="tecnico.length>0">
-        <b-row no-gutters class="align-items-center">
-          <b-col md="4">
-            <b-card-img :src="tecnico[0].imagen" class="rounded-0"></b-card-img>
-          </b-col>
-          <b-col md="8">
-            <b-card-body :title="'Técnico:'+tecnico[0].nombre+''+ tecnico[0].apellido">
-              <b-card-text style="margin:0">Tipo : {{tecnico[0].tipo_tecnico}}</b-card-text>
-              <b-card-text style="margin:0">Codigo : {{tecnico[0].codigo}}</b-card-text>
-              <b-card-text style="margin:0">Dirección : {{tecnico[0].direccion}}</b-card-text>
-              <b-card-text style="margin:0">Teléfono : {{tecnico[0].telefono}}</b-card-text>
-              <b-card-text style="margin:0">Email : {{tecnico[0].email}}</b-card-text>
-              <p class="card-text">
-              </p>
-            </b-card-body>
-          </b-col>
-        </b-row>
-      </b-card>
-
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Pago</th>
-              <th>Modo</th>
-              <th>Abono</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-             <tr v-for="abonos in abonos" :key="abonos.id">
-           
-              <th>{{abonos.valor_abono | moneda}}</th>
-              <th>{{abonos.tipo}}</th>
-              <th><a :href="abonos.archivo_abono" download target="_blank">Archivo</a></th>
-              <th>           
-                <a href="javascript:void(0);" @click="eliminarAbono(abonos.id,abonos.formato_id)"  class="text-danger" v-b-tooltip.hover title="Borrar abono">
-                  <i class="mdi mdi-trash-can font-size-18"></i>
-                </a>
-            </th>
-            </tr>
-            <tr>
-              <th>Total: {{form.valor | moneda}} </th>
-              <th>Abonado:{{total_abonado | moneda}} </th>
-              <th colspan="2">Restante: {{form.valor-total_abonado | moneda}} </th>
-            </tr>
-          </tbody>
-        </table>
-
-        <div v-if="form.valor<=total_abonado">
-          <b-card bg-variant="success" class="text-white-50">
-            <h5 class="mt-0  text-white">
-              <i class="mdi mdi-check-all mr-3"></i> Abonos completados!
-            </h5>
-          </b-card>
-        </div>
-        <div v-else>
-          <ValidationObserver ref="form">      
-              <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Valor</label>
-                    <ValidationProvider name="valor" rules="required" v-slot="{ errors }">
-                          <input v-model="abono.valor_abono"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Modo</label>
-                    <ValidationProvider name="modo" rules="required" v-slot="{ errors }">
-                          <select v-model="abono.tipo"  name="modo" class="form-control" :disabled="ver" >
-                              <option value="Transferencia">Transferencia</option>
-                              <option value="Giro">Giro</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col> 
-              </b-row>
-              <hr>          
-              <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Descripción</label>
-                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                            <b-form-textarea
-                              id="descripcion"
-                              v-model="abono.descripcion_abono"
-                              placeholder="Enter something..."
-                              rows="3"
-                              max-rows="6"
-                              :disabled="ver"
-                            ></b-form-textarea>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-              </b-row>
-              <b-row class="mb-2">
-               <b-col>
-                   <label>Evidencias</label>
-                   <div id="preview mb-2">
-                     <img v-if="url" width="100%" style="float:center!importan" class="rounded"  :src="url" />
-                   </div>
-                    <b-form-file
-                        v-model="file"
-                        placeholder="Seleccione su image..."
-                        drop-placeholder="Drop file here..."
-                        @change="onFileChange"
-                    ></b-form-file>
-               </b-col>
-            </b-row>  
-        </ValidationObserver>
-        <button class="btn btn-block float-right btn-success" @click="abonar()" v-if="!ver && !editMode">Abonar</button>
-        </div>
-
-
-
-     </b-modal>
-
-
-
-
-    <b-modal id="modal_cancelar" false size="lg"  title="Rechazar F.S.T" hide-footer>
-          <ValidationObserver ref="form">      
-              <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Motivo de rechazo</label>
-                    <ValidationProvider name="observacion" rules="required" v-slot="{ errors }">
-                            <b-form-textarea
-                              id="descripcion"
-                              v-model="form.observacion"
-                              placeholder="Enter something..."
-                              rows="3"
-                              max-rows="6"
-                              :disabled="ver"
-                            ></b-form-textarea>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-              </b-row>
-        </ValidationObserver>
-        <button class="btn btn-block float-right btn-danger" @click="cancelFormato()" v-if="!ver && !editMode">Rechazar</button>
-     </b-modal>
+ 
 
 
 
@@ -288,107 +102,21 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="F.S.T" hide-footer>
+
+    <b-modal id="modal_gestion" false size="lg"  title="Gestión de mantenimiento" hide-footer>
           <ValidationObserver ref="form">
+            
               <b-row>
                 <b-col>
                   <div class="form-group">
-                    <label>Código Tecnico</label>
-                    <ValidationProvider name="codigo tecnico" rules="required" v-slot="{ errors }">
-                          <input v-model="form.codigo_tecnico"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <label>Asunto</label>
+                    <ValidationProvider name="asunto" rules="required" v-slot="{ errors }">
+                          <input v-model="form.asunto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
                 </b-col>
-                <b-col class="p-2" >
-                  <div class="form-group" style="margin-top:20px">
-                    <button class="btn btn-info btn-block" @click="buscarTecnico()" :disabled="ver"> Buscar Tecnico</button>
-                   </div>
-                </b-col>
-              </b-row>
-                 <b-card no-body v-if="tecnico.length>0">
-                  <b-row no-gutters class="align-items-center">
-                    <b-col md="4">
-                      <b-card-img :src="tecnico[0].imagen" class="rounded-0"></b-card-img>
-                    </b-col>
-                    <b-col md="8">
-                      <b-card-body :title="'Técnico:'+tecnico[0].nombre+''+ tecnico[0].apellido">
-                        <b-card-text style="margin:0">Tipo : {{tecnico[0].tipo_tecnico}}</b-card-text>
-                        <b-card-text style="margin:0">Codigo : {{tecnico[0].codigo}}</b-card-text>
-                        <b-card-text style="margin:0">Dirección : {{tecnico[0].direccion}}</b-card-text>
-                        <b-card-text style="margin:0">Teléfono : {{tecnico[0].telefono}}</b-card-text>
-                        <b-card-text style="margin:0">Email : {{tecnico[0].email}}</b-card-text>
-                        <p class="card-text">
-                        </p>
-                      </b-card-body>
-                    </b-col>
-                  </b-row>
-                </b-card>
-            <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Consecutivo</label>
-                    <ValidationProvider name="consecutivo" rules="required" v-slot="{ errors }">
-                          <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Entidad</label>
-                    <ValidationProvider name="Entidades" rules="required" v-slot="{ errors }">
-                          <select v-model="form.entidad_id" @change="listarimputaciones()"  name="entidad_id" class="form-control "  :disabled="ver">
-                              <option></option>
-                              <option :value="entidades.id" v-for="entidades in entidades" :key="entidades.id">{{entidades.empresa}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-
-            </b-row> 
-            <hr>  
-            <b-row>
-              <b-col>
-                <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
-                  <label>Codigos de imputacion </label>
-                    <v-select @click="setImputacion()" v-model="imputacion_id" :options="imputaciones" :reduce="imputaciones => imputaciones.id" label="nombre" :disabled="ver"></v-select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-col>  
-              <b-col>
-                <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar()"  name="button" v-if="!ver && imputacion_id" >Agregar Item</button>
-              </b-col>
-            </b-row> 
-              <b-row>    
-                <table id="example2" class="table table-striped"  v-show="form.items.length>0">
-                   <thead>
-                     <tr>
-                       <th>Codigo</th>
-                       <th>Nombre</th>
-                       <th>Descripción</th>
-                        <th>Precio</th>
-                       <th v-if="!ver"></th>
-                     </tr>
-                   </thead>
-                    <tbody>
-                     <tr v-for="(items , index) in form.items" :key="items.id">
-                       <td>{{items.codigo}}</td>
-                       <td>{{items.nombre}}</td>
-                        <td><input :id="index+'descripcion'" type="text" v-model="items.descripcion"   class="form-control form-control-sm"   :disabled="ver"></td>
-                        <td><input :id="index+'precio'" type="text" v-model="items.precio" @change="sumarItems()"  class="form-control form-control-sm"  :disabled="ver"></td>
-                       <td v-if="!ver">
-                        <a href="javascript:void(0);" @click="eliminarItem(index)" class="text-danger" v-b-tooltip.hover title="Borrar">
-                            <i class="mdi mdi-trash-can font-size-18"></i>
-                        </a>
-                      </td>
-                     </tr>
-                    </tbody>
-                  </table>
-                </b-row>    
+              </b-row>  
               <b-row>
                 <b-col>
                     <div class="form-group">
@@ -396,7 +124,7 @@
                     <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                             <b-form-textarea
                               id="descripcion"
-                              v-model="form.descripcion_formato"
+                              v-model="form.descripcion"
                               placeholder="Enter something..."
                               rows="3"
                               max-rows="6"
@@ -406,32 +134,150 @@
                     </ValidationProvider>
                     </div>
                 </b-col>
-              </b-row>
-              <b-row> 
+              </b-row>       
+              <b-row>
                 <b-col>
-                  <div class="form-group">
-                    <label>Valor</label>
-                    <ValidationProvider name="Valor" rules="required" v-slot="{ errors }">
-                          <input v-model="form.valor"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <label>Fotos Antes </label>
+                     <ValidationProvider name="fotos de antes" rules="required" v-slot="{ errors }">
+                      <b-form-file multiple
+                          v-model="gallery_antes"
+                          placeholder="Seleccione su image..."
+                          drop-placeholder="Drop file here..."
+                      ></b-form-file>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                    <label>Fotos Durante</label>
+                    <ValidationProvider name="fotos durante" rules="required" v-slot="{ errors }">
+                      <b-form-file multiple
+                          v-model="gallery_durante"
+                          placeholder="Seleccione su image..."
+                          drop-placeholder="Drop file here..."
+                      ></b-form-file>
+                       <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                </b-col>
+              </b-row>
+
+            <b-row>
+                <b-col>
+                    <label>Fotos despues</label>
+                      <ValidationProvider name="fotos durante" rules="required" v-slot="{ errors }">
+                      <b-form-file multiple
+                          v-model="gallery_despues"
+                          placeholder="Seleccione su image..."
+                          drop-placeholder="Drop file here..."
+                      ></b-form-file>
+                      <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                </b-col>
+              </b-row>  
+              <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Observaciones</label>
+                    <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="descripcion"
+                              v-model="form.observaciones"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                              :disabled="ver"
+                            ></b-form-textarea>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
-                  </div>
+                    </div>
                 </b-col>
-              <b-col>
-                <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
-                  <label>Usuario Autorizador</label>
-                    <v-select v-model="form.autorizador_id" :options="users" :reduce="users => users.id" label="email" :disabled="ver"></v-select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-col>
-            </b-row>    
+              </b-row>    
         </ValidationObserver>
-        <button v-b-tooltip.hover title="Agregar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear FST</button>
-        <button v-b-tooltip.hover title="Editar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar FST</button>
+        <div class="row" v-if="ver">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Gestion del dia:</h4>
+                <p
+                  class="card-title-desc"
+                >Asunto:</p>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_antes"
+                        :key="index"
+                        @click="() => showImg(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px"/>
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible"
+                      :index="index"
+                      :imgs="evidencias_antes"
+                      @hide="visible = false"
+                    ></vue-easy-lightbox>
+                  </div>
+                  <div class="col-12">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_durante"
+                        :key="index"
+                        @click="() => showImg2(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px" />
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible2"
+                      :index="index2"
+                      :imgs="evidencias_durante"
+                      @hide="visible2 = false"
+                    ></vue-easy-lightbox>
+                  </div>
+                  <div class="col-12">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_despues"
+                        :key="index"
+                        @click="() => showImg3(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px" />
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible3"
+                      :index="index3"
+                      :imgs="evidencias_despues"
+                      @hide="visible3= false"
+                    ></vue-easy-lightbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end col -->
+        </div>
+        <pre>{{consecutivo}}</pre>
+        <!-- end row -->
+        <button v-b-tooltip.hover title="Agregar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Agregar</button>
+        <button v-b-tooltip.hover title="Editar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
   </div>
 </template>
 <script>
+import VueEasyLightbox from "vue-easy-lightbox";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import vSelect from "vue-select";
@@ -443,10 +289,18 @@ export default {
     components: {
     ValidationProvider,
     ValidationObserver,
-    vSelect
+    vSelect,
+    VueEasyLightbox
   },
   data() {
     return {
+    imgs: "", // Img Url , string or Array of string
+      visible: false,
+      index: 0, // default: 0
+       visible2: false,
+      index2: 0, // default: 0
+      visible3: false,
+      index3: 0, // default: 0
       title: "Administracion",
       items: [
         {
@@ -462,6 +316,10 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      formato:[],
+      gallery_antes:null,
+      gallery_durante:null,
+      gallery_despues:null,
       ver:false,
       url:"",
       url_firma:"",
@@ -488,8 +346,11 @@ export default {
       users: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["VALOR","ESTADO","LEGALIZACION/ABONOS","actions"],
+      fields: ["ASUNTO","ESTADO","LEGALIZACION/ABONOS","actions"],
       formatos: [], 
+      evidencias_antes: [], 
+      evidencias_durante: [], 
+      evidencias_despues: [], 
       cajero: [],
       tecnico: [],
       editMode:false,
@@ -498,6 +359,7 @@ export default {
           'items':[],
           'id_entidad':'',
           'valor':'',
+          'id_programacion':'',
       },
       abono:{
           'id':'',
@@ -531,7 +393,48 @@ export default {
         }
   },
   methods: {
-
+    showSingle() {
+      this.imgs = require("@/assets/images/small/img-2.jpg");
+      this.show();
+    },
+    show() {
+      this.visible = true;
+    },
+    handleHide() {
+      this.visible = false;
+    },
+    showImg(index) {
+      this.index = index;
+      this.visible = true;
+    },
+    showSingle2() {
+      this.imgs2 = require("@/assets/images/small/img-2.jpg");
+      this.show2();
+    },
+    show2() {
+      this.visible2 = true;
+    },
+    handleHide2() {
+      this.visible2 = false;
+    },
+    showImg2(index) {
+      this.index2 = index;
+      this.visible2 = true;
+    },
+    showSingle3() {
+      this.imgs3 = require("@/assets/images/small/img-2.jpg");
+      this.show3();
+    },
+    show3() {
+      this.visible3 = true;
+    },
+    handleHide3() {
+      this.visible3 = false;
+    },
+    showImg3(index) {
+      this.index3 = index;
+      this.visible3 = true;
+    },
     cargar(){
          for (let index = 0; index < this.imputaciones.length; index++) {
             if( this.imputacion_id===this.imputaciones[index].id){
@@ -577,7 +480,7 @@ export default {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
                 this.$swal({
-                  title: 'Desea enviar esta solicitud?',
+                  title: 'Desea cargar esta gestion?',
                   icon: 'question',
                   iconHtml: '',
                   confirmButtonText: 'Si',
@@ -586,7 +489,7 @@ export default {
                   showCloseButton: true
                 }).then((result) => {
                   if (result.isConfirmed) {
-                     this.agregarFormato();
+                     this.agregarGestion();
                   }
                 })
              
@@ -669,7 +572,7 @@ export default {
                     '',
                     'success');
                this.listarAbonos(this.abono.formato_id);
-               this.listarFormato();
+               this.listarGestion();
                this.file=null;
                this.url="";
                this.abono.valor_abono="";
@@ -681,9 +584,27 @@ export default {
               this.$swal(e.response.data);
           });
       },
-   async agregarFormato(){
+   async agregarGestion(){
      let data = new FormData();
       var formulario = this.form;
+    if (this.gallery_antes) {
+        for( var i = 0; i < this.gallery_antes.length; i++ ){         
+          data.append('gallery_antes',this.gallery_antes[i]);
+        } 
+      }
+    if (this.gallery_durante) {
+        for( var i = 0; i < this.gallery_durante.length; i++ ){         
+          data.append('gallery_durante',this.gallery_durante[i]);
+        } 
+      }
+    if (this.gallery_despues) {
+        for( var i = 0; i < this.gallery_despues.length; i++ ){         
+          data.append('gallery_despues',this.gallery_despues[i]);
+        } 
+      }
+      if (this.file) {
+      data.append('filename',this.file);
+     }
         for ( var key in formulario) {
             if (key=='items') {
                 data.append(key,JSON.stringify(formulario[key]));
@@ -691,7 +612,7 @@ export default {
                 data.append(key,formulario[key]);
             }
         }
-       await this.axios.post('api/formatos', data, {
+       await this.axios.post('api/gestion', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -700,7 +621,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarFormato();
+               this.listarGestion();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -735,7 +656,7 @@ export default {
         await this.axios.put('api/formatos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarFormato();
+               this.listarGestion();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -756,7 +677,7 @@ export default {
 
             if (response.status==200) {
                this.$swal('Rechazado con exito','','success');
-               this.listarFormato();
+               this.listarGestion();
                this.$root.$emit("bv::hide::modal", "modal_cancelar", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -778,7 +699,7 @@ export default {
 
             if (response.status==200) {
                this.$swal('Rechazado con exito','','success');
-               this.listarFormato();
+               this.listarGestion();
                this.$root.$emit("bv::hide::modal", "modal_cancelar", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -789,48 +710,6 @@ export default {
               console.log(e);
                 this.$swal('ocurrio un problema','','warning');
          });
-      },
-     async buscarCajero(){
-        let data = new FormData();
-        data.append('codigo',this.form.codigo_cajero);
-        await this.axios.post('/api/cajeros/ath/find',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-
-                this.cajero=response.data;
-                if (this.cajero.length>0) {
-                  this.form.id_cajero=this.cajero[0].id;
-                }else{
-                  this.$swal('No existe este cajero','','warning');
-                }
-                }
-              }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
-          });
-      }, 
-      async buscarTecnico(){
-        let data = new FormData();
-        data.append('codigo',this.form.codigo_tecnico);
-        await this.axios.post('/api/user/tecnico',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                console.log(response);
-                this.tecnico=response.data;
-                if (this.tecnico.length>0) {
-                  this.form.tecnico_id=this.tecnico[0].id;
-                }else{
-                  this.$swal('No existe tecnico con este codigo','','warning');
-                }
-                }
-              }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
-          });
       },
      async eliminarFormatos(id){
         let data = new FormData();
@@ -845,7 +724,7 @@ export default {
                       '',
                       'success'
                 );
-                this.listarFormato();
+                this.listarGestion();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
@@ -902,33 +781,18 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
-       this.form.consecutivo="ATH-"+this.consecutivo.id;
-       this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
-       this.form.entidad_id=this.consecutivo.cajero_ath.entidad.id;
-       this.buscarTecnico();
+       this.form.id_programacion=this.consecutivo.id;
+       this.form.asunto=this.consecutivo.titulo;
        this.form.items=[];
       },
       setear(id) {
         for (let index = 0; index < this.formatos.length; index++) {
           if (this.formatos[index].id===id) {
-            this.form.pago_terceros=this.formatos[index].pago_terceros;
-            this.form.consecutivo=this.formatos[index].consecutivo;
-            this.form.otros=this.formatos[index].otros;
-            this.form.observacion=this.formatos[index].observacion;
-            this.form.descripcion_formato=this.formatos[index].descripcion_formato;
-            this.form.items=JSON.parse(this.formatos[index].items);
-            this.form.items=JSON.parse(this.form.items);
-            this.form.valor=this.formatos[index].valor;
-            this.form.tecnico_id=this.formatos[index].tecnico_id;
-            this.form.autorizador_id=this.formatos[index].autorizador_id;
-            this.form.entidad_id=this.formatos[index].entidad_id;
-            this.form.entidad_id=this.formatos[index].entidad_id;
-            this.form.descripcion=this.formatos[index].descripcion;
-            this.form.codigo_tecnico=this.formatos[index].Tecnico.codigo;
-            this.form.tercero_id=this.formatos[index].tercero_id;
-            this.form.id=this.formatos[index].id;
-            this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-            this.buscarTecnico();
+            this.formato=this.formatos[index];
+            this.evidencias_antes=this.formatos[index].evidencias_antes;
+            this.evidencias_durante=this.formatos[index].evidencias_durante;
+            this.evidencias_despues=this.formatos[index].evidencias_despues;
+            this.$root.$emit("bv::show::modal", "modal_gestion", "#btnShow");
             return;
           }
         }
@@ -937,65 +801,20 @@ export default {
         this.form.id=id;
         this.$root.$emit("bv::show::modal", "modal_cancelar", "#btnShow");
       },
-      abonarModal(id){
-        for (let index = 0; index < this.formatos.length; index++) {
-          if (this.formatos[index].id===id) {
-            this.form.pago_terceros=this.formatos[index].pago_terceros;
-            this.form.consecutivo=this.formatos[index].consecutivo;
-            this.form.otros=this.formatos[index].otros;
-            this.form.observacion=this.formatos[index].observacion;
-            this.form.descripcion_formato=this.formatos[index].descripcion_formato;
-            this.form.codigo_imputacion=this.formatos[index].codigo_imputacion;
-            this.form.descripcion_codigo=this.formatos[index].descripcion_codigo;
-            this.form.valor=this.formatos[index].valor;
-            this.form.tecnico_id=this.formatos[index].tecnico_id;
-            this.form.autorizador_id=this.formatos[index].autorizador_id;
-            this.form.entidad_id=this.formatos[index].entidad_id;
-            this.form.entidad_id=this.formatos[index].entidad_id;
-            this.form.descripcion=this.formatos[index].descripcion;
-            this.form.codigo_tecnico=this.formatos[index].Tecnico.codigo;
-            this.form.tercero_id=this.formatos[index].tercero_id;
-            this.form.id=this.formatos[index].id;
-            this.abono.formato_id=this.formatos[index].id;
-            this.abono.tecnico_id=this.formatos[index].tecnico_id;
-            this.$root.$emit("bv::show::modal", "modal_abonar", "#btnShow");
-            this.buscarTecnico();
-            this.listarAbonos(this.form.id);
-            return;
-          }
-        }        
-      },
-    async  listarAbonos(index){
+      async  listarGestion(){
+        console.log("gestina");
       let data = new FormData();
-      data.append('id',index);
-      await  this.axios.post('api/abonos/formato',data)
+      data.append('id',this.consecutivo.id);
+      await  this.axios.post('api/gestion/find',data)
         .then((response) => {
-          this.abonos = response.data;
-          this.total_abonado=0;
-          for (let index = 0; index < this.abonos.length; index++) {
-            this.total_abonado=parseFloat(this.abonos[index].valor_abono)+parseFloat(this.total_abonado);
-          }
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
-      async  listarFormato(){
-      let data = new FormData();
-      let id='ATH-'+this.consecutivo.id;
-      console.log(id);
-      data.append('consecutivo',id);
-      await  this.axios.post('api/formatos/find',data)
-        .then((response) => {
-            this.formatos = response.data.rows;
-            this.form.valor_total=0;this.form.abonos_total=0;this.form.abonados=0;
-          for (let index = 0; index < this.formatos.length; index++) {
-            this.form.valor_total= parseFloat(this.formatos[index].valor)+this.form.valor_total;
-            for (let indice = 0; indice < this.formatos[index].abonos.length; indice++) {
-              this.form.abonados= parseFloat(this.formatos[index].abonos[indice].valor_abono)+this.form.abonados;
-              this.form.abonos_total=this.form.abonos_total+1;
+            this.formatos = response.data;
+            for (let index = 0; index <this.formatos.length; index++) {
+
+              this.formatos[index].evidencias_antes=JSON.parse(this.formatos[index].evidencias_antes);
+              this.formatos[index].evidencias_durante=JSON.parse(this.formatos[index].evidencias_durante);
+              this.formatos[index].evidencias_despues=JSON.parse(this.formatos[index].evidencias_despues);
+              
             }
-          }
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -1066,23 +885,16 @@ export default {
           this.form.tecnico_id=this.consecutivo.tecnico_id;
           this.form.entidad_id=1;
           this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
-          this.listarimputaciones();
-          this.buscarTecnico();
         }
 
       }
   },
   mounted(){
     this.loadConsectivo();
-    this.listarFormato();
+    this.listarGestion();
   }, 
     created(){
-        this.session();
-        
-        this.listarentidades();
-        this.listarUsers();
-     
-        
+        this.session();       
       },
     computed: {
     rows() {

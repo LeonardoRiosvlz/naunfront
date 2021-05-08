@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Programación  </b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Regirstar llamada  </b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -68,7 +68,7 @@
                   {{data.item.descripcion}}
                 </template>
                 <template v-slot:cell(ESTADO)="data">
-                  {{data.item.status}}
+                  <span class="badge badge-info">{{data.item.status}}</span>
                 </template>
                 <template v-slot:cell(actions)="data">
 
@@ -283,9 +283,9 @@
                </b-col>
               </b-row>          
         </ValidationObserver>
-        <pre>{{form}}</pre>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear Programación</button>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar Programación</button>
+
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Registrar llamada</button>
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar llamada</button>
      </b-modal>
 
   </Layout>
@@ -316,15 +316,12 @@ export default {
   data() {
     return {
       servicios:servicios,
-      title: "Administracion",
+      title: "Procesos",
       items: [
         {
-          text: "Procesos"
+          text: "LLamadas"
         },
-        {
-          text: "Programacion",
-          active: true
-        },
+
         {
           text: "ATH",
           active: true
@@ -608,10 +605,16 @@ export default {
             this.form.fecha_creacion=moment(this.programas[index].fecha_creacion).format("YYYY-MM-DDTHH:MM");
             this.form.requiere_cita=this.programas[index].requiere_cita;
             this.form.descripcion=this.programas[index].descripcion;
+            this.form.titulo=this.programas[index].titulo;
+            this.form.categoria=this.programas[index].categoria;
+            this.loadSubcategorias();
+            this.form.subcategoria=this.programas[index].subcategoria;
+            this.form.prioridad=this.programas[index].prioridad;
+            this.form.margen=this.programas[index].margen;
             this.form.id=this.programas[index].id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             this.buscarCajero();
-            this.buscarTecnico();
+
             return;
           }
         }

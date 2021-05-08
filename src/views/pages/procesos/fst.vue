@@ -955,7 +955,7 @@ export default {
 
       loadConsectivo(){
         if (localStorage.getItem('consecutivo')) {
-        this.$bvModal.show('modal')
+       // this.$bvModal.show('modal')
         this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
           console.log(this.consecutivo);
           this.form.consecutivo=this.consecutivo.consecutivo;
