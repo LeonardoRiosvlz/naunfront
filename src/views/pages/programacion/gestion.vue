@@ -1,7 +1,7 @@
 <template>
   <div  >
     <div class="clearfix my-4">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal_gestion');editMode=false;resete();">Gestionar </b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal_gestion');editMode=false;resete();ver=false;">Gestionar </b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -54,28 +54,15 @@
                  <template v-slot:cell(Legalizacion)="data">
                   {{data.item.descripcion}}
                 </template>
-                <template v-slot:cell(ESTADO)="data">
-                   
+                <template v-slot:cell(status)="data">
                   <b-badge variant="warning" v-if="data.item.status==='Pendiente'">{{data.item.status}}</b-badge>
-                  <b-badge variant="success" v-if="data.item.status==='Aprobado'">{{data.item.status}}</b-badge>
-                  <b-badge variant="danger" v-if="data.item.status==='Rechazado'">{{data.item.status}}</b-badge>
-                </template>
-                <template v-slot:cell()="data">
-                   <button type="button" class="btn btn-success btn-sm rounded-pill" @click="abonarModal(data.item.id,data.item.tecnico_id)" :disabled="data.item.status==='Pendiente'||data.item.status==='Rechazado'" ><i class="ri-hand-heart-fill"></i>  Abonar</button>
+                  <b-badge variant="success" v-if="data.item.status==='Aceptada'">{{data.item.status}}</b-badge>
+                  <b-badge variant="danger" v-if="data.item.status==='Devuelta'">{{data.item.status}}</b-badge>
                 </template>
                 <template v-slot:cell(actions)="data">
-
-                <b-dropdown size="sm" class="">
-                  <template v-slot:button-content>
-                    Action
-                    <i class="mdi mdi-chevron-down"></i>
-                  </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarFormato(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCancelado(data.item.id)"> Rechazar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;aprobFormato(data.item.id)"> Aprobado </b-dropdown-item-button>
-                </b-dropdown>
+                  <button v-b-tooltip.hover title="Ver "  type="button" class="btn btn-success btn-sm rounded-pill mr-1" @click="editMode=false;ver=true;setear(data.item.id)"  ><i class="ri-eye-line"></i>  </button>
+                  <button v-b-tooltip.hover title="Editar " v-if="data.item.status==='Pendiente' || data.item.status==='Devuelta'"  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setear(data.item.id)"><i class="ri-edit-2-fill"></i>  </button>
+                  <button v-b-tooltip.hover title="Eliminar " v-if="data.item.status==='Pendiente' || data.item.status==='Devuelta'"  type="button" class="btn btn-danger btn-sm rounded-pill mr-1" @click="eliminarFormato(data.item.id)"><i class="ri-delete-bin-line"></i>  </button>
                 </template>
               </b-table>
             </div>
@@ -98,14 +85,53 @@
 
 
 
+    <b-modal id="modal_aprobar" false size="lg"  title="Respuesta a gestión" hide-footer>
+          <ValidationObserver ref="form"> 
+             <b-row>  
+                <b-col>
+                  <div class="form-group">
+                    <label v-if="form.requiere_cita==='Si'">Fecha de cita </label><label v-else>Fecha limite </label>
+                    <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
+                      <b-form-input id="date-time" v-model="form.vencimiento_tecnico"  type="datetime-local"></b-form-input>
+                       <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+               
+              </b-row>
+              <b-row>
+
+                <b-col>
+                    <div class="form-group">
+                    <label>Observaciones</label>
+                    <ValidationProvider name="observaciones analista" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="descripcion"
+                              v-model="form.observaciones_analista"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                              
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+      
+        </ValidationObserver>
+        <button class="btn btn-block float-right btn-danger" v-if="form.observaciones_analista" @click="devolverGestionCuestion()">Enviar</button>
+     </b-modal>
+
+
 
 
 
 
 
     <b-modal id="modal_gestion" false size="lg"  title="Gestión de mantenimiento" hide-footer>
+           <div v-if="editMode||!editMode&&!ver"> 
           <ValidationObserver ref="form">
-            
               <b-row>
                 <b-col>
                   <div class="form-group">
@@ -138,42 +164,100 @@
               <b-row>
                 <b-col>
                     <label>Fotos Antes </label>
-                     <ValidationProvider name="fotos de antes" rules="required" v-slot="{ errors }">
+
                       <b-form-file multiple
                           v-model="gallery_antes"
                           placeholder="Seleccione su image..."
                           drop-placeholder="Drop file here..."
+                          ref="inputFile1"
                       ></b-form-file>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
                 </b-col>
+                <div class="col-12" v-if="editMode">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_antes"
+                        :key="index"
+                        @click="() => showImg(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px"/>
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible"
+                      :index="index"
+                      :imgs="evidencias_antes"
+                      @hide="visible = false"
+                    ></vue-easy-lightbox>
+                  </div>
               </b-row>
               <b-row>
                 <b-col>
                     <label>Fotos Durante</label>
-                    <ValidationProvider name="fotos durante" rules="required" v-slot="{ errors }">
+
                       <b-form-file multiple
                           v-model="gallery_durante"
                           placeholder="Seleccione su image..."
                           drop-placeholder="Drop file here..."
+                          ref="inputFile2"
                       ></b-form-file>
-                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
                 </b-col>
+                  <div class="col-12" v-if="editMode">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_durante"
+                        :key="index"
+                        @click="() => showImg2(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px" />
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible2"
+                      :index="index2"
+                      :imgs="evidencias_durante"
+                      @hide="visible2 = false"
+                    ></vue-easy-lightbox>
+                  </div>
               </b-row>
 
             <b-row>
                 <b-col>
                     <label>Fotos despues</label>
-                      <ValidationProvider name="fotos durante" rules="required" v-slot="{ errors }">
+
                       <b-form-file multiple
                           v-model="gallery_despues"
                           placeholder="Seleccione su image..."
                           drop-placeholder="Drop file here..."
+                          ref="inputFile3"
                       ></b-form-file>
-                      <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
+
                 </b-col>
+                  <div class="col-12" v-if="editMode">
+                    <div class="popup-gallery">
+                      <a
+                        class="float-left"
+                        v-for="(item, index) in evidencias_despues"
+                        :key="index"
+                        @click="() => showImg3(index)"
+                      >
+                        <div class="img-fluid">
+                          <img :src="`${item}`" alt width="200" style="margin:10px" />
+                        </div>
+                      </a>
+                    </div>
+                    <vue-easy-lightbox
+                      :visible="visible3"
+                      :index="index3"
+                      :imgs="evidencias_despues"
+                      @hide="visible3= false"
+                    ></vue-easy-lightbox>
+                  </div>
               </b-row>  
               <b-row>
                 <b-col>
@@ -194,14 +278,15 @@
                 </b-col>
               </b-row>    
         </ValidationObserver>
+        </div>
         <div class="row" v-if="ver">
           <div class="col-xl-12">
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Gestion del dia:</h4>
-                <p
-                  class="card-title-desc"
-                >Asunto:</p>
+                <h4 class="card-title">Gestión del día: {{form.asunto}}</h4>
+                <p class="card-title-desc">Descripción:{{form.descripcion}}</p>
+                <p class="card-title-desc">Onbseraciones:{{form.observaciones}}</p>
+                <h4 class="card-title">Fotos Antes</h4>
                 <div class="row">
                   <div class="col-12">
                     <div class="popup-gallery">
@@ -223,6 +308,7 @@
                       @hide="visible = false"
                     ></vue-easy-lightbox>
                   </div>
+                  <h4 class="card-title">Fotos Durante</h4>
                   <div class="col-12">
                     <div class="popup-gallery">
                       <a
@@ -243,6 +329,7 @@
                       @hide="visible2 = false"
                     ></vue-easy-lightbox>
                   </div>
+                  <h4 class="card-title">Fotos Despues</h4>
                   <div class="col-12">
                     <div class="popup-gallery">
                       <a
@@ -267,12 +354,21 @@
               </div>
             </div>
           </div>
+  
+  
+
           <!-- end col -->
+
+                  <button class="btn btn-success btn-block" @click="devolver('Aceptada')"><i class="ri-check-line align-middle mr-2"></i> Aprobar</button>
+
+                  <button class="btn btn-danger btn-block" @click="devolver('Devuelta')"><i class="ri-error-warning-line align-middle mr-2"></i> Devolver</button>
+
+        
+        
         </div>
-        <pre>{{consecutivo}}</pre>
         <!-- end row -->
-        <button v-b-tooltip.hover title="Agregar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Agregar</button>
-        <button v-b-tooltip.hover title="Editar la solicitud"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+        <button v-b-tooltip.hover title="Agregar "  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Agregar</button>
+        <button v-b-tooltip.hover title="Editar"  class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
   </div>
 </template>
@@ -282,6 +378,7 @@ import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+import moment from 'moment';
 /**
  * Transactions component
  */
@@ -346,7 +443,7 @@ export default {
       users: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["ASUNTO","ESTADO","LEGALIZACION/ABONOS","actions"],
+      fields: ["ASUNTO","status","actions"],
       formatos: [], 
       evidencias_antes: [], 
       evidencias_durante: [], 
@@ -359,6 +456,9 @@ export default {
           'items':[],
           'id_entidad':'',
           'valor':'',
+          'status':'',
+          'requiere_cita':'',
+          'vencimiento_tecnico':'',
           'id_programacion':'',
       },
       abono:{
@@ -435,13 +535,23 @@ export default {
       this.index3 = index;
       this.visible3 = true;
     },
+    devolver(index){
+      if (index==="Devuelta") {
+        this.form.status="Devuelta";
+        this.form.requiere_cita=this.consecutivo.requiere_cita;
+        this.form.vencimiento_tecnico=moment(this.consecutivo.vencimiento_tecnico).format("YYYY-MM-DDTHH:MM");
+        this.$root.$emit("bv::show::modal", "modal_aprobar", "#btnShow");
+      }else{
+        this.form.status="Aceptada"
+        this.devolverGestionCuestion();
+      }
+
+    },
     cargar(){
          for (let index = 0; index < this.imputaciones.length; index++) {
             if( this.imputacion_id===this.imputaciones[index].id){
-              console.log(this.imputacion_id);
-              console.log(this.imputaciones[index].id);
               this.form.items.push({
-               nombre:this.imputaciones[index].nombre,
+               nombre:this.imputaciones.nombre,
                codigo:this.imputaciones[index].codigo,
                descripcion:"",
                precio:"",
@@ -453,11 +563,10 @@ export default {
        this.form.items.splice(index, 1);  
     },
     sumarItems(){
-      console.log("hey");
+
       this.form.valor=0;
       for (let index = 0; index < this.form.items.length; index++) {
         this.form.valor=this.form.valor+parseFloat(this.form.items[index].precio)
-        console.log(this.form.valor);
       }
     },
     onFiltered(filteredItems) {
@@ -503,9 +612,9 @@ export default {
         }});
       }
     },
-      abonar(id){
+      gestionar(id){
         this.$swal({
-          title: 'Desea agregar este abono?',
+          title: 'Desea agregar esta gestion?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -514,13 +623,13 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.subirAbono(id);
+            this.subirGestion(id);
           }
         })
       },
-      eliminarAbono(id,formato){
+      eliminarGestion(id){
         this.$swal({
-          title: 'Desea eliminar este abono?',
+          title: 'Desea eliminar este registro?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -529,31 +638,75 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.deleteAbono(id,formato);
+            this.deleteGestion(id);
           }
         })
       },
-    async deleteAbono(id,formato){
+      devolverGestionCuestion(){
+        this.$swal({
+          title: 'Desea notificar al técnico sobre el estado de esta gestión?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.responderGestion();
+          }
+        })
+      },
+    async deleteGestion(id,formato){
      let data = new FormData();
       data.append('id',id);
  
-       await this.axios.post('api/abonos/delete', data, {
+       await this.axios.post('api/gestion/delete', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
             if (response.status==200) {
                this.$swal(
-                   'Agregado exito!',
+                   'Eliminado con exito!',
                     '',
                     'success');
-               this.listarAbonos(formato);
+               this.listarGestion(formato);
                ///limpiar el formulario
               }
             }).catch(e => {
               this.$swal(e.response.data);
           });
       },
-    async subirAbono(){
+   async responderGestion(){
+     let data = new FormData();
+      var formulario = this.form;
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
+        }
+ 
+       await this.axios.post('api/gestion/respuesta', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'respondido con exito!',
+                    '',
+                    'success');
+               this.listarGestion();
+               this.$root.$emit("bv::hide::modal", "modal_aprobar", "#btnShow");
+               this.$root.$emit("bv::hide::modal", "modal_gestion", "#btnShow");
+               ///limpiar el formulario
+              }
+            }).catch(e => {
+              this.$swal(e.response.data);
+          });
+      },
+    async subirGestion(){
      let data = new FormData();
       var formulario = this.abono;
         for ( var key in formulario) {
@@ -602,9 +755,6 @@ export default {
           data.append('gallery_despues',this.gallery_despues[i]);
         } 
       }
-      if (this.file) {
-      data.append('filename',this.file);
-     }
         for ( var key in formulario) {
             if (key=='items') {
                 data.append(key,JSON.stringify(formulario[key]));
@@ -622,27 +772,20 @@ export default {
                     '',
                     'success');
                this.listarGestion();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               this.$root.$emit("bv::hide::modal", "modal_gestion", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
                    this.form[key]="";
                  }
+                 this.$refs.inputFile1.reset();
+                 this.$refs.inputFile2.reset();
+                 this.$refs.inputFile3.reset();
               }
             }).catch(e => {
-              console.log(e.response.data.menssage);
               this.$swal(e.response.data);
           });
       },
-    //async listarterceros(){
-    //  await  this.axios.get('api/terceros')
-    //    .then((response) => {
-    //      this.terceros = response.data.rows;
-    //      console.log("hola");
-    // //   })
-    //    .catch((e)=>{
-    //      console.log('error' + e);
-    //    })
-    //  },
+
     async editarFormato(){
      let data = new FormData();
        var formulario = this.form;
@@ -653,15 +796,33 @@ export default {
                 data.append(key,formulario[key]);
             }
         }
-        await this.axios.put('api/formatos', data).then(response => {
+        if (this.gallery_antes) {
+          for( var i = 0; i < this.gallery_antes.length; i++ ){         
+            data.append('gallery_antes',this.gallery_antes[i]);
+          } 
+        }
+        if (this.gallery_durante) {
+            for( var i = 0; i < this.gallery_durante.length; i++ ){         
+              data.append('gallery_durante',this.gallery_durante[i]);
+            } 
+        }
+        if (this.gallery_despues) {
+            for( var i = 0; i < this.gallery_despues.length; i++ ){         
+              data.append('gallery_despues',this.gallery_despues[i]);
+            } 
+        }
+        await this.axios.put('api/gestion', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarGestion();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               this.$root.$emit("bv::hide::modal", "modal_gestion", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
                    this.form[key]="";
                  }
+                 this.$refs.inputFile1.reset();
+                 this.$refs.inputFile2.reset();
+                 this.$refs.inputFile3.reset();
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
@@ -727,13 +888,13 @@ export default {
                 this.listarGestion();
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
+            
                 this.$swal(e.response.data);
           });
       }, 
       eliminarFormato(id){
         this.$swal({
-          title: 'Desea borrar esta solicitud?',
+          title: 'Desea borrar esta gestion?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -742,13 +903,13 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarFormatos(id);
+            this.eliminarGestion(id);
           }
         })
       },
-      cancelFormato(id){
+      cancelarGestion(id){
         this.$swal({
-          title: 'Desea rechazar esta solicitud?',
+          title: 'Desea rechazar esta gestion?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -763,7 +924,7 @@ export default {
       },
       aprobFormato(id){
         this.$swal({
-          title: 'Deseas aprobar esta solicitud?',
+          title: 'Deseas aprobar esta gestion?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -783,6 +944,8 @@ export default {
        }
        this.form.id_programacion=this.consecutivo.id;
        this.form.asunto=this.consecutivo.titulo;
+       this.form.coordinador_id=this.consecutivo.coordinador_id;
+       this.form.tecnico_id=this.consecutivo.tecnico_id;
        this.form.items=[];
       },
       setear(id) {
@@ -792,6 +955,11 @@ export default {
             this.evidencias_antes=this.formatos[index].evidencias_antes;
             this.evidencias_durante=this.formatos[index].evidencias_durante;
             this.evidencias_despues=this.formatos[index].evidencias_despues;
+            this.form.observaciones=this.formatos[index].observaciones;
+            this.form.asunto=this.formatos[index].asunto;
+            this.form.id=this.formatos[index].id;
+            this.form.id_programacion=this.formatos[index].id_programacion;
+            this.form.descripcion=this.formatos[index].descripcion;
             this.$root.$emit("bv::show::modal", "modal_gestion", "#btnShow");
             return;
           }
@@ -802,18 +970,15 @@ export default {
         this.$root.$emit("bv::show::modal", "modal_cancelar", "#btnShow");
       },
       async  listarGestion(){
-        console.log("gestina");
       let data = new FormData();
       data.append('id',this.consecutivo.id);
       await  this.axios.post('api/gestion/find',data)
         .then((response) => {
             this.formatos = response.data;
             for (let index = 0; index <this.formatos.length; index++) {
-
               this.formatos[index].evidencias_antes=JSON.parse(this.formatos[index].evidencias_antes);
               this.formatos[index].evidencias_durante=JSON.parse(this.formatos[index].evidencias_durante);
-              this.formatos[index].evidencias_despues=JSON.parse(this.formatos[index].evidencias_despues);
-              
+              this.formatos[index].evidencias_despues=JSON.parse(this.formatos[index].evidencias_despues); 
             }
         })
         .catch((e)=>{
@@ -842,7 +1007,7 @@ export default {
       },
       setEmail(){
         this.form.username=this.form.email;
-        console.log("holas");
+    
       },
       setRoles(){
         if (this.form.tipo==="Administrador") {

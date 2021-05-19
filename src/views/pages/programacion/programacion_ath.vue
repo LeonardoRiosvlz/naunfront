@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Regirstar llamada  </b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;">Regirstar llamada  </b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -62,13 +62,26 @@
                   {{data.item.cajero_ath.codigo}}
                 </template>
                 <template v-slot:cell(VENCIMIENTO)="data">
-                  {{ data.item.fecha_vencimiento | capitalize }}
+                  <div v-if="data.item.status==='Pendiete'||data.item.status==='Creada'||data.item.status==='En proceso'||data.item.status==='Reprogramada'||data.item.status==='Programada'">
+                      {{ data.item.fecha_vencimiento | capitalize }}
+                  </div>
+                  
                 </template>
                  <template v-slot:cell(DESCRIPCION)="data">
                   {{data.item.descripcion}}
                 </template>
                 <template v-slot:cell(ESTADO)="data">
-                  <span class="badge badge-info">{{data.item.status}}</span>
+                  <b-badge variant="success" v-if="data.item.status==='En proceso'">En proceso</b-badge>
+                  <b-badge variant="warning" v-if="data.item.status==='Pendiente'">Pendiente</b-badge>
+                  <b-badge variant="info" v-if="data.item.status==='Programada'">Programada</b-badge>
+                  <b-badge variant="info" v-if="data.item.status==='Reprogramada'">Reprogramada</b-badge>
+                  <b-badge variant="success" v-if="data.item.status==='Escalada'">Escalada</b-badge>
+                  <b-badge variant="danger" v-if="data.item.status==='Rechazada'">Rechazada</b-badge>
+                  <b-badge variant="primary" v-if="data.item.status==='Archivada'">Archivada</b-badge>
+                  <b-badge variant="success" v-if="data.item.status==='Cerrada'">Cerrada</b-badge>
+                  <b-badge variant="primary" v-if="data.item.status==='Creada'">Creada</b-badge>
+                  <b-badge variant="success" v-if="data.item.status==='Aceptada'">Aceptada por analista</b-badge>
+                   <b-badge variant="warnig" v-if="data.item.status==='Devuelta'">Devuelta</b-badge>
                 </template>
                 <template v-slot:cell(actions)="data">
 

@@ -10,17 +10,33 @@
                   <i class="mdi mdi-dots-vertical"></i>
                 </template>
                 <!-- item-->
-                <b-dropdown-item  @click="setear();form.status='Programada'" v-if="!programacion[0].Tecnico_ath">PROGRAMAR</b-dropdown-item>
+                <b-dropdown-item  @click="setear();form.status='Programada'" v-if="!programacion[0].Tecnico_ath">Programar</b-dropdown-item>
                 <!-- item-->
-                <b-dropdown-item  @click="setear();form.status='Reprogramada'" v-if="programacion[0].Tecnico_ath">REPROGRAMAR</b-dropdown-item>
+                <b-dropdown-item  @click="setear();form.status='Reprogramada'" v-if="programacion[0].Tecnico_ath">Reprogramar</b-dropdown-item>
                 <!-- item-->
-                <b-dropdown-item>Profit</b-dropdown-item>
+                <b-dropdown-item @click="escalar()">Escalar</b-dropdown-item>
+  
+                <b-dropdown-item @click="cerrar()">Cerrar</b-dropdown-item>
+
+                <b-dropdown-item @click="rechazar()">Rechazar</b-dropdown-item>
                 <!-- item-->
-                <b-dropdown-item>Action</b-dropdown-item>
+                <b-dropdown-item @click="archivar()">Archivar</b-dropdown-item>
               </b-dropdown>
 
               <h4 class="card-title mb-3"> CONSECUTIVO ATH-{{programacion[0].id}}</h4>
-                <b-card no-body >
+                  <b-badge variant="warning" v-if="programacion[0].status==='Pendiente'">Pendiente</b-badge>
+                  <b-badge variant="info" v-if="programacion[0].status==='Programada'">Programada</b-badge>
+                  <b-badge variant="info" v-if="programacion[0].status==='Reprogramada'">Reprogramada</b-badge>
+                  <b-badge variant="success" v-if="programacion[0].status==='Escalada'">Escalada</b-badge>
+                  <b-badge variant="danger" v-if="programacion[0].status==='Rechazada'">Rechazada</b-badge>
+                  <b-badge variant="primary" v-if="programacion[0].status==='Archivada'">Archivada</b-badge>
+                  <b-badge variant="primary" v-if="programacion[0].status==='Cerrada'">Cerrada</b-badge>
+                  <b-badge variant="success" v-if="programacion[0].status==='Aceptada'">Aceptada</b-badge>
+                  <b-badge variant="warning" v-if="programacion[0].status==='Devuelta'">Devuelta</b-badge>
+                  <b-badge variant="primary" v-if="programacion[0].status==='Creada'">Creada</b-badge>
+              <div class="row">
+                <div class="col-md-12 col-sm-6">
+                  <b-card no-body >
                   <b-row no-gutters class="align-items-center">
                     <b-col md="4" v-if="programacion[0].cajero_ath.entidad">
                       <b-card-img :src="programacion[0].cajero_ath.entidad.imagen" class="rounded-0"></b-card-img>
@@ -39,8 +55,9 @@
                     </b-col>
                   </b-row>
                 </b-card>
-              <div>
-                <div class="text-center">
+                </div>
+                <div class="col-md-12 col-sm-6">
+                                  <div class="text-center">
                  <h4 class="text-danger" v-if="!programacion[0].Tecnico_ath">Llamada no programada</h4> 
                 </div>
                 <b-card no-body v-if="programacion[0].Tecnico_ath">
@@ -62,10 +79,14 @@
                     </b-col>
                   </b-row>
                 </b-card>
+                </div>
+              </div>
+              <div>
               </div>
             </div>
           </div>
       </div>
+ 
       <div class="col-lg-8">
        <div class="card">
           <div class="card-body">
@@ -85,7 +106,7 @@
                   <span class="d-inline-block d-sm-none">
                     <i class="far fa-envelope"></i>
                   </span>
-                  <span class="d-none d-sm-inline-block">Gestion</span>
+                  <span class="d-none d-sm-inline-block">Gestión</span>
                 </template>
                   <Gestion />
               </b-tab>
@@ -94,9 +115,9 @@
                   <span class="d-inline-block d-sm-none">
                     <i class="fas fa-cog"></i>
                   </span>
-                  <span class="d-none d-sm-inline-block">Cierre</span>
+                  <span class="d-none d-sm-inline-block">Notas</span>
                 </template>
-         
+                 <Chat />
               </b-tab>
             </b-tabs>
           </div>
@@ -175,9 +196,115 @@
               </b-col>
               </b-row>         
         </ValidationObserver>
-        <pre>{{form}}</pre>
+   
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Programar</button>
      </b-modal>
+
+
+    <b-modal id="modal_escalar" false size="lg"  title="Escalado" hide-footer>
+          <ValidationObserver ref="form"> 
+              <b-row>
+
+                <b-col>
+                    <div class="form-group">
+                    <label>Motivo de escalado</label>
+                    <ValidationProvider name="motivo escalado" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="motivo_escalado"
+                              v-model="form.motivo_escalado"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                              
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+        </ValidationObserver>
+        <button class="btn btn-block float-right btn-danger" v-if="form.motivo_escalado" @click="enviarEscalado()">Enviar</button>
+     </b-modal>
+
+    <b-modal id="modal_cierre" false size="lg"  title="Cerrar" hide-footer>
+          <ValidationObserver ref="form"> 
+              <b-row>
+
+                <b-col>
+                    <div class="form-group">
+                    <label>Motivo de cierre</label>
+                    <ValidationProvider name="motivo cierre" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="motivo_cierre"
+                              v-model="form.motivo_cierre"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+        </ValidationObserver>
+        <button class="btn btn-block float-right btn-danger" v-if="form.motivo_cierre" @click="enviarCierre()">Enviar</button>
+     </b-modal>
+
+
+
+    <b-modal id="modal_archivar" false size="lg"  title="Archivar" hide-footer>
+          <ValidationObserver ref="form"> 
+              <b-row>
+
+                <b-col>
+                    <div class="form-group">
+                    <label>Motivo de archivado</label>
+                    <ValidationProvider name="motivo archivado" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="motivo_archivado"
+                              v-model="form.motivo_archivado"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                              
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+        </ValidationObserver>
+        <button class="btn btn-block float-right btn-danger" v-if="form.motivo_archivado" @click="enviarArchivado()">Enviar</button>
+     </b-modal>
+
+
+
+    <b-modal id="modal_rechazo" false size="lg"  title="Rechazar" hide-footer>
+          <ValidationObserver ref="form"> 
+              <b-row>
+
+                <b-col>
+                    <div class="form-group">
+                    <label>Motivo de rechazo</label>
+                    <ValidationProvider name="motivo escalado" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="motivo_rechazo"
+                              v-model="form.motivo_rechazo"
+                              placeholder="Enter something..."
+                              rows="3"
+                              max-rows="6"
+                              
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+        </ValidationObserver>
+        <button class="btn btn-block float-right btn-danger" v-if="form.motivo_rechazo" @click="enviarRechazo()">Enviar</button>
+     </b-modal>
+
+
 
 
 
@@ -194,6 +321,8 @@ import PageHeader from "@/components/page-header";
 import moment from 'moment';
 import Fst from './fst';
 import Gestion from './gestion';
+import Chat from './chat';
+
 /**
  * Dashboard component
  */
@@ -205,7 +334,8 @@ export default {
     ValidationProvider,
     ValidationObserver,
     Fst,
-    Gestion
+    Gestion,
+    Chat
   },
   data() {
    
@@ -262,6 +392,9 @@ export default {
           'tecnico_id':'',
           'codigo_Tecnico':'',
           'status':'',
+          'motivo_escalado':'',
+          'motivo_rechazo':'',
+          'motivo_archivado':'',
       }
     }
   },
@@ -390,12 +523,169 @@ export default {
           }
         }
       },
+      enviarEscalado(){
+        this.$swal({
+          title: 'Desea realizar este cambio?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.procesarEscalado();
+          }
+        })
+      },
+      
+      async procesarEscalado(){
+        let data = new FormData();
+        data.append('id',this.form.id);
+        data.append('motivo_escalado',this.form.motivo_escalado);
+        await this.axios.post('/api/programacion/ath/escalar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+              this.$swal(
+                    'Editado con exito!',
+                      '',
+                      'success'
+                );
+                  this.loadConsecutivo();
+                     this.$root.$emit("bv::hide::modal", "modal_escalar", "#btnShow");
+                }
+              }).catch(e => {
+
+                this.$swal(e.response.data);
+          });
+      },
+
+      enviarCierre(){
+        this.$swal({
+          title: 'Desea realizar este cambio?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.procesarCierre();
+          }
+        })
+      },
+      async procesarCierre(){
+        let data = new FormData();
+        data.append('id',this.form.id);
+        data.append('motivo_cierre',this.form.motivo_cierre);
+        await this.axios.post('/api/programacion/ath/cerrar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+              this.$swal(
+                    'Editado con exito!',
+                      '',
+                      'success'
+                );
+                  this.loadConsecutivo();
+                     this.$root.$emit("bv::hide::modal", "modal_cierre", "#btnShow");
+                }
+              }).catch(e => {
+
+                this.$swal(e.response.data);
+          });
+      },
+       enviarArchivado(){
+        this.$swal({
+          title: 'Desea realizar este cambio?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.procesarArchivado();
+          }
+        })
+      },
+      async procesarArchivado(){
+        let data = new FormData();
+        data.append('id',this.form.id);
+        data.append('motivo_archivado',this.form.motivo_archivado);
+        await this.axios.post('/api/programacion/ath/archivar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+              this.$swal(
+                    'Editado con exito!',
+                      '',
+                      'success'
+                );
+                  this.loadConsecutivo();
+                     this.$root.$emit("bv::hide::modal", "modal_archivar", "#btnShow");
+                }
+              }).catch(e => {
+
+                this.$swal(e.response.data);
+          });
+      },
+      enviarRechazo(){
+        this.$swal({
+          title: 'Desea rechazar esta programación?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.procesarRechazo();
+            
+          }
+        })
+      },
+      async procesarRechazo(){
+        let data = new FormData();
+        data.append('id',this.form.id);
+        data.append('coordinador_id',this.form.coordinador_id);
+        data.append('motivo_rechazo',this.form.motivo_rechazo);
+        await this.axios.post('/api/programacion/ath/rechazar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+              this.$swal(
+                    'Rechazado con exito!',
+                      '',
+                      'success'
+                );
+                  this.loadConsecutivo();
+                     this.$root.$emit("bv::hide::modal", "modal_rechazo", "#btnShow");
+                }
+              }).catch(e => {
+
+                this.$swal(e.response.data);
+          });
+      },
     async loadConsecutivo(){
+      this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
       let data = new FormData();
+      console.log(this.consecutivo.id);
        data.append('id',this.consecutivo.id);
        await this.axios.post('api/programacion/ath/find',data)
         .then((response) => {
           this.programacion = response.data;
+          console.log(this.programacion);
+          localStorage.setItem("consecutivo", JSON.stringify(this.programacion[0]));
+         this.consecutivo=this.programacion;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -404,8 +694,30 @@ export default {
       setear(){
         this.form.id=this.programacion[0].id;
         this.form.regional=this.programacion[0].cajero_ath.ciudad.regional_id;
+        this.form.vencimiento_tecnico=moment(this.consecutivo.fecha_vencimiento).format("YYYY-MM-DDTHH:MM");
         this.$root.$emit("bv::show::modal", "programar", "#btnShow");
         this.loadRegional();
+      },
+      escalar(){
+        this.form.id=this.programacion[0].id;
+        this.form.motivo_escalado="";
+        this.$root.$emit("bv::show::modal", "modal_escalar", "#btnShow");
+      },
+      cerrar(){
+        this.form.id=this.programacion[0].id;
+        this.form.motivo_escalado="";
+        this.$root.$emit("bv::show::modal", "modal_cierre", "#btnShow");
+      },
+      archivar(){
+        this.form.id=this.programacion[0].id;
+        this.form.motivo_archivado="";
+        this.$root.$emit("bv::show::modal", "modal_archivar", "#btnShow");
+      },
+      rechazar(){
+        this.form.id=this.programacion[0].id;
+        this.form.coordinador_id=this.programacion[0].coordinador_id;
+        this.form.motivo_rechazo="";
+        this.$root.$emit("bv::show::modal", "modal_rechazo", "#btnShow");
       },
       async loadRegional(){
       let data = new FormData();
@@ -436,7 +748,7 @@ export default {
   },
     created(){
         this.session();
-        this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
+        
         this.loadConsecutivo();
       },
      mounted() {

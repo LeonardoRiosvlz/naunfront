@@ -310,8 +310,8 @@ export default {
           }
         }
       },
-      listarCargos(){
-        this.axios.get('api/cargos')
+    async  listarCargos(){
+       await this.axios.get('api/cargos')
         .then((response) => {
           this.cargos = response.data.rows;
         })

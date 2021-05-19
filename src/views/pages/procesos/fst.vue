@@ -687,7 +687,7 @@ export default {
         await this.axios.post('api/formatos/status', data).then(response => {
 
             if (response.status==200) {
-               this.$swal('Rechazado con exito','','success');
+               this.$swal('Realizado con exito','','success');
                this.listarFormato();
                this.$root.$emit("bv::hide::modal", "modal_cancelar", "#btnShow");
                ///limpiar el formulario

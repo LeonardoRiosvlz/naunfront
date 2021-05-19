@@ -88,8 +88,8 @@ export const menuItems = [
             },
             {
                 id: 16,
-                label: 'Presupuesto',
-                link: ''
+                label: 'Legalizaciones',
+                link: '/legalizaciones'
             },
             {
                 id: 16,
@@ -141,12 +141,18 @@ export const menuItems = [
     },
     {
         id: 25,
+        label: 'Calendario',
+        icon: 'ri-calendar-2-line',
+        link: '/calendario'
+    },
+    {
+        id: 26,
         label: 'Mensajes',
         icon: 'ri-chat-4-line',
         link: '/chat'
     },
     {
-        id: 26,
+        id: 27,
         label: 'Organigrama',
         icon: 'ri-git-merge-fill',
         link: '/organigrama'

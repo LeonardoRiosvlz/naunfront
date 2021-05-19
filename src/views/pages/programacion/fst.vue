@@ -100,18 +100,9 @@
                    <button type="button" class="btn btn-success btn-sm rounded-pill" @click="abonarModal(data.item.id,data.item.tecnico_id)" :disabled="data.item.status==='Pendiente'||data.item.status==='Rechazado'" ><i class="ri-hand-heart-fill"></i>  Abonar</button>
                 </template>
                 <template v-slot:cell(actions)="data">
-
-                <b-dropdown size="sm" class="">
-                  <template v-slot:button-content>
-                    Action
-                    <i class="mdi mdi-chevron-down"></i>
-                  </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarFormato(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCancelado(data.item.id)"> Rechazar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;aprobFormato(data.item.id)"> Aprobado </b-dropdown-item-button>
-                </b-dropdown>
+                  <button v-b-tooltip.hover title="Ver "  type="button" class="btn btn-success btn-sm rounded-pill mr-1" @click="editMode=false;ver=true;setear(data.item.id)"  ><i class="ri-eye-line"></i>  </button>
+                  <button v-b-tooltip.hover title="Editar "  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setear(data.item.id)"><i class="ri-edit-2-fill"></i>  </button>
+                  <button v-b-tooltip.hover title="Eliminar "  type="button" class="btn btn-danger btn-sm rounded-pill mr-1" @click="eliminarFormato(data.item.id)"><i class="ri-delete-bin-line"></i>  </button>
                 </template>
               </b-table>
             </div>
@@ -128,7 +119,29 @@
           </div>
         </div>
       </div>
- 
+
+<div v-if="consecutivo.legalizaciones_aths" style="width:100%">
+     <button class="btn btn-block float-right btn-success" @click="legalizar()" v-if="legalizaciones_aths.length<1">Legalizar</button>
+
+        <b-card style="width:100%" v-else>
+
+            <h4 >Legalización</h4>
+          <span v-if="legalizaciones_aths[0].status==='Pendiente'" class="badge badge-warning">Pendiente</span>
+          <span v-if="legalizaciones_aths[0].status==='Aceptada'" class="badge badge-success">Aceptada</span>
+          <span v-if="legalizaciones_aths[0].status==='Devuelta'" class="badge badge-danger">Devuelta</span>
+          <b-card-text>
+              Observaciones: {{legalizaciones_aths[0].observaciones}}
+          </b-card-text>
+          <b-card-text v-if="legalizaciones_aths[0].status==='Devuelta'">
+              Observaciones del analista:  {{legalizaciones_aths[0].observaciones_analista}}
+          </b-card-text>
+          <h4>Excedente: {{legalizaciones_aths[0].excedente | moneda}}</h4>
+           <div class="clearfix m-0 text-right">
+                  <button v-b-tooltip.hover title="Editar "  v-if="!legalizaciones_aths[0].status==='Aceptada'" type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setearLegalizacion()"><i class="ri-edit-2-fill"></i>  </button>
+                  <button v-b-tooltip.hover title="Ver detalles "  type="button" class="btn btn-success btn-sm rounded-pill mr-1" @click="detallesLegalizacion()"><i class="ri-eye-line"></i>  </button>
+          </div>
+        </b-card>
+  </div>
     </div>
 
 
@@ -255,6 +268,165 @@
 
      </b-modal>
 
+
+
+
+    <b-modal id="modal_legalizacion" false size="lg"  title="Legalizar" hide-footer>
+          <ValidationObserver ref="form">      
+              
+                  <table id="example2" class="table table-striped"  v-show="legalizacion.items.length>0">
+                   <thead>
+                     <tr>
+                       <th>Codigo</th>
+                       <th>Nombre</th>
+                       <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Precio en factura</th>
+                       <th v-if="!ver"></th>
+                     </tr>
+                   </thead>
+                    <tbody>
+                     <tr v-for="(items , index) in legalizacion.items" :key="items.id">
+                       <td>{{items.codigo}}</td>
+                       <td>{{items.nombre}}</td>
+                        <td>{{items.descripcion}} </td>
+                        <td>{{items.precio | moneda}} </td>
+                        <td><input :id="index+'precio_factura'" type="text" v-model="items.precio_factura" @change="sumarItemsLegalizacion()"  class="form-control form-control-sm"  :disabled="ver"></td>
+                     </tr>
+                     <tr>
+                       <td>{{legalizacion.valor}}</td>
+                     </tr>
+                    </tbody>
+                  </table>
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Valor</label>
+                    <ValidationProvider name="valor" rules="required" v-slot="{ errors }">
+                          <input v-model="legalizacion.excedente"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Modo</label>
+                    <ValidationProvider name="modo" rules="required" v-slot="{ errors }">
+                          <select v-model="legalizacion.tipo"  name="modo" class="form-control" :disabled="ver" >
+                              <option value="Transferencia">Transferencia</option>
+                              <option value="Giro">Giro</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col> 
+              </b-row>
+                <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Observaciones</label>
+                    <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }">
+                            <b-form-textarea
+                              id="observaciones"
+                              v-model="legalizacion.observaciones"
+                              placeholder="observaciones"
+                              rows="3"
+                              max-rows="6"
+                              :disabled="ver"
+                            ></b-form-textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+              <b-row class="mb-2">
+               <b-col>
+                   <label>Imagen del abono</label>
+                   <div id="preview mb-2">
+                     <img v-if="url" width="100%" style="float:center!importan" class="rounded"  :src="url" />
+                   </div>
+                    <b-form-file
+                        v-model="file"
+                        placeholder="Seleccione su image..."
+                        drop-placeholder="Drop file here..."
+                        @change="onFileChange"
+                        ref="abonos"
+                    ></b-form-file>
+               </b-col>
+            </b-row> 
+            <b-row>
+                <b-col>
+                    <label>Facturas</label>   
+                      <b-form-file multiple
+                          v-model="evidencias"
+                          placeholder="Seleccione su image..."
+                          drop-placeholder="Drop file here..."
+                          ref="facturas"
+                      ></b-form-file>         
+                </b-col>
+              </b-row>
+                
+
+        </ValidationObserver>
+
+        <button class="btn btn-block float-right btn-success my-2" @click="legalizarCuestion()" v-if="!ver && !editMode">Legalizar</button>
+        <button class="btn btn-block float-right btn-success my-2" @click="legalizarCuestion()" v-if="!ver && editMode">Editar legalización</button>
+     </b-modal>
+
+
+   
+    <b-modal id="modal_detalles_legalizacion" false size="lg"  title="Detalles de legalización" hide-footer>
+      <div v-if="legalizaciones_aths.length>0">
+             <h5>Abono: ({{legalizaciones_aths[0].tipo}} {{legalizaciones_aths[0].excedente | moneda}})</h5>
+             <img :src="legalizaciones_aths[0].abono" alt width="94%" style="margin:10px"/>
+      </div>      
+        <table id="example2" class="table table-striped" >
+           <thead>
+             <tr>
+               <th>Codigo</th>
+               <th>Nombre</th>
+               <th>Descripción</th>
+                <th>Precio</th>
+                <th>Precio en factura</th>
+               <th v-if="!ver"></th>
+             </tr>
+           </thead>
+            <tbody>
+             <tr v-for="items in itemsLegalizacion" :key="items.id">
+               <td>{{items.codigo}}</td>
+               <td>{{items.nombre}}</td>
+                <td>{{items.descripcion}} </td>
+                <td>{{items.precio | moneda}} </td>
+                <td>{{items.precio_factura | moneda}} </td>
+             </tr>
+             <tr>
+             </tr>
+            </tbody>
+          </table>
+          <h5>Facturas</h5>
+           <div class="col-12">
+             <div class="popup-gallery">
+               <a
+                 class="float-left"
+                 v-for="(item, index) in evidenciasLegalizacion"
+                 :key="index"
+                 @click="() => showImg(index)"
+               >
+                 <div class="img-fluid">
+                   <img :src="`${item}`" alt width="200" style="margin:10px"/>
+                 </div>
+               </a>
+             </div>
+             <vue-easy-lightbox
+               :visible="visible"
+               :index="index"
+               :imgs="evidenciasLegalizacion"
+               @hide="visible = false"
+             ></vue-easy-lightbox>
+           </div>
+
+ 
+     </b-modal>
 
 
 
@@ -420,7 +592,7 @@
               <b-col>
                 <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
                   <label>Usuario Autorizador</label>
-                    <v-select v-model="form.autorizador_id" :options="users" :reduce="users => users.id" label="email" :disabled="ver"></v-select>
+                    <v-select v-model="form.autorizador_id" :options="users" :reduce="users => users.id" :getOptionLabel="option => option.nombre+' '+option.apellido" :disabled="ver"></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </b-col>
@@ -432,6 +604,7 @@
   </div>
 </template>
 <script>
+import VueEasyLightbox from "vue-easy-lightbox";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import vSelect from "vue-select";
@@ -443,7 +616,8 @@ export default {
     components: {
     ValidationProvider,
     ValidationObserver,
-    vSelect
+    vSelect,
+    VueEasyLightbox
   },
   data() {
     return {
@@ -462,6 +636,9 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      imgs: "", // Img Url , string or Array of string
+      visible: false,
+      index: 0, // default: 0
       ver:false,
       url:"",
       url_firma:"",
@@ -482,8 +659,12 @@ export default {
       filterOn: [],
       terceros: [],
       entidades: [],
+      evidencias:null,
       abonos: [],
       imputaciones: [],
+      legalizaciones_aths:[],
+      itemsLegalizacion:[],
+      evidenciasLegalizacion:[],
       imputacion_id: "",
       users: [],
       sortBy: "age",
@@ -498,6 +679,16 @@ export default {
           'items':[],
           'id_entidad':'',
           'valor':'',
+      },
+      legalizacion:{
+        'consecutivo':'',
+        'items':[],
+        'valor':"",
+        'valor_facturado':"",
+        'excedente':"",
+        'observaciones':"",
+        'id_programacion':"",
+        'tipo':"",
       },
       abono:{
           'id':'',
@@ -531,12 +722,39 @@ export default {
         }
   },
   methods: {
-
+    showSingle() {
+      this.imgs = require("@/assets/images/small/img-2.jpg");
+      this.show();
+    },
+    show() {
+      this.visible = true;
+    },
+    handleHide() {
+      this.visible = false;
+    },
+    showImg(index) {
+      this.index = index;
+      this.visible = true;
+    },
+    legalizar(){
+      this.legalizacion.items=[];this.legalizacion.valor=0;
+      for (let index = 0; index < this.formatos.length; index++) {
+        for (let index2 = 0; index2 < this.formatos[index].items.length; index2++) {
+            this.legalizacion.items.push({
+               nombre:          this.formatos[index].items[index2].nombre,
+               codigo:          this.formatos[index].items[index2].codigo,
+               descripcion:     this.formatos[index].items[index2].descripcion,
+               precio:          this.formatos[index].items[index2].precio,
+               precio_factura:  "",
+             });
+        }
+      this.legalizacion.valor=this.legalizacion.valor+parseFloat(this.formatos[index].valor);
+      }
+        this.$root.$emit("bv::show::modal", "modal_legalizacion", "#btnShow");
+    },
     cargar(){
          for (let index = 0; index < this.imputaciones.length; index++) {
             if( this.imputacion_id===this.imputaciones[index].id){
-              console.log(this.imputacion_id);
-              console.log(this.imputaciones[index].id);
               this.form.items.push({
                nombre:this.imputaciones[index].nombre,
                codigo:this.imputaciones[index].codigo,
@@ -550,12 +768,17 @@ export default {
        this.form.items.splice(index, 1);  
     },
     sumarItems(){
-      console.log("hey");
       this.form.valor=0;
       for (let index = 0; index < this.form.items.length; index++) {
         this.form.valor=this.form.valor+parseFloat(this.form.items[index].precio)
-        console.log(this.form.valor);
       }
+    },
+    sumarItemsLegalizacion(){
+      this.legalizacion.valor_facturado=0;this.legalizacion.excedente=0
+      for (let index = 0; index < this.legalizacion.items.length; index++) {
+        this.legalizacion.valor_facturado=this.legalizacion.valor_facturado+parseFloat(this.legalizacion.items[index].precio_factura)
+      }
+      this.legalizacion.excedente=this.legalizacion.valor - this.legalizacion.valor_facturado;
     },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -600,6 +823,126 @@ export default {
         }});
       }
     },
+     legalizarCuestion(){
+      if (!this.editMode) {
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+                this.$swal({
+                  title: 'Desea enviar esta legalización?',
+                  icon: 'question',
+                  iconHtml: '',
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  showCancelButton: true,
+                  showCloseButton: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                     this.agregarLeglizacion();
+              
+                  }
+                })
+             
+            } else {}
+          });        
+        }else{
+          this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+                this.$swal({
+                  title: 'Desea editar esta legalización?',
+                  icon: 'question',
+                  iconHtml: '',
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  showCancelButton: true,
+                  showCloseButton: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                      this.editarLeglizacion();
+                  }
+                })
+           
+          } else {
+        }});
+      }
+    },
+    async agregarLeglizacion(){
+     let data = new FormData();
+       var formulario = this.legalizacion;
+        if (this.evidencias) {
+            for( var i = 0; i < this.evidencias.length; i++ ){         
+              data.append('evidencias',this.evidencias[i]);
+            } 
+          }
+        if (this.file) {
+          data.append('filename',this.file);
+        }
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
+        }
+       await this.axios.post('api/legalizaciones/ath', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.reloadConsecutivo();
+               this.$root.$emit("bv::hide::modal", "modal_legalizacion", "#btnShow");
+               ///limpiar el formulario
+                 this.url="";
+                 this.$refs.abonos.reset();
+                 this.$refs.facturas.reset();
+  
+              }
+            }).catch(e => {
+              this.$swal(e.response.data);
+          });
+      },
+    async editarLeglizacion(){
+     let data = new FormData();
+       var formulario = this.legalizacion;
+        if (this.evidencias) {
+            for( var i = 0; i < this.evidencias.length; i++ ){         
+              data.append('evidencias',this.evidencias[i]);
+            } 
+          }
+        if (this.file) {
+          data.append('filename',this.file);
+        }
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
+        }
+       await this.axios.put('api/legalizaciones/ath', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Editado con exito!',
+                    '',
+                    'success');
+               this.reloadConsecutivo();
+               this.$root.$emit("bv::hide::modal", "modal_legalizacion", "#btnShow");
+               ///limpiar el formulario
+                 this.url="";
+                 this.$refs.abonos.reset();
+                 this.$refs.facturas.reset();
+  
+              }
+            }).catch(e => {
+              this.$swal(e.response.data);
+          });
+      },
       abonar(id){
         this.$swal({
           title: 'Desea agregar este abono?',
@@ -708,20 +1051,10 @@ export default {
                  }
               }
             }).catch(e => {
-              console.log(e.response.data.menssage);
+             
               this.$swal(e.response.data);
           });
       },
-    //async listarterceros(){
-    //  await  this.axios.get('api/terceros')
-    //    .then((response) => {
-    //      this.terceros = response.data.rows;
-    //      console.log("hola");
-    // //   })
-    //    .catch((e)=>{
-    //      console.log('error' + e);
-    //    })
-    //  },
     async editarFormato(){
      let data = new FormData();
        var formulario = this.form;
@@ -807,7 +1140,7 @@ export default {
                 }
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
+              
                 this.$swal(e.response.data);
           });
       }, 
@@ -819,7 +1152,7 @@ export default {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
               if (response.status==200) {
-                console.log(response);
+              
                 this.tecnico=response.data;
                 if (this.tecnico.length>0) {
                   this.form.tecnico_id=this.tecnico[0].id;
@@ -828,7 +1161,7 @@ export default {
                 }
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
+            
                 this.$swal(e.response.data);
           });
       },
@@ -848,7 +1181,7 @@ export default {
                 this.listarFormato();
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
+           
                 this.$swal(e.response.data);
           });
       }, 
@@ -902,7 +1235,9 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
+       this.loadConsectivo();
        this.form.consecutivo="ATH-"+this.consecutivo.id;
+       this.legalizacion.id_prorgramacion=this.consecutivo.id;
        this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
        this.form.entidad_id=this.consecutivo.cajero_ath.entidad.id;
        this.buscarTecnico();
@@ -916,8 +1251,7 @@ export default {
             this.form.otros=this.formatos[index].otros;
             this.form.observacion=this.formatos[index].observacion;
             this.form.descripcion_formato=this.formatos[index].descripcion_formato;
-            this.form.items=JSON.parse(this.formatos[index].items);
-            this.form.items=JSON.parse(this.form.items);
+            this.form.items=this.formatos[index].items;
             this.form.valor=this.formatos[index].valor;
             this.form.tecnico_id=this.formatos[index].tecnico_id;
             this.form.autorizador_id=this.formatos[index].autorizador_id;
@@ -934,6 +1268,7 @@ export default {
         }
       },
       setearCancelado(id){
+        this.evidencias=
         this.form.id=id;
         this.$root.$emit("bv::show::modal", "modal_cancelar", "#btnShow");
       },
@@ -965,6 +1300,24 @@ export default {
           }
         }        
       },
+    detallesLegalizacion(){
+        this.evidenciasLegalizacion=JSON.parse(this.legalizaciones_aths[0].evidencias);
+        this.itemsLegalizacion=JSON.parse(this.legalizaciones_aths[0].items);
+        this.itemsLegalizacion=JSON.parse(this.itemsLegalizacion);
+        this.$root.$emit("bv::show::modal", "modal_detalles_legalizacion", "#btnShow");
+        return;
+    },
+    setearLegalizacion(){
+      this.legalizacion.id=this.legalizaciones_aths[0].id;
+      this.legalizacion.items=this.itemsLegalizacion;
+      this.legalizacion.items=JSON.parse(this.legalizaciones_aths[0].items);
+      this.legalizacion.items=JSON.parse(this.legalizacion.items);
+      this.legalizacion.excedente=this.legalizaciones_aths[0].excedente;
+      this.legalizacion.tipo=this.legalizaciones_aths[0].tipo;
+      this.legalizacion.observaciones=this.legalizaciones_aths[0].observaciones;
+      this.legalizacion.id_prorgramacion=this.legalizaciones_aths[0].id_prorgramacion;
+      this.$root.$emit("bv::show::modal", "modal_legalizacion", "#btnShow");
+    },
     async  listarAbonos(index){
       let data = new FormData();
       data.append('id',index);
@@ -983,13 +1336,14 @@ export default {
       async  listarFormato(){
       let data = new FormData();
       let id='ATH-'+this.consecutivo.id;
-      console.log(id);
       data.append('consecutivo',id);
       await  this.axios.post('api/formatos/find',data)
         .then((response) => {
             this.formatos = response.data.rows;
             this.form.valor_total=0;this.form.abonos_total=0;this.form.abonados=0;
           for (let index = 0; index < this.formatos.length; index++) {
+            this.formatos[index].items=JSON.parse(this.formatos[index].items);
+            this.formatos[index].items=JSON.parse(this.formatos[index].items);
             this.form.valor_total= parseFloat(this.formatos[index].valor)+this.form.valor_total;
             for (let indice = 0; indice < this.formatos[index].abonos.length; indice++) {
               this.form.abonados= parseFloat(this.formatos[index].abonos[indice].valor_abono)+this.form.abonados;
@@ -1023,7 +1377,6 @@ export default {
       },
       setEmail(){
         this.form.username=this.form.email;
-        console.log("holas");
       },
       setRoles(){
         if (this.form.tipo==="Administrador") {
@@ -1064,13 +1417,32 @@ export default {
         this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
           this.form.consecutivo=this.consecutivo.consecutivo;
           this.form.tecnico_id=this.consecutivo.tecnico_id;
+          this.legalizaciones_aths=this.consecutivo.legalizaciones_aths; 
           this.form.entidad_id=1;
+          this.legalizacion.id_programacion=this.consecutivo.id;
+          this.legalizacion.coordinador_id=this.consecutivo.coordinador_id;
           this.form.codigo_tecnico=this.consecutivo.codigo_tecnico;
           this.listarimputaciones();
-          this.buscarTecnico();
+    
         }
 
-      }
+      },
+    async reloadConsecutivo(){
+      this.consecutivo = JSON.parse(localStorage.getItem('consecutivo'));
+      let data = new FormData();
+       data.append('id',this.consecutivo.id);
+       await this.axios.post('api/programacion/ath/find',data)
+        .then((response) => {
+          this.programacion = response.data;
+          console.log(this.programacion);
+          localStorage.setItem("consecutivo", JSON.stringify(this.programacion[0]));
+         this.consecutivo=this.programacion;
+         this.loadConsectivo();
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
   },
   mounted(){
     this.loadConsectivo();

@@ -310,6 +310,40 @@ export default [
         },
     },
     {
+        path: '/legalizaciones',
+        name: 'legalizaciones',
+        component: () => import('../views/pages/procesos/legalizaciones'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/calendario',
+        name: 'calendario',
+        component: () => import('../views/pages/calendar'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/fst',
         name: 'fst',
         component: () => import('../views/pages/procesos/fst'),

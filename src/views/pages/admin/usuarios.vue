@@ -266,6 +266,18 @@
                     </ValidationProvider>
                   </div>
                 </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Regional</label>
+                    <ValidationProvider name="regional" rules="required" v-slot="{ errors }">
+                          <select v-model="form.regional"  name="entidad_id" class="form-control "  :disabled="ver">
+                              <option></option>
+                              <option :value="regionales.id" v-for="regionales in regionales" :key="regionales.id">{{regionales.nombre}}</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
             </b-row>  
             <b-row v-if="!editMode">
                 <b-col>
@@ -290,8 +302,8 @@
             <b-row>
               <b-col>
                 <ValidationProvider name="area dependiente" rules="required" v-slot="{ errors }">
-                  <label>Area dependiente</label>
-                    <v-select v-model="form.dependencia" :options="users" :reduce="users => users.id" label="email" ></v-select>
+                  <label>Area dependiente {{form.dependencia}}</label>
+                    <v-select v-model="form.dependencia" :options="users" :reduce="users => users.id"  :getOptionLabel="option => option.nombre+' '+option.apellido" ></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </b-col>
@@ -321,8 +333,7 @@
                         @change="onFileChangeFirma"
                     ></b-form-file>
                </b-col>
-            </b-row>  
-            <pre>{{regionales}}</pre>     
+            </b-row>     
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -389,6 +400,7 @@ export default {
       users: [], 
       areas: [],
       cargos: [],
+      regionales: [],
       regional: [],
       editMode:false,
       form:{
@@ -521,6 +533,7 @@ export default {
           this.form.sexo=this.users[index].sexo;
           this.form.entidad=this.users[index].entidad;
           this.form.cargo=this.users[index].cargo;
+          this.form.regional=this.users[index].regional;
           this.form.codigo=this.users[index].codigo;
           this.form.tipo_tecnico=this.users[index].tipo_tecnico;
           this.form.cuenta=this.users[index].cuenta;
@@ -566,7 +579,15 @@ export default {
      },
     setEmail(){
       this.form.username=this.form.email;
-      console.log("holas");
+    },
+    async  listarregional(){
+      await  this.axios.get('api/regional')
+        .then((response) => {
+          this.regionales = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
     },
     setRoles(){
       if (this.form.tipo==="Administrador") {
@@ -607,6 +628,7 @@ export default {
 		  this.session();
       this.listarUsers();
       this.listarCargos();
+      this.listarregional();
     },
     computed: {
     rows() {
