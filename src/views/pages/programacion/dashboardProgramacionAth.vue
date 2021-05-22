@@ -24,6 +24,7 @@
               </b-dropdown>
 
               <h4 class="card-title mb-3"> CONSECUTIVO ATH-{{programacion[0].id}}</h4>
+       
                   <b-badge variant="warning" v-if="programacion[0].status==='Pendiente'">Pendiente</b-badge>
                   <b-badge variant="info" v-if="programacion[0].status==='Programada'">Programada</b-badge>
                   <b-badge variant="info" v-if="programacion[0].status==='Reprogramada'">Reprogramada</b-badge>
@@ -135,7 +136,7 @@
             <b-row>
               <b-col>
                   <div class="form-group">
-                    <label v-if="programacion[0].requiere_cita==='Si'">Fecha de cita </label><label v-else>Fecha limite </label>
+                    <label v-if="programacion[0].requiere_cita==='Si'">Fecha de cita </label><label v-else>Fecha límite para el técnico </label>
                     <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
                       <b-form-input id="date-time" v-model="form.vencimiento_tecnico"  type="datetime-local"></b-form-input>
                        <span style="color:red">{{ errors[0] }}</span>
@@ -144,7 +145,7 @@
                 </b-col>
                 <b-col>
                     <div class="form-group">
-                    <label>Tecnicos de la regional</label>
+                    <label>Técnicos de la regional</label>
                     <ValidationProvider name="Tecnico" rules="required" v-slot="{ errors }">
                           <select v-model="form.codigo_tecnico"  name="cotizacion_visita" @change="buscarTecnico()"  class="form-control " >
                               <option value=""></option>
@@ -158,7 +159,7 @@
               <b-row>
                 <b-col>
                   <div class="form-group">
-                    <label>Código Tecnico</label>
+                    <label>Código Técnico</label>
                     <ValidationProvider name="codigo tecnico" rules="required" v-slot="{ errors }">
                           <input v-model="form.codigo_tecnico"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
@@ -167,7 +168,7 @@
                 </b-col>
                 <b-col class="p-2" >
                   <div class="form-group" style="margin-top:20px">
-                    <button class="btn btn-info btn-block" @click="buscarTecnico()" :disabled="ver"> Buscar Tecnico</button>
+                    <button class="btn btn-info btn-block" @click="buscarTecnico()" :disabled="ver"> Buscar Técnico</button>
                    </div>
                 </b-col>
               </b-row>
@@ -694,7 +695,7 @@ export default {
       setear(){
         this.form.id=this.programacion[0].id;
         this.form.regional=this.programacion[0].cajero_ath.ciudad.regional_id;
-        this.form.vencimiento_tecnico=moment(this.consecutivo.fecha_vencimiento).format("YYYY-MM-DDTHH:MM");
+        this.form.vencimiento_tecnico=moment(this.consecutivo[0].fecha_vencimiento).format("YYYY-MM-DDTHH:MM");
         this.$root.$emit("bv::show::modal", "programar", "#btnShow");
         this.loadRegional();
       },

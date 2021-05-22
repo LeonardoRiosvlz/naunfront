@@ -137,7 +137,7 @@
           </b-card-text>
           <h4>Excedente: {{legalizaciones_aths[0].excedente | moneda}}</h4>
            <div class="clearfix m-0 text-right">
-                  <button v-b-tooltip.hover title="Editar "  v-if="!legalizaciones_aths[0].status==='Aceptada'" type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setearLegalizacion()"><i class="ri-edit-2-fill"></i>  </button>
+                  <button v-b-tooltip.hover title="Editar "  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setearLegalizacion()"><i class="ri-edit-2-fill"></i>  </button>
                   <button v-b-tooltip.hover title="Ver detalles "  type="button" class="btn btn-success btn-sm rounded-pill mr-1" @click="detallesLegalizacion()"><i class="ri-eye-line"></i>  </button>
           </div>
         </b-card>

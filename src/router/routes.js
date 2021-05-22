@@ -140,9 +140,9 @@ export default [
         },
     },
     {
-        path: '/categorias',
-        name: 'categorias',
-        component: () => import('../views/pages/admin/categorias'),
+        path: '/sac',
+        name: 'sac',
+        component: () => import('../views/pages/admin/sac'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

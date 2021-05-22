@@ -81,7 +81,7 @@
                   <b-badge variant="success" v-if="data.item.status==='Cerrada'">Cerrada</b-badge>
                   <b-badge variant="primary" v-if="data.item.status==='Creada'">Creada</b-badge>
                   <b-badge variant="success" v-if="data.item.status==='Aceptada'">Aceptada por analista</b-badge>
-                   <b-badge variant="warnig" v-if="data.item.status==='Devuelta'">Devuelta</b-badge>
+                   <b-badge variant="warning" v-if="data.item.status==='Devuelta'">Devuelta</b-badge>
                 </template>
                 <template v-slot:cell(actions)="data">
 

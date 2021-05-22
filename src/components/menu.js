@@ -124,7 +124,7 @@ export const menuItems = [
             },
             {
                 id: 22,
-                label: 'Categorias',
+                label: 'S.A.C',
                 link: ''
             },
             {

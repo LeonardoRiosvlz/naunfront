@@ -61,8 +61,8 @@
                 </template>
                 <template v-slot:cell(actions)="data">
                   <button v-b-tooltip.hover title="Ver "  type="button" class="btn btn-success btn-sm rounded-pill mr-1" @click="editMode=false;ver=true;setear(data.item.id)"  ><i class="ri-eye-line"></i>  </button>
-                  <button v-b-tooltip.hover title="Editar " v-if="data.item.status==='Pendiente' || data.item.status==='Devuelta'"  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setear(data.item.id)"><i class="ri-edit-2-fill"></i>  </button>
-                  <button v-b-tooltip.hover title="Eliminar " v-if="data.item.status==='Pendiente' || data.item.status==='Devuelta'"  type="button" class="btn btn-danger btn-sm rounded-pill mr-1" @click="eliminarFormato(data.item.id)"><i class="ri-delete-bin-line"></i>  </button>
+                  <button v-b-tooltip.hover title="Editar " v-if="data.item.status==='Pendiente'"  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setear(data.item.id)"><i class="ri-edit-2-fill"></i>  </button>
+                  <button v-b-tooltip.hover title="Eliminar " v-if="data.item.status==='Pendiente'"  type="button" class="btn btn-danger btn-sm rounded-pill mr-1" @click="eliminarFormato(data.item.id)"><i class="ri-delete-bin-line"></i>  </button>
                 </template>
               </b-table>
             </div>
@@ -262,7 +262,7 @@
               <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Observaciones</label>
+                    <label>Actividades realizadas</label>
                     <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }">
                             <b-form-textarea
                               id="descripcion"
@@ -284,8 +284,8 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Gestión del día: {{form.asunto}}</h4>
-                <p class="card-title-desc">Descripción:{{form.descripcion}}</p>
-                <p class="card-title-desc">Onbseraciones:{{form.observaciones}}</p>
+                <p class="card-title-desc">Descripción: {{form.descripcion}}</p>
+                <p class="card-title-desc">Actividades realizadas: {{form.observaciones}}</p>
                 <h4 class="card-title">Fotos Antes</h4>
                 <div class="row">
                   <div class="col-12">
@@ -944,6 +944,7 @@ export default {
        }
        this.form.id_programacion=this.consecutivo.id;
        this.form.asunto=this.consecutivo.titulo;
+       this.form.descripcion=this.consecutivo.descripcion;
        this.form.coordinador_id=this.consecutivo.coordinador_id;
        this.form.tecnico_id=this.consecutivo.tecnico_id;
        this.form.items=[];
