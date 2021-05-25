@@ -16,7 +16,7 @@
                 <!-- item-->
                 <b-dropdown-item @click="escalar()">Escalar</b-dropdown-item>
   
-                <b-dropdown-item @click="cerrar()">Cerrar</b-dropdown-item>
+                <b-dropdown-item @click="cerrar()" v-if="programacion[0].sac_aths.length<1">Cerrar</b-dropdown-item>
 
                 <b-dropdown-item @click="rechazar()">Rechazar</b-dropdown-item>
                 <!-- item-->
@@ -111,6 +111,40 @@
                 </template>
                   <Gestion />
               </b-tab>
+              <b-tab v-if="programacion[0].sac_aths.length>0">
+                <template v-slot:title>
+                  <span class="d-inline-block d-sm-none">
+                    <i class="far fa-envelope"></i>
+                  </span>
+                  <span class="d-none d-sm-inline-block" @click="verSac()">S.A.C.</span>
+                </template>
+                <b-card class="p-3 text-right" >
+                    <div class="clearfix m-0">
+                            <button v-b-tooltip.hover title="Editar "  type="button" class="btn btn-info btn-sm rounded-pill mr-1" @click="editMode=true;ver=false;setearSacEditar()"><i class="ri-edit-2-fill"></i>  </button>
+                    </div>
+                    <table class="table my-3" v-show="csac.items.length>0" >
+                        <thead>
+                          <tr>
+                            <th scope="col">ITEM</th>
+                            <th scope="col">PRODUCTO </th>
+                            <th scope="col">VALOR UNITARIO</th>
+                            <th scope="col">CANTIDAD</th>
+                            <th scope="col">TOTAL</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="item in csac.items" :key="item.id">
+                            <th scope="row">{{item.id}}</th>
+                            <td>{{item.descripcion}}</td>
+                            <td>{{item.precio | moneda}}</td>
+                            <td>{{item.cantidad}}</td>
+                            <td>{{item.total | moneda}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style="font-size:23px"><b class="mx-auto">{{csac.total | moneda}}</b> </p>
+                </b-card>
+              </b-tab>
               <b-tab>
                 <template v-slot:title>
                   <span class="d-inline-block d-sm-none">
@@ -130,7 +164,7 @@
       </div>
     </div>
 
-
+<pre>{{consecutivo}}</pre>
     <b-modal id="programar" false size="lg"  title="Programar" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
@@ -227,13 +261,115 @@
         <button class="btn btn-block float-right btn-danger" v-if="form.motivo_escalado" @click="enviarEscalado()">Enviar</button>
      </b-modal>
 
-    <b-modal id="modal_cierre" false size="lg"  title="Cerrar" hide-footer>
+    <b-modal id="modal_cierre" false size="xl"  title="Cerrar" hide-footer>
           <ValidationObserver ref="form"> 
-              <b-row>
 
+             <b-row>
+              <b-col>
+                    <div class="form-group">
+                    <label>Servicio a cobro</label>
+                    <ValidationProvider name="sac" rules="required" v-slot="{ errors }">
+                          <select v-model="form.aplica_sac"  name="sac" class="form-control form-control-sm" >
+                              <option value="Aplica">Aplica</option>
+                              <option value="No aplica">No aplica</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+              </b-row>
+            <b-row v-if="form.aplica_sac==='Aplica'">
+                <b-col>
+                  <ValidationProvider name="Prodcuto o servicioe" rules="required" v-slot="{ errors }">
+                    <label>Prodcuto o servicio</label>
+                      <v-select v-model="sac" :options="sacs" :reduce="sacs => sacs.id"  :getOptionLabel="option => option.item+' '+option.descripcion" ></v-select>
+                      <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </b-col>
+            </b-row>
+              <b-row class="my-3 " v-if="form.aplica_sac==='Aplica'">
+                <b-col>
+                  <label>Valor unitario</label><br>
+                 <p style="font-size:23px"><b>{{item.precio | moneda}}</b> </p>
+                </b-col>
+                <b-col>
+                  <label>Catitdad</label>
+                  <b-form-input
+                    id="input-1"
+                    v-model="item.cantidad"
+                    type="email"
+                    placeholder="unidad o medida"
+                    @change="totalItem()"
+                    required
+                  ></b-form-input>
+                </b-col>
+                <b-col>
+                  <label>Total</label> <br>
+                 <p style="font-size:23px"><b> {{item.total | moneda}}</b> </p>
+                </b-col>
+                <b-col>
+                  
+                    <button v-b-tooltip.hover title="Agregar "   type="button" class="btn btn-success btn-sm btn-block  mr-1 my-4" @click="cargar()"><i class="ri-add-line"></i> Agregar  </button>
+                 
+                </b-col>
+              </b-row>
+              <b-row v-if="form.aplica_sac==='Aplica'">
+                <table class="table" v-show="form.items.length>0" >
+                  <thead>
+                    <tr>
+                      <th scope="col">ITEM</th>
+                      <th scope="col">PRODUCTO </th>
+                      <th scope="col">VALOR UNITARIO</th>
+                      <th scope="col">CANTIDAD</th>
+                      <th scope="col">TOTAL</th>
+                      <th scope="col">ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in form.items" :key="item.id">
+                      <th scope="row">{{item.id}}</th>
+                      <td>{{item.descripcion}}</td>
+                      <td>{{item.precio | moneda}}</td>
+                      <td>{{item.cantidad}}</td>
+                      <td>{{item.total | moneda}}</td>
+                       <td v-if="!ver">
+                        <a href="javascript:void(0);" @click="eliminarItem(index)" class="text-danger" v-b-tooltip.hover title="Borrar">
+                            <i class="mdi mdi-trash-can font-size-18"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="container" v-if="form.aplica_sac==='Aplica'">
+                <div class="row">
+                  <div class="col align-self-start">
+                   
+                  </div>
+                  <div class="col align-self-center">
+                   
+                  </div>
+                  <div class="col align-self-end">
+                   <p style="font-size:23px"><b class="mx-auto">{{form.total | moneda}}</b> </p>
+                  </div>
+                </div>
+              </div>
+             
+              </b-row>
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Pago al tecnico</label>
+                    <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
+                          <input v-model="form.total_tecnico"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row>
+              <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Motivo de cierre</label>
+                    <label>Observaciones de cierre</label>
                     <ValidationProvider name="motivo cierre" rules="required" v-slot="{ errors }">
                             <b-form-textarea
                               id="motivo_cierre"
@@ -247,8 +383,10 @@
                     </div>
                 </b-col>
               </b-row>
+
         </ValidationObserver>
-        <button class="btn btn-block float-right btn-danger" v-if="form.motivo_cierre" @click="enviarCierre()">Enviar</button>
+        <button class="btn btn-block float-right btn-danger" v-if="!editMode" @click="enviarCierre()">Cerrar</button>
+        <button class="btn btn-block float-right btn-danger" v-if="editMode" @click="enviarCierre()">Editar cierre</button>
      </b-modal>
 
 
@@ -267,7 +405,6 @@
                               placeholder="Enter something..."
                               rows="3"
                               max-rows="6"
-                              
                             ></b-form-textarea>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -323,7 +460,8 @@ import moment from 'moment';
 import Fst from './fst';
 import Gestion from './gestion';
 import Chat from './chat';
-
+import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
 /**
  * Dashboard component
  */
@@ -336,7 +474,8 @@ export default {
     ValidationObserver,
     Fst,
     Gestion,
-    Chat
+    Chat,
+    vSelect
   },
   data() {
    
@@ -357,6 +496,15 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      item:{
+        id:"",
+        item:"",
+        descripcion:"",
+        precio:"",
+        medida:"",
+        cantidad:"",
+        total:"",
+      },
       ver:false,
       url:"",
       url_firma:"",
@@ -371,19 +519,27 @@ export default {
       pageOptions: [10, 25, 50, 100],
       filter: null,
       filterOn: [],
+      sacs: [],
+      csac: [],
+      sac:"",
       sortBy: "age",
       sortDesc: false,
       fields: ["cargo","descripcion","actions"],
       cajero: [], 
       tecnicos: [], 
       tecnico: [],
-      consecutivo: [], 
+      consecutivo: [
+        {
+          sac_aths:""
+        }
+      ], 
       programacion: [{
         id:"",
         cajero_ath:{
-          entidad:""
-        }
-        
+          entidad:"",
+          
+        },
+        sac_aths:[]
       }], 
       editMode:false,
       form:{
@@ -396,12 +552,22 @@ export default {
           'motivo_escalado':'',
           'motivo_rechazo':'',
           'motivo_archivado':'',
+          'motivo_cierre':'',
+          'total':'',
+          'total_tecnico':'',
+          'aplica_sac':'',
+          items:[],
       }
     }
   },
   computed:{
         ...mapState(['counter'])
    },
+  watch: {
+    sac: function (val) {
+      this.seteSac()
+    },
+  },
   created(){
     this.listarUsers();
   },
@@ -412,6 +578,15 @@ export default {
           value = fecha.diff(value, 'hours')+ " horas para caducar."; 
           
           return value
+        },
+        moneda: function (value) {
+          const formatterPeso = new Intl.NumberFormat('es-CO', {
+             style: 'currency',
+             currency: 'COP',
+             minimumFractionDigits: 1
+           })
+           let valueFinal = formatterPeso.format(value);
+           return valueFinal
         }
     },
   methods: {
@@ -430,6 +605,62 @@ export default {
             } 
           });        
         
+    },
+    seteSac(){
+      alert(this.sac)
+      for (let index = 0; index < this.sacs.length; index++) {
+        console.log(this.sacs[index]);
+        if (this.sacs[index].id===this.sac) {
+              this.item.id=this.sacs[index].id;
+              this.item.item=this.sacs[index].item;
+              this.item.descripcion=this.sacs[index].descripcion;
+              this.item.precio=parseFloat(this.sacs[index].precio);
+              this.item.medida=this.sacs[index].medida;
+              this.item.cantidad="";
+              this.item.total="";
+              return
+        }   
+      }
+    },
+    cargar(){
+     this.form.items.push({
+      id:this.item.id,
+      item:this.item.item,
+      descripcion:this.item.descripcion,
+      precio:this.item.precio,
+      medida:this.item.medida,
+      cantidad:this.item.cantidad,
+      total:this.item.total,
+     });
+     this.totalSac();
+    },
+    eliminarItem(index){
+       this.form.items.splice(index, 1);  
+       this.totalSac();
+    },
+    totalSac(){
+      this.form.total=0;
+      for (let index = 0; index < this.form.items.length; index++) {
+        this.form.total=parseFloat(this.form.items.[index].total)+parseFloat(this.form.total);
+        
+      }
+    },
+    verSac(){
+      this.csac=this.consecutivo[0].sac_aths[0];
+      this.csac.items=JSON.parse(this.consecutivo[0].sac_aths[0].items);
+       this.csac.items=JSON.parse(this.csac.items);
+    },
+    setearSacEditar(){
+          this.form.id=this.consecutivo[0].id;
+          this.form.aplica_sac=this.consecutivo[0].aplica_sac;
+          this.form.items=this.consecutivo[0].sac_aths[0].items;
+          this.form.total=this.consecutivo[0].sac_aths[0].total;
+          this.form.total_tecnico=this.consecutivo[0].total_tecnico;
+          this.form.motivo_cierre=this.consecutivo[0].motivo_cierre;
+          this.$root.$emit("bv::show::modal", "modal_cierre", "#btnShow");
+    },
+    totalItem(){
+      this.item.total=parseFloat(this.item.precio)*parseFloat(this.item.cantidad);
     },
     async programar(){
      let data = new FormData();
@@ -562,7 +793,15 @@ export default {
                 this.$swal(e.response.data);
           });
       },
-
+      async  listarsacs(){
+      await   this.axios.get('api/sac')
+          .then((response) => {
+            this.sacs = response.data.rows;
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+        },
       enviarCierre(){
         this.$swal({
           title: 'Desea realizar este cambio?',
@@ -574,15 +813,26 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.procesarCierre();
+            if (this.editMode) {
+              this.editarCierre();
+            }else{
+              this.procesarCierre();
+            }
+            
           }
         })
       },
       async procesarCierre(){
-        let data = new FormData();
-        data.append('id',this.form.id);
-        data.append('motivo_cierre',this.form.motivo_cierre);
-        await this.axios.post('/api/programacion/ath/cerrar',data, {
+      let data = new FormData();
+      var formulario = this.form;
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
+        }
+        await this.axios.post('/api/sac/ath',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -592,6 +842,35 @@ export default {
                       '',
                       'success'
                 );
+                 this.loadConsecutivo();
+                     this.$root.$emit("bv::hide::modal", "modal_cierre", "#btnShow");
+                }
+              }).catch(e => {
+
+                this.$swal(e.response.data);
+          });
+      },
+      async editarCierre(){
+      let data = new FormData();
+      var formulario = this.form;
+        for ( var key in formulario) {
+            if (key=='items') {
+                data.append(key,JSON.stringify(formulario[key]));
+            }else{
+                data.append(key,formulario[key]);
+            }
+        }
+        await this.axios.put('/api/sac/ath',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+              this.$swal(
+                    'Editado con exito!',
+                      '',
+                      'success'
+                );
+                  this.editMode=false;
                   this.loadConsecutivo();
                      this.$root.$emit("bv::hide::modal", "modal_cierre", "#btnShow");
                 }
@@ -630,7 +909,7 @@ export default {
                       'success'
                 );
                   this.loadConsecutivo();
-                     this.$root.$emit("bv::hide::modal", "modal_archivar", "#btnShow");
+                  this.$root.$emit("bv::hide::modal", "modal_archivar", "#btnShow");
                 }
               }).catch(e => {
 
@@ -687,6 +966,7 @@ export default {
           console.log(this.programacion);
           localStorage.setItem("consecutivo", JSON.stringify(this.programacion[0]));
          this.consecutivo=this.programacion;
+         this.verSac();
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -706,8 +986,12 @@ export default {
       },
       cerrar(){
         this.form.id=this.programacion[0].id;
+        this.form.total_tecnico=this.consecutivo[0].total_tecnico;
+        this.form.motivo_cierre=this.consecutivo[0].motivo_cierre;
+        this.form.aplica_sac=this.consecutivo[0].aplica_sac;
         this.form.motivo_escalado="";
         this.$root.$emit("bv::show::modal", "modal_cierre", "#btnShow");
+        this.listarsacs();
       },
       archivar(){
         this.form.id=this.programacion[0].id;

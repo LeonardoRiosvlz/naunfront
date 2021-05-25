@@ -344,12 +344,13 @@
 
 <script>
 import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-import vSelect from "vue-select";
+
 
 /**
  * Dashboard component
