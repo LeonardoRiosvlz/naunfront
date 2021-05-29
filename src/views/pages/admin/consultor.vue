@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Area</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear consultor</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -80,7 +80,7 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de areas" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de consultor" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">
@@ -90,7 +90,7 @@
                    </div>
                     <b-form-file
                         v-model="perfil"
-                        placeholder="Seleccione su firma..."
+                        placeholder="Seleccione su foto..."
                         drop-placeholder="Drop file here..."
                         @change="onFileChangePerfil"
                     ></b-form-file>
@@ -184,22 +184,7 @@
              <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Estado</label>
-                    <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                          <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
-                              <option value="no activado">No activado</option>
-                              <option value="activado">Ativado</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
-
-             <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Tipo de proceso al que pertenece</label>
+                    <label>Permiso de consulta</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
                             <input v-model="form.tipo_proceso_pertenece"  type="email" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
@@ -208,10 +193,13 @@
                 </b-col>
                 <b-col>
                     <div class="form-group">
-                    <label>Proceso que lidera</label>
-                    <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
-                        <input v-model="form.proceso_lidera"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
+                    <label>Estado</label>
+                    <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
+                          <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
+                              <option value="no activado">No activado</option>
+                              <option value="activado">Ativado</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>

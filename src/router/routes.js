@@ -208,9 +208,9 @@ export default [
         },
     },
     {
-        path: '/entidades',
-        name: 'entidades',
-        component: () => import('../views/pages/admin/entidades'),
+        path: '/consultor',
+        name: 'consultor',
+        component: () => import('../views/pages/admin/consultor'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

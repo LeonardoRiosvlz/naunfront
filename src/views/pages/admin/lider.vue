@@ -90,7 +90,7 @@
                    </div>
                     <b-form-file
                         v-model="perfil"
-                        placeholder="Seleccione su firma..."
+                        placeholder="Seleccione su foto..."
                         drop-placeholder="Drop file here..."
                         @change="onFileChangePerfil"
                     ></b-form-file>

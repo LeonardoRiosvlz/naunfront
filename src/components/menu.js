@@ -44,6 +44,11 @@ export const menuItems = [
                 label: 'Lider de proceso',
                 link: '/lider'
             },
+            {
+                id: 13,
+                label: 'Consultor',
+                link: '/consultor'
+            },
         ]
     },
     {
