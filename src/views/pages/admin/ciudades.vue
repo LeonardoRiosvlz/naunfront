@@ -100,6 +100,7 @@
                     </div>
                 </b-col>
               </b-row>
+
               <b-row>
                  <div class="col-sm-6">
                      
@@ -126,6 +127,7 @@
                   </div>
                </div>
               </b-row>
+
               <b-row>
                 <div class="col-sm-6">
                    <div class="form-group links">
@@ -216,14 +218,12 @@
                </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                    <label>Valor Prioridad Alto</label>
+                        <label>Valor Prioridad Alto</label>
                         <ValidationProvider name="valor" rules="required" v-slot="{ errors }">
-                                <input type="number" v-model="form.valor_bajo"   class="form-control" placeholder=" " :disabled="ver">
-                                <span style="color:red">{{ errors[0] }}</span>
-                                
+                            <input type="number" v-model="form.valor_bajo"   class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                     </div>
-                    
                 </div>
               </b-row>                    
         </ValidationObserver>

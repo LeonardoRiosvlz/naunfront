@@ -16,145 +16,169 @@ export const menuItems = [
     },
     {
         id: 3,
-        label: 'Gestión corporativa',
+        label: 'Gestión de clientes',
         icon: 'ri-hard-drive-fill',
         subItems: [
             {
                 id: 4,
-                label: 'Usuarios',
-                link: '/usuarios'
+                label: 'Clientes',
+                link: '/clientes'
             },
             {
                 id: 5,
-                label: 'Cargos',
-                link: '/cargos'
+                label: 'Sedes Clientes',
+                link: '/sedes'
             },
             {
                 id: 6,
-                label: 'Areas',
+                label: 'Areas o dependencias',
                 link: '/areas'
             },
             {
                 id: 7,
-                label: 'Terceros',
-                link: '/terceros'
+                label: 'Cargos',
+                link: '/cargos'
             },
             {
-                id: 8,
-                label: 'Categorias',
-                link: '/categorias'
+                id: 13,
+                label: 'Lider de proceso',
+                link: '/lider'
             },
-            {
-                id: 9,
-                label: 'Entidades',
-                link: '/entidades'
-            },
-            {
-                id: 10,
-                label: 'Imputaciones',
-                link: '/codigos_imputacion'
-            },
-            {
-                id: 11,
-                label: 'Regional',
-                link: '/regional'
-            },
-            {
-                id: 11,
-                label: 'Ciudades',
-                link: '/ciudades'
-            }
         ]
     },
     {
         id: 11,
-        label: 'Procesos',
+        label: 'Sistema integral de gestión',
         icon: 'ri-arrow-left-right-line',
         subItems: [
             {
                 id: 12,
-                label: 'Cajeros',
+                label: 'Tipos de procesos',
                 link: '/cajeros'
             },
             {
                 id: 13,
-                label: 'F.T.S.',
+                label: 'Procesos',
                 link: 'fst'
             },
             {
                 id: 14,
-                label: 'Llamadas',
+                label: 'Subprocesos',
                 link: '/llamadas',
             },
             {
                 id: 16,
-                label: 'Legalizaciones',
+                label: 'Nomatividad',
                 link: '/legalizaciones'
             },
             {
                 id: 16,
-                label: 'Cotizaciones',
+                label: 'Tipo de documentos',
                 link: ''
             },
             {
                 id: 17,
-                label: 'Pagos',
+                label: 'Gestor de documentos',
                 link: ''
             },
             {
                 id: 18,
-                label: 'Servicios Adicionales',
+                label: 'Gestor de formatos',
                 link: ''
             },
-            {
-                id: 19,
-                label: 'Abonos',
-                link: ''
-            }
         ]
     },    {
         id: 20,
-        label: 'Contables',
+        label: 'Gestion de eventos',
         icon: 'ri-pie-chart-2-line',
         subItems: [
             {
                 id:  21,
-                label: 'Productos',
+                label: 'Cronograma',
                 link: ''
             },
             {
                 id: 22,
-                label: 'S.A.C',
+                label: 'Clasificación de eventos',
                 link: ''
             },
             {
                 id: 23,
-                label: 'Programación',
+                label: 'Eventos o actividades',
                 link: ''
             },
-            {
-                id: 24,
-                label: 'Presupuesto',
-                link: ''
-            }
         ]
     },
     {
         id: 25,
-        label: 'Calendario',
+        label: 'Sistema de gestión de calidad',
         icon: 'ri-calendar-2-line',
-        link: '/calendario'
+        subItems: [
+            {
+                id:  21,
+                label: 'Grupos estandares de acreditacion',
+                link: ''
+            },
+            {
+                id: 22,
+                label: 'Base de aunto evaluación',
+                link: ''
+            },
+            {
+                id: 23,
+                label: 'Autoevaluacion cualitativa',
+                link: ''
+            },
+            {
+                id: 23,
+                label: 'Criterios de priorizacion, oportunidades de mejora',
+                link: ''
+            },
+        ]
     },
     {
         id: 26,
-        label: 'Mensajes',
+        label: 'Plan de acción y auditorias',
         icon: 'ri-chat-4-line',
-        link: '/chat'
+        subItems: [
+            {
+                id:  21,
+                label: 'Categorías planes de acción',
+                link: ''
+            },
+            {
+                id: 22,
+                label: 'Gestion de planes de acción',
+                link: ''
+            },
+            {
+                id: 23,
+                label: 'Autoevaluacion cuantitativa',
+                link: ''
+            },
+            {
+                id: 23,
+                label: 'Auditorias',
+                link: ''
+            },
+            {
+                id: 23,
+                label: 'Auditorias internas',
+                link: ''
+            },
+        ]
     },
     {
         id: 27,
-        label: 'Organigrama',
+        label: 'Actas e informes',
         icon: 'ri-git-merge-fill',
-        link: '/organigrama'
+        subItems: [
+            {
+                id:  21,
+                label: 'Acciones corretivas',
+                link: ''
+            },
+           
+        ]
     },
 ]

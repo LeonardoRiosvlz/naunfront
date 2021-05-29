@@ -89,9 +89,9 @@ export default [
         },
     },   
     {
-        path: '/usuarios',
-        name: 'usuarios',
-        component: () => import('../views/pages/admin/usuarios'),
+        path: '/clientes',
+        name: 'clientes',
+        component: () => import('../views/pages/admin/clientes'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
@@ -106,9 +106,9 @@ export default [
         },
     }, 
     {
-        path: '/cargos',
-        name: 'cargos',
-        component: () => import('../views/pages/admin/cargos'),
+        path: '/sedes',
+        name: 'sedes',
+        component: () => import('../views/pages/admin/sedes'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
@@ -174,9 +174,26 @@ export default [
         },
     },
     {
-        path: '/terceros',
-        name: 'terceros',
-        component: () => import('../views/pages/admin/terceros'),
+        path: '/cargos',
+        name: 'cargos',
+        component: () => import('../views/pages/admin/cargos'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/lider',
+        name: 'lider',
+        component: () => import('../views/pages/admin/lider'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

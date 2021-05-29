@@ -37,6 +37,7 @@
             </div>
             <!-- Table -->
             <div class="table-responsive mb-0">
+
               <b-table
                 :items="users"
                 :fields="fields"
@@ -49,6 +50,7 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+              
                 <template v-slot:cell(actions)="data">
 
                 <b-dropdown size="sm" class="">
