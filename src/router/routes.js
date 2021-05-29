@@ -225,6 +225,23 @@ export default [
         },
     },
     {
+        path: '/colaboradores',
+        name: 'colaboradores',
+        component: () => import('../views/pages/admin/colaboradores'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/perfil',
         name: 'perfil',
         component: () => import('../views/pages/admin/perfil'),

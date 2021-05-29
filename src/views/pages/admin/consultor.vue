@@ -236,10 +236,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión corporativa"
+          text: "Gestión de clientes"
         },
         {
-          text: "Areas",
+          text: "Consultor",
           active: true
         }
       ],
@@ -264,7 +264,18 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","actions"],
+      fields: ["nombre y apellido",
+                "numero de cedula",
+                "cargo", 
+                "Telefono", 
+                "Celular personal", 
+                "Celular corporativo", 
+                "Correo electronico", 
+                "Permisos de consulta",
+                "Nombre de usuario",
+                "Estado",
+                "Acción"
+                ],
       areas: [], 
       editMode:false,
       form:{

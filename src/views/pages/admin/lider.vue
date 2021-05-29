@@ -80,7 +80,7 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Lide de proceso" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Lider de proceso" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">
@@ -251,7 +251,7 @@ export default {
           text: "Gestión corporativa"
         },
         {
-          text: "Areas",
+          text: "Lider",
           active: true
         }
       ],
@@ -276,7 +276,19 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","actions"],
+      fields: [
+          "Nombre y Apellido",
+          "Numero de cedula",
+          "Cargo",
+          "Telefono",
+          "Celular personal",
+          "Celular corporativo",
+          "Correo electronico",
+          "Nombre de usuario",
+          "Estado",
+          "Tipo de proceso al que pertenece",
+          "Proceso que lidera",
+          "actions"],
       areas: [], 
       editMode:false,
       form:{

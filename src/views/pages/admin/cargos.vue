@@ -146,7 +146,7 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión corporativa"
+          text: "Gestión de clientes"
         },
         {
           text: "Cargos",

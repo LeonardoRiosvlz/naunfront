@@ -49,6 +49,11 @@ export const menuItems = [
                 label: 'Consultor',
                 link: '/consultor'
             },
+            {
+                id: 13,
+                label: 'Colaboradores',
+                link: '/colaboradores'
+            },
         ]
     },
     {

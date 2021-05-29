@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Area</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear colaborador</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -80,30 +80,142 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de areas" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Lide de proceso" hide-footer>
           <ValidationObserver ref="form">
+            <b-row class="justify-content-center mb-3">
+                  <div class="col-sm-6">
+                    <label>pefil</label>
+                   <div id="preview mb-2" class="row justify-content-center mb-3">
+                     <img v-if="perfil" width="200px" height="200px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
+                   </div>
+                    <b-form-file
+                        v-model="perfil"
+                        placeholder="Seleccione su foto..."
+                        drop-placeholder="Drop file here..."
+                        @change="onFileChangePerfil"
+                    ></b-form-file>
+               </div>
+            </b-row>
             <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Nombre</label>
-                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                <b-col>
+                    <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <ValidationProvider name="nombre y apellido" rules="required" v-slot="{ errors }">
+                            <input v-model="form.nombre_apellido"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Numero de cedula</label>
+                    <ValidationProvider name="numero de cedula" rules="required" v-slot="{ errors }">
+                        <input v-model="form.numero_cedula"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>
-              <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Descripción</label>
-                  <ValidationProvider name="descripcion" rules="required|alpha_spaces" v-slot="{ errors }">
-                        <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row> 
+
+            <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Cargo</label>
+                    <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
+                            <input v-model="form.cargo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Telefono</label>
+                    <ValidationProvider name="telefono" rules="required" v-slot="{ errors }">
+                        <input v-model="form.telefono"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>         
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row>
+
+
+            <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Celular personal</label>
+                    <ValidationProvider name="celular" rules="required" v-slot="{ errors }">
+                            <input v-model="form.celular_personal"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Celular corporativo</label>
+                    <ValidationProvider name="celular" rules="required" v-slot="{ errors }">
+                        <input v-model="form.celular_corporativo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row>      
+
+             <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Correo electronico</label>
+                    <ValidationProvider name="correo" rules="required" v-slot="{ errors }">
+                            <input v-model="form.email"  type="email" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Nombre de usuario</label>
+                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                        <input v-model="form.nombre_usuario"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row>
+
+             <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Estado</label>
+                    <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
+                          <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
+                              <option value="no activado">No activado</option>
+                              <option value="activado">Ativado</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row>
+
+             <b-row>
+                <b-col>
+                    <div class="form-group">
+                    <label>Tipo de proceso al que pertenece</label>
+                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                            <input v-model="form.tipo_proceso_pertenece"  type="email" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col>
+                    <div class="form-group">
+                    <label>Proceso que lidera</label>
+                    <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
+                        <input v-model="form.proceso_lidera"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                </b-col>
+            </b-row>
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -139,7 +251,7 @@ export default {
           text: "Gestión de clientes"
         },
         {
-          text: "Areas",
+          text: "Colaboradores",
           active: true
         }
       ],
@@ -153,7 +265,7 @@ export default {
       url_firma:"",
       modal: true,
       file:null,
-      firma:null,
+      perfil:null,
       email: "",
       password: "",
       totalRows: 1,
@@ -164,13 +276,34 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","actions"],
+      fields: [
+          "Nombre y Apellido",
+          "Numero de cedula",
+          "Cargo",
+          "Telefono",
+          "Celular personal",
+          "Celular corporativo",
+          "Correo electronico",
+          "Nombre de usuario",
+          "Estado",
+          "Tipo de proceso al que pertenece",
+          "Proceso que lidera",
+          "actions"],
       areas: [], 
       editMode:false,
       form:{
           'id':'',
-          'nombre':'',
-          'descripcion':'',
+          'nombre_apellido':'',
+          'numero_cedula':'',
+          'cargo':'',
+          'telefono':'',
+          'celular_personal':'',
+          'celular_corporativo':'',
+          'email':'',
+          'nombre_usuario':'',
+          'estado':'',
+          'tipo_proceso_pertenece':'',
+          'proceso_lidera':''
       }
     }
   },
@@ -332,6 +465,10 @@ export default {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
       },
+      onFileChangePerfil(e) {
+      const perfil = e.target.files[0];
+      this.url_perfil = URL.createObjectURL(perfil);
+    },
       toggleModal () {
         this.modal = !this.modal
       },
