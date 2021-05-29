@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear lider</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Area</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -80,7 +80,7 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Lide de proceso" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de areas" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">
