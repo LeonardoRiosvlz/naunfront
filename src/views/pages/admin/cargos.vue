@@ -75,17 +75,7 @@
           </div>
         </div>
       </div>
-
-
-
-
-
-
-
     </div>
-
-
-
 
     <b-modal id="modal" false size="lg"  title="Gestión de cargos" hide-footer>
           <ValidationObserver ref="form">
@@ -99,6 +89,18 @@
                   </ValidationProvider>
                 </div>
               </b-col>
+              <b-col>
+                <div class="form-group">
+                <label>Estado</label>
+                <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                        <option value="Administrador">Activo</option>
+                        <option value="Coordinador">No activo</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+                </div>
+            </b-col>
               </b-row>
               <b-row>
               <b-col>
@@ -176,9 +178,13 @@ export default {
       cargos: [], 
       editMode:false,
       form:{
-          'id':'',
-          'cargo':'',
-          'descripcion':'',
+          "id": 6,
+          "nombre": "",
+          "descripcion": "",
+          "status": null,
+          "created_at": "",
+          "updated_at": "",
+          "cliente_id": 1,
       }
     }
   },

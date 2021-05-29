@@ -411,7 +411,7 @@
                         <div class="form-group">
                         <label>Estado</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                            <select v-model="form.estado"  name="tipo" class="form-control form-control-lg" >
+                            <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
                                 <option value="Administrador">Activo</option>
                                 <option value="Coordinador">No activo</option>
                             </select>
@@ -546,7 +546,7 @@ export default {
         'telefono_contacto':'',
         'celular_contacto':'',
         'email_contacto':'',
-        'estado':'',
+        'status':'',
       }
     }
   },

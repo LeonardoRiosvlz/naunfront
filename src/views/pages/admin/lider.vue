@@ -184,15 +184,6 @@
              <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Contraseña</label>
-                    <ValidationProvider name="contraseña" rules="required" v-slot="{ errors }">
-                            <input v-model="form.password"  type="password" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
                     <label>Estado</label>
                     <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
                           <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
