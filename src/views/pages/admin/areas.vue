@@ -168,9 +168,11 @@ export default {
       areas: [], 
       editMode:false,
       form:{
-          'id':'',
-          'nombre':'',
-          'descripcion':'',
+        'id': '',
+        'nombre':'',
+        'descripcion':'',
+        'created_at':'',
+        'updated_at':'',
       }
     }
   },

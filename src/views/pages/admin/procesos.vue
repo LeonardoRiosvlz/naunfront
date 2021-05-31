@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear consultor</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear procesos</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="areas"
+                :items="cargos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -55,9 +55,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarArea(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarCargo(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -77,133 +77,109 @@
       </div>
     </div>
 
-
-
-
-    <b-modal id="modal" false size="lg"  title="Gestión de consultores" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de cargos" hide-footer>
           <ValidationObserver ref="form">
-            <b-row class="justify-content-center mb-3">
-                  <div class="col-sm-6">
-                    <label>pefil</label>
-                   <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <img v-if="perfil" width="200px" height="200px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
-                   </div>
-                    <b-form-file
-                        v-model="perfil"
-                        placeholder="Seleccione su foto..."
-                        drop-placeholder="Drop file here..."
-                        @change="onFileChangePerfil"
-                    ></b-form-file>
-               </div>
-            </b-row>
             <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Nombre y Apellido</label>
-                    <ValidationProvider name="nombre y apellido" rules="required" v-slot="{ errors }">
-                            <input v-model="form.nombre_apellido"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Numero de cedula</label>
-                    <ValidationProvider name="numero de cedula" rules="required" v-slot="{ errors }">
-                        <input v-model="form.numero_cedula"  type="text" class="form-control" placeholder=" " :disabled="ver">
+              <b-col>
+                <div class="form-group">
+                  <label>Tipo de proceso</label>
+                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                        <option value="Administrador">Activo</option>
+                        <option value="Coordinador">No activo</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+                </div>
+              </b-col>
+              <b-col>
+                <div class="form-group">
+                <label>Versión</label>
+                <ValidationProvider name="Versión" rules="required" v-slot="{ errors }">
+                        <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row> 
-
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Cargo</label>
-                    <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.cargo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Telefono</label>
-                    <ValidationProvider name="telefono" rules="required" v-slot="{ errors }">
-                        <input v-model="form.telefono"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+              </b-row>
 
 
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Celular personal</label>
-                    <ValidationProvider name="celular" rules="required" v-slot="{ errors }">
-                            <input v-model="form.celular_personal"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Celular corporativo</label>
-                    <ValidationProvider name="celular" rules="required" v-slot="{ errors }">
-                        <input v-model="form.celular_corporativo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>      
 
-             <b-row>
+              <b-row>
                 <b-col>
-                    <div class="form-group">
-                    <label>Correo electronico</label>
-                    <ValidationProvider name="correo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.email"  type="email" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Nombre de usuario</label>
-                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre_usuario"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
-
-             <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Permiso de consulta</label>
-                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.tipo_proceso_pertenece"  type="email" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Estado</label>
-                    <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                          <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
-                              <option value="no activado">No activado</option>
-                              <option value="activado">Ativado</option>
-                          </select>
+                  <div class="form-group">
+                    <label>Objetivo del proceso</label>
+                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
-                    </div>
+                  </div>
                 </b-col>
-            </b-row>
+                <b-col>
+                  <div class="form-group">
+                  <label>Líder del proceso</label>
+                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                        <option value="Administrador">Activo</option>
+                        <option value="Coordinador">No activo</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row>    
+
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Tiene subprocesos</label>
+                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                      <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                          <option value="Administrador">Si</option>
+                          <option value="Coordinador">No</option>
+                      </select>
+                      <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+                <b-col>
+                  <div class="form-group">
+                  <label>Subprocesos relacionados</label>
+                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row> 
+
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Codigo</label>
+                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+
+                <b-col>
+                  <div class="form-group">
+                  <label>Actividades del subproceso</label>
+                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                          <div class="row m-0">
+                              <input v-model="form.descripcion"  type="text" class="form-control col-8  mr-3" placeholder=" " :disabled="ver">
+                              <b-button class="col-3" pill>Agregar</b-button>
+                          </div>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                   
+                  </div>
+                    
+                </b-col>
+
+              </b-row>    
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -213,6 +189,7 @@
 </template>
 
 <script>
+
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
@@ -239,7 +216,7 @@ export default {
           text: "Gestión de clientes"
         },
         {
-          text: "Consultor",
+          text: "Procesos",
           active: true
         }
       ],
@@ -253,7 +230,7 @@ export default {
       url_firma:"",
       modal: true,
       file:null,
-      perfil:null,
+      firma:null,
       email: "",
       password: "",
       totalRows: 1,
@@ -264,33 +241,17 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre y apellido",
-                "numero de cedula",
-                "cargo", 
-                "Telefono", 
-                "Celular personal", 
-                "Celular corporativo", 
-                "Correo electronico", 
-                "Permisos de consulta",
-                "Nombre de usuario",
-                "Estado",
-                "Acción"
-                ],
-      areas: [], 
+      fields: ["Nombre","Tipo de proceso", "Objetivo","Actions"],
+      cargos: [], 
       editMode:false,
-      form:{
-          'id':'',
-          'nombre_apellido':'',
-          'numero_cedula':'',
-          'cargo':'',
-          'telefono':'',
-          'celular_personal':'',
-          'celular_corporativo':'',
-          'email':'',
-          'nombre_usuario':'',
-          'estado':'',
-          'tipo_proceso_pertenece':'',
-          'proceso_lidera':''
+  form:{
+          "id": 6,
+          "nombre": "",
+          "descripcion": "",
+          "status": null,
+          "created_at": "",
+          "updated_at": "",
+          "cliente_id": 1,
       }
     }
   },
@@ -301,6 +262,7 @@ export default {
     this.listarUsers();
   },
   methods: {
+
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -311,24 +273,24 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarArea();
+              this.agregarCliente();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarAreas();
+            this.editarCargos();
           } else {
         }});
       }
     },
-   async agregarArea(){
-     let data = new FormData();
+   async editarCliente(){
+        let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/areas', data, {
+        await this.axios.post('api/cargos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -337,7 +299,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarAreas();
+               this.listarCargos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -349,16 +311,16 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarAreas(){
+    async editarCliente(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/areas', data).then(response => {
+        await this.axios.put('api/cargos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarAreas();
+               this.listarCargos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -369,10 +331,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarAreas(id){
+     async eliminarCargos(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/areas/delete',data, {
+        await this.axios.post('api/cargos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -382,16 +344,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarAreas();
+                this.listarCargos();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarAreas(id){
+      eliminarCargo(id){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea borrar este cargo?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -400,7 +362,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarAreas(id);
+            this.eliminarCargos(id);
           }
         })
       },
@@ -411,20 +373,20 @@ export default {
        }
       },
       setear(id) {
-        for (let index = 0; index < this.areas.length; index++) {
-          if (this.areas[index].id===id) {
-            this.form.id=this.areas[index].id;
-            this.form.nombre=this.areas[index].nombre;
-            this.form.descripcion=this.areas[index].descripcion;
+        for (let index = 0; index < this.cargos.length; index++) {
+          if (this.cargos[index].id===id) {
+            this.form.id=this.cargos[index].id;
+            this.form.cargo=this.cargos[index].cargo;
+            this.form.descripcion=this.cargos[index].descripcion;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-      listarAreas(){
-        this.axios.get('api/areas')
+    async  listarCargos(){
+       await this.axios.get('api/cargos')
         .then((response) => {
-          this.areas = response.data.rows;
+          this.cargos = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -452,10 +414,6 @@ export default {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
       },
-      onFileChangePerfil(e) {
-      const perfil = e.target.files[0];
-      this.url_perfil = URL.createObjectURL(perfil);
-    },
       toggleModal () {
         this.modal = !this.modal
       },
@@ -470,11 +428,15 @@ export default {
   },
     created(){
         this.session();
-        this.listarAreas();
+        this.listarCargos();
+
       },
+     mounted() {
+
+    },
     computed: {
     rows() {
-      return this.areas.length;
+      return this.cargos.length;
     },
   },
 }

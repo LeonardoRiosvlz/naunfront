@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="cargos"
+                :items="clientes"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -48,6 +48,17 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+               <template v-slot:cell(contacto)="data">
+                  {{data.item.nombre_contacto}}
+               </template>
+              <template v-slot:cell(documento)="data">
+                  {{data.item.tipo_documento}}-{{data.item.numero_documento}} 
+               </template>
+               <template v-slot:cell(estado)="data">
+                  <b-badge v-if="data.item.user.status === 'activo'" variant="success">ACTIVO </b-badge>
+                  <b-badge v-else variant="danger">NO ACTIVO</b-badge>
+               </template>
+               
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -168,7 +179,7 @@
                 <div class="col-sm-6">
                    <label class="links">Codigo del departamento</label>
                    <div class="form-group">
-                       <ValidationProvider name="codigo del departamento" rules="required|alpha_spaces" v-slot="{ errors }">
+                       <ValidationProvider name="codigo del departamento" rules="required" v-slot="{ errors }">
                             <input v-model="form.codigo_departamento"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -182,8 +193,8 @@
                 <b-col>
                     <div class="form-group">
                     <label>Municipio</label>
-                    <ValidationProvider name="tipo" rules="municipio" v-slot="{ errors }">
-                          <input v-model="form.municipio" name="tipo" class="form-control form-control-lg"  placeholder=" " :disabled="ver">
+                    <ValidationProvider name="municipio" rules="required" v-slot="{ errors }">
+                          <input v-model="form.municipio" name="municipio" class="form-control form-control-lg"  placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
@@ -420,11 +431,18 @@
                         </div>
                     </b-col>
                 </b-row>
+
+                <pre>
+                  {{form}}
+                </pre>
+
         </ValidationObserver>
 
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
+
+    
 
   </Layout>
 </template>
@@ -484,36 +502,17 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-            "Tipo de cliente",
-            "Tipo de documento",
-            "Numero de documento", 
-            "Departamento", 
-            "Codigo de departamento", 
-            "Municipio", 
-            "Codigo de municipio", 
-            "Naturaleza jurídica", 
-            "Nombre del prestador",
-            "Codigo del prestador",
-            "Codigo",
-            "Clase del prestador",
-            "ESE",
-            "Dirección",
-            "Telefono",
-            "Fax",
-            "Celular",
+            "contacto",
+            "tipo_cliente",
+            "documento",
+            "departamento", 
+            "municipio", 
+            "naturaleza_juridica", 
             "email",
-            "Razon social",
-            "Representante legal",
-            "Numero de sede",
-            "Nivel de atención",
-            "Caracter territorial",
-            "Nombre del contacto",
-            "Telefono del contacto",
-            "Celular del contacto",
-            "email del contacto",
-            "Estado"
+            "estado",
+            "actions"
             ],
-      cargos: [], 
+      clientes: [], 
       editMode:false,
       form:{
         'id':'', 
@@ -620,7 +619,7 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/cargos', data).then(response => {
+        await this.axios.put('api/clientes', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarCargos();
@@ -676,20 +675,53 @@ export default {
        }
       },
       setear(id) {
-        for (let index = 0; index < this.cargos.length; index++) {
-          if (this.cargos[index].id===id) {
-            this.form.id=this.cargos[index].id;
-            this.form.cargo=this.cargos[index].cargo;
-            this.form.descripcion=this.cargos[index].descripcion;
+        for (let index = 0; index < this.clientes.length; index++) {
+          if (this.clientes[index].id===id) {
+
+            this.form.id =this.clientes[index].id;
+            this.form.logo=this.clientes[index].logo;
+            this.form.tipo_cliente=this.clientes[index].tipo_cliente;
+            this.form.tipo_documento=this.clientes[index].tipo_documento;
+            this.form.numero_documento=this.clientes[index].numero_documento;
+            this.form.departamento=this.clientes[index].departamento;
+            this.form.codigo_departamento=this.clientes[index].codigo_departamento;
+            this.form.municipio=this.clientes[index].municipio;
+            this.form.codigo_municipio=this.clientes[index].codigo_municipio;
+            this.form.naturaleza_juridica=this.clientes[index].naturaleza_juridica;
+            this.form.nombre_prestador=this.clientes[index].nombre_prestador;        
+            this.form.codigo_prestador=this.clientes[index].codigo_prestador;
+            this.form.codigo=this.clientes[index].codigo;
+            this.form.clase_prestador=this.clientes[index].clase_prestador;
+            this.form.ese=this.clientes[index].ese;
+            this.form.direccion=this.clientes[index].direccion;
+            this.form.telefono=this.clientes[index].telefono;
+            this.form.fax=this.clientes[index].fax;
+            this.form.celular=this.clientes[index].celular;
+            this.form.email=this.clientes[index].email;
+            this.form.razon_social=this.clientes[index].razon_social;
+            this.form.representante_legal=this.clientes[index].representante_legal;
+            this.form.numero_sede=this.clientes[index].numero_sede;    
+            this.form.nivel_atencion=this.clientes[index].nivel_atencion;
+            this.form.caracter_territorial=this.clientes[index].caracter_territorial;
+            this.form.nombre_contacto=this.clientes[index].nombre_contacto;
+            this.form.cargo_contacto=this.clientes[index].cargo_contacto;
+            this.form.telefono_contacto=this.clientes[index].telefono_contacto;
+            this.form.celular_contacto=this.clientes[index].celular_contacto;
+            this.form.email_contacto=this.clientes[index].email_contacto;
+            this.form.status=this.clientes[index].status;
+
+
+
+
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
     async  listarCargos(){
-       await this.axios.get('api/cargos')
+       await this.axios.get('api/clientes')
         .then((response) => {
-          this.cargos = response.data.rows;
+          this.clientes = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -743,7 +775,7 @@ export default {
     },
     computed: {
     rows() {
-      return this.cargos.length;
+      return this.clientes.length;
     },
   },
 }

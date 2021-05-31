@@ -80,22 +80,8 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Lide de proceso" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de colaboradores" hide-footer>
           <ValidationObserver ref="form">
-            <b-row class="justify-content-center mb-3">
-                  <div class="col-sm-6">
-                    <label>pefil</label>
-                   <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <img v-if="perfil" width="200px" height="200px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
-                   </div>
-                    <b-form-file
-                        v-model="perfil"
-                        placeholder="Seleccione su foto..."
-                        drop-placeholder="Drop file here..."
-                        @change="onFileChangePerfil"
-                    ></b-form-file>
-               </div>
-            </b-row>
             <b-row>
                 <b-col>
                     <div class="form-group">
@@ -194,24 +180,12 @@
                     </ValidationProvider>
                     </div>
                 </b-col>
-            </b-row>
-
-             <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Tipo de proceso al que pertenece</label>
-                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                    <label>Permisos</label>
+                    <ValidationProvider name="permisos" rules="required" v-slot="{ errors }">
                             <input v-model="form.tipo_proceso_pertenece"  type="email" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Proceso que lidera</label>
-                    <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
-                        <input v-model="form.proceso_lidera"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>
@@ -286,8 +260,7 @@ export default {
           "Correo electronico",
           "Nombre de usuario",
           "Estado",
-          "Tipo de proceso al que pertenece",
-          "Proceso que lidera",
+          "Permisos",
           "actions"],
       areas: [], 
       editMode:false,

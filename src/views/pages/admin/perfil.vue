@@ -1,7 +1,13 @@
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-          <b-card
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card p-4">
+          <div class=" px-3 row justify-content-center">
+            <img src="@/assets/images/perfil.png" width="200px" height="200px" style="border-radius:100%" alt="">
+          </div>
+                    <b-card
             no-body
             style="max-width: 20rem;"
             :img-src="usuarioDB.imagen"
@@ -9,11 +15,8 @@
             img-top
             class="rounded"
         >
-            <template #header>
-            <h4 class="mb-0">{{usuarioDB.rol}}</h4>
-            </template>
             <b-card-body>
-            <b-card-sub-title class="mb-2">{{usuarioDB.nombre}} {{usuarioDB.apellido}}</b-card-sub-title>
+              <b-card-sub-title class="mb-2">{{usuarioDB.nombre}} {{usuarioDB.apellido}}</b-card-sub-title>
             </b-card-body>
             <b-list-group flush>
             <b-list-group-item @click="editar()">Editar Perfil</b-list-group-item>
@@ -22,6 +25,31 @@
 
             <b-card-footer>This is a footer</b-card-footer>
         </b-card>
+        </div>
+      </div>
+      
+    <div class="col-md-8">
+      <div class="card">
+        <div class="p-4 row justify-content-between">
+          <div class=" px-3">
+            <h3 class="mb-2 nombre">Daniela Rodriguez</h3>
+            <p>Gerente de Biocenter</p>
+          </div>
+          <h5 class="mb-0">{{usuarioDB.rol}}</h5>
+        </div>
+      </div>
+      </div>
+    </div>
+      
+      
+    
+
+
+
+
+
+
+
 
 
     <b-modal id="modal" false size="lg"  title="Gestión de usuarios"  hide-footer>
@@ -318,3 +346,8 @@ export default {
   },
 }
 </script>
+<style>
+  .nombre{
+    font-size:2rem;
+  }
+</style>

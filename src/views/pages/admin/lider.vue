@@ -80,7 +80,7 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Lider de proceso" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestion de lideres de proceso" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">

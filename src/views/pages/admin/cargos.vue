@@ -92,7 +92,7 @@
               <b-col>
                 <div class="form-group">
                 <label>Estado</label>
-                <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
                     <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
                         <option value="Administrador">Activo</option>
                         <option value="Coordinador">No activo</option>

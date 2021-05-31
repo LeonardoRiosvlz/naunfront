@@ -64,12 +64,12 @@ export const menuItems = [
             {
                 id: 12,
                 label: 'Tipos de procesos',
-                link: '/cajeros'
+                link: '/tipos-de-procesos'
             },
             {
                 id: 13,
                 label: 'Procesos',
-                link: 'fst'
+                link: '/procesos'
             },
             {
                 id: 14,
