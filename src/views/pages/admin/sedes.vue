@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear sedes</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear sedes</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -55,7 +55,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarCargo(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarSede(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -143,9 +143,6 @@
           <ValidationObserver ref="form">
 
             <h5>Datos de la sede</h5>
-
-
-
              <b-row>
                 <b-col>
                     <div class="form-group">
@@ -168,8 +165,6 @@
                    </div>
                 </div>
             </b-row>      
-
-
             <b-row>
               <b-col>
                     <div class="form-group">
@@ -190,7 +185,6 @@
                     </div>
                 </b-col>
             </b-row> 
-
             <b-row>
                 <div class="col-sm-6">
                    <label class="links">Nombre de la sede</label>
@@ -210,8 +204,7 @@
                         </ValidationProvider>
                    </div>
                 </div>
-            </b-row>
-
+             </b-row>
               <b-row>
                <b-col>
                     <div class="form-group">
@@ -235,7 +228,6 @@
                     </div>
                 </b-col>
             </b-row>
-
             <b-row>
                <b-col>
                     <div class="form-group">
@@ -249,20 +241,16 @@
                         </ValidationProvider>
                     </div>
                 </b-col>
-                <b-col>
-                    <div class="form-group">
-                        <label>Nombre del gerente</label>
-                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                            <input v-model="form.nombre_gerente"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
-
-           
-
-
+                  <b-col>
+                      <div class="form-group">
+                          <label>Nombre del gerente</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                              <input v-model="form.nombre_gerente"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                      </div>
+                  </b-col>
+              </b-row>
                 <b-row>
                     <b-col>
                         <div class="form-group">
@@ -283,8 +271,6 @@
                         </div>
                     </b-col>
                 </b-row>
-
-
                 <b-row>
                     <b-col>
                         <div class="form-group">
@@ -305,7 +291,6 @@
                         </div>
                     </b-col>
                 </b-row>
-        
                 <b-row>
                     <div class="col-sm-6">
                         <label class="links">Correo electronico</label>
@@ -326,8 +311,6 @@
                         </div>
                     </b-col>
                 </b-row>
-
-
                 <b-row>
                     <div class="col-sm-6">
                         <label class="links">Nombre del contacto</label>
@@ -348,7 +331,6 @@
                         </div>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <div class="col-sm-6">
                         <label class="links">Telefono</label>
@@ -369,7 +351,6 @@
                         </div>
                     </b-col>
                 </b-row>
-
                  <b-row>
                     <div class="col-sm-6">
                         <label class="links">Celular corporativo</label>
@@ -384,7 +365,7 @@
                         <div class="form-group">
                         <label>Correo electronico</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.email_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <input v-model="form.email_cotacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -397,7 +378,7 @@
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
                         <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
                             <option value="Activo">Activo</option>
-                            <option value="No activo">No activo</option>
+                            <option value="Inactivo">Inactivo</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -503,8 +484,7 @@ export default {
         'celular_corporativo':'',
         'email_contacto':'',
         'status':'',
-        'created_at':'',
-        'updated_at':''
+        'cliente_id':''
       }
     }
   },
@@ -525,27 +505,24 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarContacto();
+              this.agregarSedes();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarCargos();
+            this.editarSedes();
           } else {
         }});
       }
     },
 
-   async agregarContacto(){
+   async agregarSedes(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        if (this.file) {
-        data.append('filename',this.file);
-       }
        await this.axios.post('api/sedes', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -558,40 +535,35 @@ export default {
                this.listarSedes();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
+              this.resete();
               }
             }).catch(e => {
               console.log(e.response.data.menssage);
               this.$swal(e.response.data);
           });
       },
-
-    async editarCargos(){
+    async editarSedes(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/sedes', data).then(response => {
+        await this.axios.put('api/sedes',data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarSedes();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
+              this.resete();
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
-            });
+         });
      },
-     async eliminarCargos(id){
+     async eliminarSedes(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/cargos/delete',data, {
+        await this.axios.post('api/sedes/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -608,9 +580,9 @@ export default {
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarCargo(id){
+      eliminarSede(id){
         this.$swal({
-          title: 'Desea borrar este cargo?',
+          title: 'Desea borrar esta sede?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -627,7 +599,8 @@ export default {
         var formulario = this.form;
         for (var key in formulario) {
              this.form[key]="";
-       }
+         }
+         this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
         for (let index = 0; index < this.sedes.length; index++) {
@@ -657,7 +630,7 @@ export default {
             this.form.celular_corporativo =this.sedes[index].celular_corporativo
             this.form.email_cotacto =this.sedes[index].email_cotacto
             this.form.status=this.sedes[index].status
-
+            this.form.cliente_id=this.sedes[index].cliente_id
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }

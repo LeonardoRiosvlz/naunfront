@@ -548,7 +548,9 @@ export default {
       }
     }
   },
-
+  computed:{
+        ...mapState(['counter'])
+   },
   created(){
     this.listarUsers();
     console.log(this.colombia)
