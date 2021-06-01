@@ -15,6 +15,7 @@ const store = new Vuex.Store({
   state:{
     token:'',
     usuarioDB:'',
+    cliente:'2',
     counter:'s',
     load:false
 },
@@ -39,6 +40,9 @@ mutations:{
     cerrsarSession(state){
         state.usuarioDB=''
     },
+    setearCliente(state,payload){
+        state.cliente=payload
+    },
     cargars(state){
         state.load=!state.load;
     }
@@ -50,6 +54,9 @@ actions:{
     },
     cerrarSession({commit}){
         commit('cerrsarSession')
+    },
+    SetCliente({commit},payload){
+        commit('setearCliente', payload)
     },
     cargar({commit}){
         commit('cargars')
