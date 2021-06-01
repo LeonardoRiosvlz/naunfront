@@ -243,7 +243,8 @@ export default {
                       <router-link
                         :to="subSubitem.link"
                         class="side-nav-link-ref"
-                        >{{ $t(subSubitem.label) }}</router-link
+                        >
+                        {{ $t(subSubitem.label) }}</router-link
                       >
                     </li>
                   </ul>
@@ -251,7 +252,17 @@ export default {
               </ul>
             </li>
           </template>
-
+             <li>
+                <router-link
+                  to="/notificaciones"
+                  class="side-nav-link-ref"
+                  >
+                  <i class="ri-notification-3-line"></i>
+                  <span>
+                    Notificaciones
+                  </span>
+                </router-link >
+              </li>
         </ul>
       </div>
       <!-- Sidebar -->
