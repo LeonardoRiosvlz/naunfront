@@ -1,8 +1,8 @@
 export const state = {
   layoutType: 'vertical',
   layoutWidth: 'fluid',
-  leftSidebarType: 'dark',
-  topbar: 'dark',
+  leftSidebarType: 'light',
+  topbar: 'ligth',
   loader: false
 }
 
