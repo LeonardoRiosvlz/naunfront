@@ -107,9 +107,9 @@
                     <label>Tipo de cliente</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
                           <select v-model="form.tipo_cliente" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Persona jurídica</option>
-                              <option value="Coordinador">Profesional</option>
-                              <option value="Tecnico">Independiente</option>
+                              <option value="Persona jurídica">Persona jurídica</option>
+                              <option value="Profesional">Profesional</option>
+                              <option value="Independiente">Independiente</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -120,9 +120,9 @@
                     <label>Tipo de documento</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
                           <select v-model="form.tipo_documento" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Nit</option>
-                              <option value="Coordinador">Cedula ciudadanía</option>
-                              <option value="Tecnico">Cedula extranjería</option>
+                              <option value="Nit">Nit</option>
+                              <option value="Cedula ciudadanía">Cedula ciudadanía</option>
+                              <option value="Cedula extranjería">Cedula extranjería</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -134,7 +134,7 @@
 
             <b-row>
                 <b-col>
-                   <label class="links">Numero del documento</label>
+                   <label class="links">Número del documento</label>
                    <div class="form-group">
                        <ValidationProvider name="numero" rules="required" v-slot="{ errors }">
                             <input v-model="form.numero_documento"  type="text" class="form-control" placeholder=" " :disabled="ver">
@@ -169,8 +169,8 @@
                     <div class="form-group">
                         <label>Departamento</label>
                         <ValidationProvider name="departamento" rules="required" v-slot="{ errors }">
-                            <select v-model="form.departamento" name="ciudad" class="form-control" :disabled="ver" >
-                                <option v-for="departamento in colombia" :value="departamento.departamento" :key="departamento.id">{{departamento.departamento}}</option>
+                            <select v-model="form.codigo_departamento" @change="depp()" name="ciudad" class="form-control" :disabled="ver" >
+                                <option v-for="departamento in colombia" :value="departamento.id" :key="departamento.id">{{departamento.departamento}}</option>
                             </select>
                         <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -218,9 +218,9 @@
                     <label>Naturaleza jurídica</label>
                     <ValidationProvider name="naturaleza jurídica" rules="required" v-slot="{ errors }">
                           <select v-model="form.naturaleza_juridica" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Privada</option>
-                              <option value="Coordinador">Mixta</option>
-                              <option value="Tecnico">Publica</option>
+                              <option value="Privada">Privada</option>
+                              <option value="Mixta">Mixta</option>
+                              <option value="Publica">Publica</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -231,10 +231,10 @@
                         <label>Clase de prestador</label>
                         <ValidationProvider name="clase de prestador" rules="required" v-slot="{ errors }">
                           <select v-model="form.clase_prestador" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Instituciones –IPS</option>
-                              <option value="Coordinador">Profesional independiente</option>
-                              <option value="Tecnico">Transporte especial de pacientes</option>
-                              <option value="Tecnico">Objeto social diferente a la prestación de servicios de salud</option>
+                              <option value="Instituciones –IP">Instituciones –IPS</option>
+                              <option value="Profesional independiente">Profesional independiente</option>
+                              <option value="Transporte especial de pacientes">Transporte especial de pacientes</option>
+                              <option value="Objeto social diferente a la prestación de servicios de salud">Objeto social diferente a la prestación de servicios de salud</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -245,8 +245,8 @@
                     <label>ESE</label>
                     <ValidationProvider name="ESE" rules="required" v-slot="{ errors }">
                           <select v-model="form.ese" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Si</option>
-                              <option value="Coordinador">No</option>
+                              <option value="Si">Si</option>
+                              <option value="No">No</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -331,11 +331,13 @@
                 </b-col>
                  <b-col>
                     <div class="form-group">
-                    <label>Nivel de atencion</label>
+                    <label>Nivel de atención</label>
                     <ValidationProvider name="nivel de atención" rules="required" v-slot="{ errors }">
-                          <select v-model="form.razon_social" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Si</option>
-                              <option value="Coordinador">No</option>
+                          <select v-model="form.nivel_atencion" name="tipo" class="form-control form-control-lg" >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -350,11 +352,11 @@
                     <label>Caracter territorial</label>
                     <ValidationProvider name="caracter territorial" rules="required" v-slot="{ errors }">
                           <select v-model="form.caracter_territorial" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Nacional</option>
-                              <option value="Coordinador">Deparatamental</option>
-                              <option value="Coordinador">Distrital</option>
-                              <option value="Coordinador">Municipal</option>
-                              <option value="Coordinador">Indigena</option>
+                              <option value="Nacional">Nacional</option>
+                              <option value="Deparatamental">Deparatamental</option>
+                              <option value="Distrital">Distrital</option>
+                              <option value="Municipal">Municipal</option>
+                              <option value="Indigena">Indigena</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -377,7 +379,7 @@
                         <div class="form-group">
                         <label>Cargo</label>
                         <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
-                                <input v-model="form.cargos_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <input v-model="form.cargo_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -388,9 +390,9 @@
                 <b-row>
                     <b-col>
                         <div class="form-group">
-                            <label>Telefono</label>
+                            <label>Telefono contacto</label>
                             <ValidationProvider name="telefono" rules="required" v-slot="{ errors }">
-                                <input v-model="form.telenfono_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <input v-model="form.telefono_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -423,8 +425,8 @@
                         <label>Estado</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
                             <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
-                                <option value="Administrador">Activo</option>
-                                <option value="Coordinador">No activo</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -442,7 +444,8 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
 
-    
+
+ 
 
   </Layout>
 </template>
@@ -558,7 +561,8 @@ export default {
   },
   methods: {
     depp(){
-      this.form.departamento=this.colombia[this.form.dep].departamento;
+      this.form.departamento=this.colombia[this.form.codigo_departamento].departamento;
+      console.log(this.colombia[this.form.codigo_departamento].departamento);
     },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -576,7 +580,7 @@ export default {
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarCargos();
+            this.editarContacto();
           } else {
         }});
       }
@@ -600,7 +604,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarCargos();
+               this.listarContactos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -613,7 +617,7 @@ export default {
           });
       },
 
-    async editarCargos(){
+    async editarContacto(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
@@ -622,7 +626,7 @@ export default {
         await this.axios.put('api/clientes', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarCargos();
+               this.listarContactos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -708,7 +712,10 @@ export default {
             this.form.telefono_contacto=this.clientes[index].telefono_contacto;
             this.form.celular_contacto=this.clientes[index].celular_contacto;
             this.form.email_contacto=this.clientes[index].email_contacto;
-            this.form.status=this.clientes[index].status;
+            this.form.status=this.clientes[index].user.status;
+            this.url_logo=this.clientes[index].user.imagen;
+            this.form.user_id=this.clientes[index].user_id;
+            ///this.depp();
 
 
 
@@ -718,7 +725,7 @@ export default {
           }
         }
       },
-    async  listarCargos(){
+    async  listarContactos(){
        await this.axios.get('api/clientes')
         .then((response) => {
           this.clientes = response.data.rows;
@@ -767,7 +774,7 @@ export default {
   },
     created(){
         this.session();
-        this.listarCargos();
+       this.listarContactos();
 
       },
      mounted() {
