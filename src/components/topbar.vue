@@ -77,7 +77,7 @@
           <div class="px-lg-2">
             <div class="row no-gutters">
               <div class="col-4" v-for="clientes in clientes" :key="clientes.id">
-                <a class="dropdown-icon-item" href="javascript: void(0);" @click="cambiarCliente(clientes.id)">
+                <a class="dropdown-icon-item" href="javascript: void(0);" @click="cambiarCliente(clientes)">
                   <img :src="clientes.user.imagen" alt="Github" v-if="clientes.user.imagen" />
                   <img v-else src="@/assets/images/brands/slack.png" alt="Github" />
                   <span>{{clientes.nombre_prestador}}</span>
