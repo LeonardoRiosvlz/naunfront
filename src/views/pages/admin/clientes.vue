@@ -441,7 +441,7 @@
      </b-modal>
 
 
- 
+  {{cliente}}
 
   </Layout>
 </template>
@@ -777,6 +777,7 @@ export default {
 
     },
     computed: {
+      ...mapState(['usuarioDB','cliente']),
     rows() {
       return this.clientes.length;
     },

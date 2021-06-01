@@ -336,6 +336,7 @@ export default {
         this.listarterceros();
       },
     computed: {
+      ...mapState(['usuarioDB']),
     rows() {
        return this.terceros.length
     },

@@ -76,74 +76,11 @@
           </template>
           <div class="px-lg-2">
             <div class="row no-gutters">
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
-                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
-                </a>
-              </div>
-              <div class="col-4">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
-                  <span>{{ $t('navbar.dropdown.site.list.dribbble') }}</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="row no-gutters">
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
-                  <span>{{ $t('navbar.dropdown.site.list.dropbox') }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/mail_chimp.png" alt="mail_chimp" />
-                  <span>{{ $t('navbar.dropdown.site.list.mailchimp') }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/slack.png" alt="slack" />
-                  <span>{{ $t('navbar.dropdown.site.list.slack') }}</span>
+              <div class="col-4" v-for="clientes in clientes" :key="clientes.id">
+                <a class="dropdown-icon-item" href="javascript: void(0);" @click="cambiarCliente(clientes.id)">
+                  <img :src="clientes.user.imagen" alt="Github" v-if="clientes.user.imagen" />
+                  <img v-else src="@/assets/images/brands/slack.png" alt="Github" />
+                  <span>{{clientes.nombre_prestador}}</span>
                 </a>
               </div>
             </div>
@@ -263,6 +200,7 @@ export default {
       user: '',
       message: '',
       messages: [],
+      clientes: [],
       notificaciones: [],
       languages: [
       ],
@@ -271,7 +209,7 @@ export default {
   },
   components: { simplebar },
   computed:{
-    ...mapState(['usuarioDB'])
+    ...mapState(['usuarioDB','cliente'])
  },
     filters: {
         capitalize: function (value) {
@@ -293,7 +231,11 @@ export default {
         });
         this.message = ''
     }, 
-    ...mapActions(['cerrarSession','cargar']),
+    ...mapActions(['cerrarSession','cargar','SetCliente']),
+    cambiarCliente(index){
+      console.log("h2y");
+      this.SetCliente(index);
+    },
      salir(){
       localStorage.removeItem('token');
       this.$router.push({ name: '/' });
@@ -352,9 +294,20 @@ export default {
           }
         }).catch(e => { 
     });
-    }
+    },
+   async  listarContactos(){
+    await this.axios.get('api/clientes')
+      .then((response) => {
+        this.clientes = response.data.rows;
+      })
+      .catch((e)=>{
+        console.log('error' + e);
+      })
   },
+  },
+
   created(){
+      this.listarContactos();
       this.listarNotificaciones();
       this.socket.on('connect', () => {
         this.chanel(this.socket.id)
