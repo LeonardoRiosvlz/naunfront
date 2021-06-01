@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="cargos"
+                :items="sedes"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -80,39 +80,48 @@
         <b-card>  
           <h5>Datos generales del prestador</h5>
           <b-row>
-              <div class="col-3">
-                  <p>Tipo de cliente</p>
+              <div class="col-3 mb-2">
+                  <p class="m-0">Tipo de cliente</p>
+                  <strong>{{cliente.tipo_cliente}}</strong>
               </div>
               <div class="col-3">
-                  <p>Tipo de documento</p>
+                  <p class="m-0">Tipo de documento</p>
+                  <strong>{{cliente.tipo_documento}}</strong>
               </div>
               <div class="col-3">
-                  <p>Nombre del prestador</p>
+                  <p class="m-0">Nombre del prestador</p>
+                  <strong>{{cliente.nombre_prestador}}</strong>
               </div>
               <div class="col-3">
-                  <p>Codigo de prestador</p>
+                  <p class="m-0">Codigo de prestador</p>
+                  <strong>{{cliente.codigo_prestador}}</strong>
               </div>
           </b-row>
 
           <b-row>
               <div class="col-3">
-                  <p>Departamento</p>
+                  <p class="m-0">Departamento</p>
+                  <strong>{{cliente.departamento}}</strong>
               </div>
               <div class="col-3">
-                  <p>Codigo de departamento</p>
+                  <p class="m-0">Codigo de departamento</p>
+                  <strong>{{cliente.codigo_departamento}}</strong>
               </div>
               <div class="col-3">
-                  <p>Municipio</p>
+                  <p class="m-0">Municipio</p>
+                  <strong>{{cliente.municipio}}</strong>
               </div>
               <div class="col-3">
-                  <p>Codigo de municipio</p>
+                  <p class="m-0">Codigo de municipio</p>
+                  <strong>{{cliente.codigo_municipio}}</strong>
               </div>
           </b-row>
 
 
           <b-row>
               <div class="col-3">
-                  <p>Naturaleza jurídica</p>
+                  <p class="m-0">Naturaleza jurídica</p>
+                  <strong></strong>
               </div>
               <div class="col-3">
                   <p>Clase de prestador</p>
@@ -398,7 +407,7 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-
+      {{sedes}}
   </Layout>
 </template>
 
@@ -457,13 +466,14 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-        'Nombre de la sede',
-        'Codigo de la sede',
-        'Numero de sede',
-        'Dirección',
-        'Estado',
-        'Acción'
+        'nombre',
+        'codigo_sede',
+        'numero_sede',
+        'direccion',
+        'status',
+        'actions'
             ],
+      sedes:[],
       cargos: [], 
       editMode:false,
       form:{
@@ -496,13 +506,8 @@ export default {
       }
     }
   },
-  computed:{
-        ...mapState(['counter'])
-   },
-  created(){
-    this.listarUsers();
-    console.log(this.colombia)
-  },
+
+
   methods: {
     depp(){
       this.form.departamento=this.colombia[this.form.dep].departamento;
@@ -538,7 +543,7 @@ export default {
         if (this.file) {
         data.append('filename',this.file);
        }
-       await this.axios.post('api/clientes', data, {
+       await this.axios.post('api/sedes', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -547,7 +552,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarCargos();
+               this.listarSedes();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -566,10 +571,10 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/cargos', data).then(response => {
+        await this.axios.put('api/sedes', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarCargos();
+               this.listarSedes();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -593,7 +598,7 @@ export default {
                       '',
                       'success'
                 );
-                this.listarCargos();
+                this.listarSedes();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
@@ -622,25 +627,57 @@ export default {
        }
       },
       setear(id) {
-        for (let index = 0; index < this.cargos.length; index++) {
-          if (this.cargos[index].id===id) {
-            this.form.id=this.cargos[index].id;
-            this.form.cargo=this.cargos[index].cargo;
-            this.form.descripcion=this.cargos[index].descripcion;
+        for (let index = 0; index < this.sedes.length; index++) {
+          if (this.sedes[index].id===id) {
+
+            this.form.id =this.sedes[index].id
+            this.form.nombre =this.sedes[index].nombre
+            this.form.departamento =this.sedes[index].departamento
+            this.form.codigo_departamento =this.sedes[index].codigo_departamento
+            this.form.municipio =this.sedes[index].municipio
+            this.form.codigo_municipio =this.sedes[index].codigo_municipio
+            this.form.codigo_sede =this.sedes[index].codigo_sede
+            this.form.sede_principal =this.sedes[index].sede_principal
+            this.form.numero_sede =this.sedes[index].numero_sede
+            this.form.zona =this.sedes[index].zona
+            this.form.nombre_gerente =this.sedes[index].nombre_gerente
+            this.form.direccion =this.sedes[index].direccion
+            this.form.barrio =this.sedes[index].barrio
+            this.form.centro_poblado  =this.sedes[index].centro_poblado     
+            this.form.fax =this.sedes[index].fax
+            this.form.telefono =this.sedes[index].telefono
+            this.form.email =this.sedes[index].email
+            this.form.nombre_contacto =this.sedes[index].nombre_contacto
+            this.form.cargo =this.sedes[index].cargo
+            this.form.telefono_contacto =this.sedes[index].telefono_contacto
+            this.form.celular_persona =this.sedes[index].celular_persona
+            this.form.celular_corporativo =this.sedes[index].celular_corporativo
+            this.form.email_cotacto =this.sedes[index].email_cotacto
+            this.form.status=this.sedes[index].status
+
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async  listarCargos(){
-       await this.axios.get('api/cargos')
-        .then((response) => {
-          this.cargos = response.data.rows;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
+    async  listarSedes(){
+
+       let data = new FormData();
+         data.append("cliente_id",this.cliente.id);
+        await this.axios.post('api/sedes/listar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                  this.sedes = response.data.rows
+                }
+              }).catch(e => {
+                console.log(e.response.data.menssage);
+                this.$swal(e.response.data);
+          });
+
       },
+
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -681,15 +718,18 @@ export default {
   },
     created(){
         this.session();
-        this.listarCargos();
+        this.listarSedes();
 
       },
+
      mounted() {
 
     },
+
     computed: {
+      ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.cargos.length;
+      return this.sedes.length;
     },
   },
 }
