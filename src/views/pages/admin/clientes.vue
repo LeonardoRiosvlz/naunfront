@@ -119,7 +119,7 @@
                     <div class="form-group">
                     <label>Tipo de documento</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo_documento" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.tipo_documento" name="tipo" :disabled="ver" class="form-control form-control-lg" >
                               <option value="Nit">Nit</option>
                               <option value="Cedula ciudadanía">Cedula ciudadanía</option>
                               <option value="Cedula extranjería">Cedula extranjería</option>
@@ -217,7 +217,7 @@
                     <div class="form-group">
                     <label>Naturaleza jurídica</label>
                     <ValidationProvider name="naturaleza jurídica" rules="required" v-slot="{ errors }">
-                          <select v-model="form.naturaleza_juridica" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.naturaleza_juridica" :disabled="ver" name="tipo" class="form-control form-control-lg" >
                               <option value="Privada">Privada</option>
                               <option value="Mixta">Mixta</option>
                               <option value="Publica">Publica</option>
@@ -230,7 +230,7 @@
                     <div class="form-group">
                         <label>Clase de prestador</label>
                         <ValidationProvider name="clase de prestador" rules="required" v-slot="{ errors }">
-                          <select v-model="form.clase_prestador" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.clase_prestador" name="tipo" :disabled="ver" class="form-control form-control-lg" >
                               <option value="Instituciones –IP">Instituciones –IPS</option>
                               <option value="Profesional independiente">Profesional independiente</option>
                               <option value="Transporte especial de pacientes">Transporte especial de pacientes</option>
@@ -244,7 +244,7 @@
                     <div class="form-group">
                     <label>ESE</label>
                     <ValidationProvider name="ESE" rules="required" v-slot="{ errors }">
-                          <select v-model="form.ese" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.ese" name="tipo" :disabled="ver" class="form-control form-control-lg" >
                               <option value="Si">Si</option>
                               <option value="No">No</option>
                           </select>
@@ -333,7 +333,7 @@
                     <div class="form-group">
                     <label>Nivel de atención</label>
                     <ValidationProvider name="nivel de atención" rules="required" v-slot="{ errors }">
-                          <select v-model="form.nivel_atencion" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.nivel_atencion" :disabled="ver" name="tipo" class="form-control form-control-lg" >
                               <option value="1">1</option>
                               <option value="2">2</option>
                               <option value="3">3</option>
@@ -351,7 +351,7 @@
                     <div class="form-group">
                     <label>Caracter territorial</label>
                     <ValidationProvider name="caracter territorial" rules="required" v-slot="{ errors }">
-                          <select v-model="form.caracter_territorial" name="tipo" class="form-control form-control-lg" >
+                          <select v-model="form.caracter_territorial" :disabled="ver" name="tipo" class="form-control form-control-lg" >
                               <option value="Nacional">Nacional</option>
                               <option value="Deparatamental">Deparatamental</option>
                               <option value="Distrital">Distrital</option>
@@ -424,7 +424,7 @@
                         <div class="form-group">
                         <label>Estado</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                            <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                            <select v-model="form.status" :disabled="ver"  name="tipo" class="form-control form-control-lg" >
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
@@ -433,10 +433,6 @@
                         </div>
                     </b-col>
                 </b-row>
-
-                <pre>
-                  {{form}}
-                </pre>
 
         </ValidationObserver>
 
