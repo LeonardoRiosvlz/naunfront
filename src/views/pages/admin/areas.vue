@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear Area</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear Area</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -176,9 +176,7 @@ export default {
       }
     }
   },
-  computed:{
-        ...mapState(['counter'])
-   },
+
   created(){
     this.listarUsers();
   },
@@ -222,9 +220,7 @@ export default {
                this.listarAreas();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
+              this.resete();
               }
             }).catch(e => {
               console.log(e.response.data.menssage);
@@ -243,9 +239,7 @@ export default {
                this.listarAreas();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
+              this.resete();
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
@@ -271,7 +265,7 @@ export default {
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarAreas(id){
+      eliminarArea(id){
         this.$swal({
           title: 'Desea borrar esta area?',
           icon: 'question',
@@ -291,6 +285,7 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
+       this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
         for (let index = 0; index < this.areas.length; index++) {
@@ -303,10 +298,12 @@ export default {
           }
         }
       },
-      listarAreas(){
-        this.axios.get('api/areas')
+    async listarAreas(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/areas/listar',data)
         .then((response) => {
-          this.areas = response.data.rows;
+          this.areas = response.data;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -351,6 +348,7 @@ export default {
         this.listarAreas();
       },
     computed: {
+      ...mapState(['usuarioDB','cliente']),
     rows() {
       return this.areas.length;
     },
