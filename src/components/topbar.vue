@@ -78,8 +78,7 @@
             <div class="row no-gutters">
               <div class="col-4" v-for="clientes in clientes" :key="clientes.id">
                 <a class="dropdown-icon-item" href="javascript: void(0);" @click="cambiarCliente(clientes)">
-                  <img :src="clientes.user.imagen" alt="Github" v-if="clientes.user.imagen" />
-                  <img v-else src="@/assets/images/brands/slack.png" alt="Github" />
+                  <img  src="@/assets/images/brands/slack.png" alt="Github" />
                   <span>{{clientes.nombre_prestador}}</span>
                 </a>
               </div>
@@ -299,6 +298,7 @@ export default {
     await this.axios.get('api/clientes')
       .then((response) => {
         this.clientes = response.data.rows;
+        this.SetCliente(this.clientes[0]);
       })
       .catch((e)=>{
         console.log('error' + e);
