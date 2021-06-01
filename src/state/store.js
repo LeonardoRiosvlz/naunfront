@@ -15,7 +15,7 @@ const store = new Vuex.Store({
   state:{
     token:'',
     usuarioDB:'',
-    cliente:'2',
+    cliente:'',
     counter:'s',
     load:false
 },
