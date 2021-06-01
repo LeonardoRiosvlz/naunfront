@@ -82,55 +82,58 @@
           <b-row>
               <div class="col-3 mb-2">
                   <p class="m-0">Tipo de cliente</p>
-                  <strong>{{cliente.tipo_cliente}}</strong>
+                  <strong style="font-size:14px;">{{cliente.tipo_cliente}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Tipo de documento</p>
-                  <strong>{{cliente.tipo_documento}}</strong>
+                  <strong style="font-size:14px;">{{cliente.tipo_documento}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Nombre del prestador</p>
-                  <strong>{{cliente.nombre_prestador}}</strong>
+                  <strong style="font-size:14px;">{{cliente.nombre_prestador}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Codigo de prestador</p>
-                  <strong>{{cliente.codigo_prestador}}</strong>
+                  <strong style="font-size:14px;">{{cliente.codigo_prestador}}</strong>
               </div>
           </b-row>
 
           <b-row>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Departamento</p>
-                  <strong>{{cliente.departamento}}</strong>
+                  <strong style="font-size:14px;">{{cliente.departamento}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Codigo de departamento</p>
-                  <strong>{{cliente.codigo_departamento}}</strong>
+                  <strong style="font-size:14px;">{{cliente.codigo_departamento}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Municipio</p>
-                  <strong>{{cliente.municipio}}</strong>
+                  <strong style="font-size:14px;">{{cliente.municipio}}</strong>
               </div>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Codigo de municipio</p>
-                  <strong>{{cliente.codigo_municipio}}</strong>
+                  <strong style="font-size:14px;">{{cliente.codigo_municipio}}</strong>
               </div>
           </b-row>
 
 
           <b-row>
-              <div class="col-3">
+              <div class="col-3 mb-2">
                   <p class="m-0">Naturaleza jurídica</p>
-                  <strong></strong>
+                  <strong style="font-size:14px;">{{cliente.naturaleza_juridica}}</strong>
               </div>
-              <div class="col-3">
-                  <p>Clase de prestador</p>
+              <div class="col-3 mb-2">
+                  <p class="m-0">Clase de prestador</p>
+                  <strong style="font-size:14px;">{{cliente.clase_prestador}}</strong>
               </div>
-              <div class="col-3">
-                  <p>ESE </p>
+              <div class="col-3 mb-2">
+                  <p class="m-0">ESE </p>
+                  <strong style="font-size:14px;">{{cliente.ese}}</strong>
               </div>
-              <div class="col-3">
-                  <p>Caracter territorial</p>
+              <div class="col-3 mb-2">
+                  <p class="m-0">Caracter territorial</p>
+                  <strong style="font-size:14px;">{{cliente.caracter_territorial}}</strong>
               </div>
           </b-row>
         </b-card>
@@ -143,36 +146,36 @@
 
 
 
-            <b-row>
+             <b-row>
                 <b-col>
                     <div class="form-group">
                         <label>Departamento</label>
                         <ValidationProvider name="departamento" rules="required" v-slot="{ errors }">
-                            <select v-model="form.departamento_sede" name="ciudad" class="form-control" :disabled="ver" >
-                                <option v-for="departamento in colombia" :value="departamento.departamento" :key="departamento.id">{{departamento.departamento}}</option>
+                            <select v-model="form.codigo_departamento" @change="depp()" name="ciudad" class="form-control" :disabled="ver" >
+                                <option v-for="departamento in colombia" :value="departamento.id" :key="departamento.id">{{departamento.departamento}}</option>
                             </select>
                         <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                     </div>
                 </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Codigo del departamento</label>
-                        <ValidationProvider name="codigo del departamento" rules="required|alpha_spaces" v-slot="{ errors }">
-                                <input v-model="form.codigo_departamento_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                                <span style="color:red">{{ errors[0] }}</span>
+                <div class="col-sm-6">
+                   <label class="links">Codigo del departamento</label>
+                   <div class="form-group">
+                       <ValidationProvider name="codigo del departamento" rules="required" v-slot="{ errors }">
+                            <input v-model="form.codigo_departamento"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
-                    </div>
-                </b-col>
-              </b-row>    
+                   </div>
+                </div>
+            </b-row>      
 
 
             <b-row>
               <b-col>
                     <div class="form-group">
                         <label>Municipio</label>
-                        <ValidationProvider name="municipio" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.municipio_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <ValidationProvider name="municipio" rules="required" v-slot="{ errors }">
+                            <input v-model="form.municipio"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                     </div>
@@ -180,8 +183,8 @@
                 <b-col>
                     <div class="form-group">
                         <label>Codigo del municipio</label>
-                        <ValidationProvider name="codigo del municipio" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.codigo_municipio_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <ValidationProvider name="codigo del municipio" rules="required" v-slot="{ errors }">
+                            <input v-model="form.codigo_municipio"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                     </div>
@@ -192,8 +195,8 @@
                 <div class="col-sm-6">
                    <label class="links">Nombre de la sede</label>
                    <div class="form-group">
-                       <ValidationProvider name="nombre de la sede" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.nombre_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                       <ValidationProvider name="nombre de la sede" rules="required" v-slot="{ errors }">
+                            <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                    </div>
@@ -201,7 +204,7 @@
                 <div class="col-sm-6">
                    <label class="links">Codigo de la sede</label>
                    <div class="form-group">
-                       <ValidationProvider name="codigo de la sede" rules="required|alpha_spaces" v-slot="{ errors }">
+                       <ValidationProvider name="codigo de la sede" rules="required" v-slot="{ errors }">
                             <input v-model="form.codigo_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -215,8 +218,8 @@
                         <label>Sede principal</label>
                         <ValidationProvider name="sede" rules="required" v-slot="{ errors }">
                             <select v-model="form.sede_principal" name="sede" class="form-control" :disabled="ver" >
-                                <option  value="no">No</option>
-                                <option  value="si">Si</option>
+                                <option  value="No">No</option>
+                                <option  value="Si">Si</option>
                             </select>
                         <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -225,7 +228,7 @@
                 <b-col>
                     <div class="form-group">
                         <label>Numero de sede</label>
-                        <ValidationProvider name="numero de sede" rules="required|alpha_spaces" v-slot="{ errors }">
+                        <ValidationProvider name="numero de sede" rules="required" v-slot="{ errors }">
                             <input v-model="form.numero_sede"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -239,8 +242,8 @@
                         <label>Zona</label>
                         <ValidationProvider name="zona" rules="required" v-slot="{ errors }">
                             <select v-model="form.zona" name="zona" class="form-control" :disabled="ver" >
-                                <option  value="no">Rural</option>
-                                <option  value="si">Urbana</option>
+                                <option  value="Rural">Rural</option>
+                                <option  value="Urbana">Urbana</option>
                             </select>
                         <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -249,8 +252,8 @@
                 <b-col>
                     <div class="form-group">
                         <label>Nombre del gerente</label>
-                        <ValidationProvider name="nombre" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.Nombre_gerente"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                            <input v-model="form.nombre_gerente"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                     </div>
@@ -264,7 +267,7 @@
                     <b-col>
                         <div class="form-group">
                             <label>Dirección</label>
-                            <ValidationProvider name="dirección" rules="required|alpha_spaces" v-slot="{ errors }">
+                            <ValidationProvider name="dirección" rules="required" v-slot="{ errors }">
                                     <input v-model="form.direccion"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                     <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
@@ -273,7 +276,7 @@
                     <b-col>
                         <div class="form-group">
                         <label>Barrio</label>
-                        <ValidationProvider name="barrio" rules="required|alpha_spaces" v-slot="{ errors }">
+                        <ValidationProvider name="barrio" rules="required" v-slot="{ errors }">
                                 <input v-model="form.barrio"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -286,7 +289,7 @@
                     <b-col>
                         <div class="form-group">
                             <label>Centro poblado</label>
-                            <ValidationProvider name="centro poblado" rules="required|alpha_spaces" v-slot="{ errors }">
+                            <ValidationProvider name="centro poblado" rules="required" v-slot="{ errors }">
                                 <input v-model="form.centro_poblado"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
@@ -295,7 +298,7 @@
                     <b-col>
                         <div class="form-group">
                             <label>Fax</label>
-                            <ValidationProvider name="fax" rules="required|alpha_spaces" v-slot="{ errors }">
+                            <ValidationProvider name="fax" rules="required" v-slot="{ errors }">
                                 <input v-model="form.fax"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
@@ -305,10 +308,10 @@
         
                 <b-row>
                     <div class="col-sm-6">
-                        <label class="links">Correo electronico personal</label>
+                        <label class="links">Correo electronico</label>
                         <div class="form-group">
-                            <ValidationProvider name="correo electronico" rules="required|alpha_spaces" v-slot="{ errors }">
-                                    <input v-model="form.email_contacto"  type="email" class="form-control" placeholder=" " :disabled="ver">
+                            <ValidationProvider name="correo electronico" rules="required" v-slot="{ errors }">
+                                    <input v-model="form.email"  type="email" class="form-control" placeholder=" " :disabled="ver">
                                     <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                         </div>
@@ -317,7 +320,7 @@
                         <div class="form-group">
                         <label>Telefonos</label>
                         <ValidationProvider name="telefono" rules="required" v-slot="{ errors }">
-                          <input v-model="form.estado"  type="email" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="form.telefono"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -329,7 +332,7 @@
                     <div class="col-sm-6">
                         <label class="links">Nombre del contacto</label>
                         <div class="form-group">
-                            <ValidationProvider name="nombre" rules="required|alpha_spaces" v-slot="{ errors }">
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
                                     <input v-model="form.nombre_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                     <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
@@ -350,8 +353,8 @@
                     <div class="col-sm-6">
                         <label class="links">Telefono</label>
                         <div class="form-group">
-                            <ValidationProvider name="telefono" rules="required|alpha_spaces" v-slot="{ errors }">
-                                    <input v-model="form.nombre_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <ValidationProvider name="telefono" rules="required" v-slot="{ errors }">
+                                    <input v-model="form.telefono_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                     <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                         </div>
@@ -360,7 +363,7 @@
                         <div class="form-group">
                         <label>Celular personal</label>
                         <ValidationProvider name="celular" rules="required" v-slot="{ errors }">
-                            <input v-model="form.celular_personal"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <input v-model="form.celular_persona"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -371,7 +374,7 @@
                     <div class="col-sm-6">
                         <label class="links">Celular corporativo</label>
                         <div class="form-group">
-                            <ValidationProvider name="cargo" rules="required|alpha_spaces" v-slot="{ errors }">
+                            <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
                                     <input v-model="form.celular_corporativo"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                     <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
@@ -379,9 +382,9 @@
                     </div>
                     <b-col>
                         <div class="form-group">
-                        <label>Correo electronico personal</label>
+                        <label>Correo electronico</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.email_personal"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <input v-model="form.email_contacto"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -392,22 +395,21 @@
                     <div class="form-group">
                     <label>Estado</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                        <select v-model="form.estado"  name="tipo" class="form-control form-control-lg" >
-                            <option value="Administrador">Activo</option>
-                            <option value="Coordinador">No activo</option>
+                        <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                            <option value="Activo">Activo</option>
+                            <option value="No activo">No activo</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>
                 </b-row>
-                
         </ValidationObserver>
-
+        {{form}}
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-      {{sedes}}
+      
   </Layout>
 </template>
 
@@ -499,7 +501,7 @@ export default {
         'telefono_contacto':'',
         'celular_persona':'',
         'celular_corporativo':'',
-        'email_cotacto':'',
+        'email_contacto':'',
         'status':'',
         'created_at':'',
         'updated_at':''
@@ -509,8 +511,9 @@ export default {
 
 
   methods: {
-    depp(){
-      this.form.departamento=this.colombia[this.form.dep].departamento;
+     depp(){
+      this.form.departamento=this.colombia[this.form.codigo_departamento].departamento;
+      console.log(this.colombia[this.form.codigo_departamento].departamento);
     },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
