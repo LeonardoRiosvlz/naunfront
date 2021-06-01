@@ -77,181 +77,59 @@
     </div>
 
     <b-modal id="modal" false size="lg"  title="Gestión de sedes" hide-footer>
-        <h5>Datos generales del prestador</h5>
+        <b-card>  
+          <h5>Datos generales del prestador</h5>
+          <b-row>
+              <div class="col-3">
+                  <p>Tipo de cliente</p>
+              </div>
+              <div class="col-3">
+                  <p>Tipo de documento</p>
+              </div>
+              <div class="col-3">
+                  <p>Nombre del prestador</p>
+              </div>
+              <div class="col-3">
+                  <p>Codigo de prestador</p>
+              </div>
+          </b-row>
+
+          <b-row>
+              <div class="col-3">
+                  <p>Departamento</p>
+              </div>
+              <div class="col-3">
+                  <p>Codigo de departamento</p>
+              </div>
+              <div class="col-3">
+                  <p>Municipio</p>
+              </div>
+              <div class="col-3">
+                  <p>Codigo de municipio</p>
+              </div>
+          </b-row>
+
+
+          <b-row>
+              <div class="col-3">
+                  <p>Naturaleza jurídica</p>
+              </div>
+              <div class="col-3">
+                  <p>Clase de prestador</p>
+              </div>
+              <div class="col-3">
+                  <p>ESE </p>
+              </div>
+              <div class="col-3">
+                  <p>Caracter territorial</p>
+              </div>
+          </b-row>
+        </b-card>
+
+        
+
           <ValidationObserver ref="form">
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Tipo de cliente</label>
-                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo_cliente" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Persona jurídica</option>
-                              <option value="Coordinador">Profesional</option>
-                              <option value="Tecnico">Independiente</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Tipo de documento</label>
-                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo_documento" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Nit</option>
-                              <option value="Coordinador">Cedula ciudadanía</option>
-                              <option value="Tecnico">Cedula extranjería</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-              </b-row>
 
-
-
-            <b-row>
-                <div class="col-sm-6">
-                   <label class="links">Nombre del prestador</label>
-                   <div class="form-group">
-                       <ValidationProvider name="nombre del prestador" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.nombre_prestador"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                   </div>
-                </div>
-                <div class="col-sm-6">
-                   <label class="links">Codigo de prestador</label>
-                   <div class="form-group">
-                       <ValidationProvider name="codigo del prestador" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.codigo_prestador"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                   </div>
-                </div>
-            </b-row>
-
-
-
-            <b-row>
-                <b-col>
-                    <div class="form-group">
-                        <label>Departamento</label>
-                        <ValidationProvider name="departamento" rules="required" v-slot="{ errors }">
-                            <select v-model="form.departamento" name="ciudad" class="form-control" :disabled="ver" >
-                                <option v-for="departamento in colombia" :value="departamento.departamento" :key="departamento.id">{{departamento.departamento}}</option>
-                            </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                    </div>
-                </b-col>
-                <div class="col-sm-6">
-                   <label class="links">Codigo del departamento</label>
-                   <div class="form-group">
-                       <ValidationProvider name="codigo del departemento" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.codigo_departamento"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                   </div>
-                </div>
-            </b-row>    
-
-
-
-             <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Municipio</label>
-                    <ValidationProvider name="municipio" rules="required" v-slot="{ errors }">
-                          <input v-model="form.municipio" name="tipo" class="form-control form-control-lg"  placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                        <label>Codigo municipio</label>
-                        <ValidationProvider name="codigo del municipio" rules="required|alpha_spaces" v-slot="{ errors }">
-                            <input v-model="form.codigo_municipio"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
-
-
-
-              <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Naturaleza jurídica</label>
-                    <ValidationProvider name="naturaleza jurídica" rules="required" v-slot="{ errors }">
-                          <select v-model="form.naturaleza_juridica" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Privada</option>
-                              <option value="Coordinador">Mixta</option>
-                              <option value="Tecnico">Publica</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                        <label>Clase de prestador</label>
-                        <ValidationProvider name="clase de prestador" rules="required" v-slot="{ errors }">
-                          <select v-model="form.clase_prestador" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Instituciones –IPS</option>
-                              <option value="Coordinador">Profesional independiente</option>
-                              <option value="Tecnico">Transporte especial de pacientes</option>
-                              <option value="Tecnico">Objeto social diferente a la prestación de servicios de salud</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                
-            </b-row>
-             <b-row>
-               <b-col>
-                    <div class="form-group">
-                    <label>ESE</label>
-                    <ValidationProvider name="ESE" rules="required" v-slot="{ errors }">
-                          <select v-model="form.ese" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Si</option>
-                              <option value="Coordinador">No</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Caracter territorial</label>
-                    <ValidationProvider name="caracter territorial" rules="required" v-slot="{ errors }">
-                          <select v-model="form.caracter_territorial" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Nacional</option>
-                              <option value="Coordinador">Deparatamental</option>
-                              <option value="Coordinador">Distrital</option>
-                              <option value="Coordinador">Municipal</option>
-                              <option value="Coordinador">Indigena</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-                 <b-col>
-                    <div class="form-group">
-                    <label>Nivel del prestador</label>
-                    <ValidationProvider name="nivel del prestador" rules="required" v-slot="{ errors }">
-                          <select v-model="form.razon_social" name="tipo" class="form-control form-control-lg" >
-                              <option value="Administrador">Si</option>
-                              <option value="Coordinador">No</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
-            </b-row>
             <h5>Datos de la sede</h5>
 
 

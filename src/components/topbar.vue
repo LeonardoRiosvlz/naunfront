@@ -32,7 +32,7 @@
           <i class="ri-menu-2-line align-middle"></i>
         </button>
       </div>
-
+      
       <div class="d-flex">
         <div class="dropdown d-inline-block d-lg-none ml-2">
           <button
@@ -76,19 +76,50 @@
           </template>
           <div class="px-lg-2">
             <div class="row no-gutters">
-              <div class="col">
+              <div class="col-4">
                 <a class="dropdown-icon-item" href="javascript: void(0);">
                   <img src="@/assets/images/brands/github.png" alt="Github" />
                   <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
                 </a>
               </div>
-              <div class="col">
+              <div class="col-4">
+                <a class="dropdown-icon-item" href="javascript: void(0);">
+                  <img src="@/assets/images/brands/github.png" alt="Github" />
+                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
+                </a>
+              </div>
+              <div class="col-4">
+                <a class="dropdown-icon-item" href="javascript: void(0);">
+                  <img src="@/assets/images/brands/github.png" alt="Github" />
+                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
+                </a>
+              </div>
+              <div class="col-4">
+                <a class="dropdown-icon-item" href="javascript: void(0);">
+                  <img src="@/assets/images/brands/github.png" alt="Github" />
+                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
+                </a>
+              </div>
+              <div class="col-4">
+                <a class="dropdown-icon-item" href="javascript: void(0);">
+                  <img src="@/assets/images/brands/github.png" alt="Github" />
+                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
+                </a>
+              </div>
+              <div class="col-4">
+                <a class="dropdown-icon-item" href="javascript: void(0);">
+                  <img src="@/assets/images/brands/github.png" alt="Github" />
+                  <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
+                </a>
+              </div>
+
+              <div class="col-4">
                 <a class="dropdown-icon-item" href="javascript: void(0);">
                   <img src="@/assets/images/brands/bitbucket.png" alt="bitbucket" />
                   <span>{{ $t('navbar.dropdown.site.list.github') }}</span>
                 </a>
               </div>
-              <div class="col">
+              <div class="col-4">
                 <a class="dropdown-icon-item" href="javascript: void(0);">
                   <img src="@/assets/images/brands/dribbble.png" alt="dribbble" />
                   <span>{{ $t('navbar.dropdown.site.list.dribbble') }}</span>
@@ -116,6 +147,7 @@
                 </a>
               </div>
             </div>
+            
           </div>
         </b-dropdown>
 
@@ -201,6 +233,7 @@
             <i class="ri-user-line align-middle mr-1"></i>
             Perfil
           </a>
+
           <div class="dropdown-divider"></div>
           <a class="dropdown-item text-danger"  @click="salir()">
             <i class="ri-shut-down-line align-middle mr-1 text-danger"></i>
