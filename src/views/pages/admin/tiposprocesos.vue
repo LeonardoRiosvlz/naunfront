@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="cargos"
+                :items="tipos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -84,7 +84,7 @@
                 <div class="form-group">
                   <label>Nombre</label>
                   <ValidationProvider name="nombre" rules="required|alpha_spaces" v-slot="{ errors }">
-                        <input v-model="form.cargo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <input v-model="form.nombre" @change="validar()"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -107,7 +107,6 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-    
   </Layout>
 </template>
 
@@ -164,23 +163,17 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["Proceso","descripcion","actions"],
-      cargos: [], 
+      fields: ["nombre","descripcion","actions"],
+      tipos: [], 
       editMode:false,
       form:{
           "id": 6,
           "nombre": "",
+          "cliente_id": "",
           "descripcion": "",
-          "status": null,
-          "created_at": "",
-          "updated_at": "",
-          "cliente_id": 1,
       }
     }
   },
-  computed:{
-        ...mapState(['cliente'])
-   },
   created(){
     this.listarUsers();
   },
@@ -196,24 +189,33 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarCargo();
+              this.agregartipos();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarCargos();
+            this.editartipos();
           } else {
         }});
       }
     },
-   async agregarCargo(){
+    validar(){
+      for (let index = 0; index < this.tipos.length; index++) {
+        if (this.form.nombre==this.tipos[index].nombre) {
+          this.$swal('Este nombre ya existe!','','danger');
+          this.form.nombre=" ";
+          return;
+        }
+      }
+    },
+   async agregartipos(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/cargos', data, {
+       await this.axios.post('api/tipo_procesos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -222,7 +224,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarCargos();
+               this.listartipos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -234,30 +236,28 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarCargos(){
+    async editartipos(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/cargos', data).then(response => {
+        await this.axios.put('api/tipo_procesos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarCargos();
+               this.listartipos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
+              this.resete();
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarCargos(id){
+     async eliminartipos(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/cargos/delete',data, {
+        await this.axios.post('api/tipo_procesos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -267,7 +267,7 @@ export default {
                       '',
                       'success'
                 );
-                this.listarCargos();
+                this.listartipos();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
@@ -276,7 +276,7 @@ export default {
       }, 
       eliminarCargo(id){
         this.$swal({
-          title: 'Desea borrar este cargo?',
+          title: 'Desea borrar este tipo de proceso?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -285,7 +285,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarCargos(id);
+            this.eliminartipos(id);
           }
         })
       },
@@ -294,22 +294,25 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
+       this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.cargos.length; index++) {
-          if (this.cargos[index].id===id) {
-            this.form.id=this.cargos[index].id;
-            this.form.cargo=this.cargos[index].cargo;
-            this.form.descripcion=this.cargos[index].descripcion;
+        for (let index = 0; index < this.tipos.length; index++) {
+          if (this.tipos[index].id===id) {
+            this.form.id=this.tipos[index].id;
+            this.form.nombre=this.tipos[index].nombre;
+            this.form.descripcion=this.tipos[index].descripcion;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async  listarCargos(){
-       await this.axios.get('api/cargos')
+    async listartipos(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/tipo_procesos/listar',data)
         .then((response) => {
-          this.cargos = response.data.rows;
+          this.tipos = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -351,15 +354,16 @@ export default {
   },
     created(){
         this.session();
-        this.listarCargos();
-
+        this.form.cliente_id=this.cliente.id;
+        this.listartipos();
       },
      mounted() {
 
     },
     computed: {
+    ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.cargos.length;
+      return this.tipos.length;
     },
   },
 }
