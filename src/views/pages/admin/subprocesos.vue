@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear normativa</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear subprocesos</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="areas"
+                :items="cargos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -55,9 +55,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarArea(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarCargo(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -77,55 +77,95 @@
       </div>
     </div>
 
-
-
-
-    <b-modal id="modal" false size="lg"  title="Gestión de normatividad" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de subprocesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
-                <div class="col-sm-6">
-                   <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <img  width="200px" height="200px" style="float:center!importan;" class=""  :src="url" />
-                   </div>
-                    <b-form-file
-                        v-model="file"
-                        placeholder="Seleccione su foto..."
-                        drop-placeholder="Drop file here..."
-                        @change="onFileChange"
-                    ></b-form-file>
-               </div>
               <b-col>
                 <div class="form-group">
-                  <label>Tipo de normativa</label>
+                  <label>Tipo de proceso</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <input v-model="form.tipo_norma"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
+                    <select v-model="form.tipos_procesos"  name="tipo" class="form-control form-control-lg">
+                        <option value="Tipo de proceso">Tipo de proceso</option>
+                        <option value="Tipo de proceso">Tipo de proceso</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+                </div>
+              </b-col>
+              <b-col>
+                <div class="form-group">
+                <label>Proceso</label>
+                  <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
+                    <input v-model="form.proceso"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
                 </div>
               </b-col>
               </b-row>
-              
+
               <b-row>
                 <b-col>
-                <div class="form-group">
-                  <label>Nombre de la norma</label>
-                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre_norma"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
+                  <div class="form-group">
+                    <label>Nombre subproceso</label>
+                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                          <input v-model="form.nombre_subprocesos"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
                 </b-col>
-              <b-col>
-                <div class="form-group">
-                  <label>Descripcion</label>
-                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
+              </b-row>
+
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Objetivo del subproceso</label>
+                    <ValidationProvider name="objetivo" rules="required" v-slot="{ errors }">
+                          <textarea v-model="form.objetivo_subprocesos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
                 </b-col>
-            </b-row> 
-                     
+                <b-col>
+                  <div class="form-group">
+                  <label>Líder del subproceso</label>
+                  <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
+                    <select v-model="form.lider_subproceso"  name="tipo" class="form-control form-control-lg" >
+                        <option value="Administrador">Activo</option>
+                        <option value="Coordinador">No activo</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row> 
+
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Codigo del prefijo</label>
+                    <ValidationProvider name="codigo" rules="required" v-slot="{ errors }">
+                          <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+
+                <b-col>
+                  <div class="form-group">
+                  <label>Actividades del subproceso</label>
+                   <ValidationProvider name="actividades" rules="required" v-slot="{ errors }">
+                          <div class="row m-0">
+                              <input v-model="form.actividades_subprocesos"  type="text" class="form-control col-8  mr-3" placeholder=" " :disabled="ver">
+                              <b-button class="col-3" pill>Agregar</b-button>
+                          </div>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                   
+                  </div>
+                    
+                </b-col>
+
+              </b-row>    
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -135,6 +175,7 @@
 </template>
 
 <script>
+
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
@@ -161,7 +202,7 @@ export default {
           text: "Gestión de clientes"
         },
         {
-          text: "Normatividad",
+          text: "Procesos",
           active: true
         }
       ],
@@ -186,22 +227,29 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["tipo_norma ","nombre_norma", "descripcion", "actions"],
-      norma: [], 
+      fields: ["Nombre_proceso","Tipo_proceso", "version", "Objetivo","Actions"],
+      subprocesos: [], 
       editMode:false,
-      form:{
-        'id': '',
-        'tipo_norma':'',
-        'nombre_norma':'',
-        'descripcion':''
+  form:{
+          "id": "",
+          "tipos_procesos": "",
+          "proceso": "",
+          "nombre_subprocesos": "",
+          "objetivo_subprocesos": "",
+          "lider_subproceso": "",
+          "codigo":"",
+          "actividades_subprocesos":""
       }
     }
   },
-
+  computed:{
+        ...mapState(['counter'])
+   },
   created(){
     this.listarUsers();
   },
   methods: {
+
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -212,24 +260,24 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-                this.agregarNormativa();
+              this.agregarSubproceso();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarNormativa();
+            this.editarCargos();
           } else {
         }});
       }
     },
-   async agregarNormativa(){
-     let data = new FormData();
+   async editarCliente(){
+        let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/normativa', data, {
+        await this.axios.post('api/cargos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -238,38 +286,42 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarNormativa();
+               this.listarCargos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-              this.resete();
+                for (var key in formulario) {
+                   this.form[key]="";
+                 }
               }
             }).catch(e => {
               console.log(e.response.data.menssage);
               this.$swal(e.response.data);
           });
       },
-    async editarNormativa(){
+    async editarCliente(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/normativa', data).then(response => {
+        await this.axios.put('api/cargos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarAreas();
+               this.listarCargos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-              this.resete();
+                for (var key in formulario) {
+                   this.form[key]="";
+                 }
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarNormativas(id){
+     async eliminarCargos(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/areas/delete',data, {
+        await this.axios.post('api/cargos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -279,16 +331,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarNormativa();
+                this.listarCargos();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarNormativa(id){
+      eliminarCargo(id){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea borrar este cargo?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -297,7 +349,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarNormativas(id);
+            this.eliminarCargos(id);
           }
         })
       },
@@ -306,26 +358,28 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
-       this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.norma.length; index++) {
-          if (this.norma[index].id===id) {
-            this.form.id=this.norma[index].id;
-            this.form.tipo_norma=this.norma[index].tipo_norma;
-            this.form.nombre_norma=this.norma[index].nombre_norma;
-            this.form.descripcion=this.norma[index].descripcion;
+        for (let index = 0; index < this.subprocesos.length; index++) {
+          if (this.subprocesos[index].id===id) {
+
+            this.id = this.subprocesos[index].id,
+            this.tipos_procesos = this.subprocesos[index].tipos_procesos,
+            this.proceso = this.subprocesos[index].proceso,
+            this.nombre_subprocesos = this.subprocesos[index].nombre_subprocesos,
+            this.objetivo_subprocesos = this.subprocesos[index].objetivo_subprocesos,
+            this.lider_subproceso = this.subprocesos[index].lider_subproceso,
+            this.codigo = this.subprocesos[index].codigo,
+            this.actividades_subproceso = this.subprocesos[index].actividades_subproceso
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async listarNormativa(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/areas/listar',data)
+    async  listarCargos(){
+       await this.axios.get('api/cargos')
         .then((response) => {
-          this.norma = response.data;
+          this.cargos = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -367,12 +421,15 @@ export default {
   },
     created(){
         this.session();
-        this.listarNormativa();
+        this.listarCargos();
+
       },
+     mounted() {
+
+    },
     computed: {
-      ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.norma.length;
+      return this.subprocesos.length;
     },
   },
 }

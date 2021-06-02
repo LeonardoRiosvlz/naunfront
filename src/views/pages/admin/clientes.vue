@@ -51,12 +51,18 @@
                <template v-slot:cell(contacto)="data">
                   {{data.item.nombre_contacto}}
                </template>
+
+
               <template v-slot:cell(documento)="data">
                   {{data.item.tipo_documento}}-{{data.item.numero_documento}} 
                </template>
+
+               
                <template v-slot:cell(estado)="data">
                   <b-badge v-if="data.item.user.status === 'activo'" variant="success">ACTIVO </b-badge>
                   <b-badge v-else variant="danger">NO ACTIVO</b-badge>
+
+                  {{data.item}}
                </template>
                
                 <template v-slot:cell(actions)="data">
@@ -423,7 +429,7 @@
                     <b-col>
                         <div class="form-group">
                         <label>Estado</label>
-                        <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
+                        <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
                             <select v-model="form.status" :disabled="ver"  name="tipo" class="form-control form-control-lg" >
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>

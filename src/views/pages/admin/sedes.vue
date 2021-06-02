@@ -48,6 +48,13 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+              <template v-slot:cell(status)="data">
+                  <b-badge v-if="data.item.status === 'Activo'" variant="success">ACTIVO </b-badge>
+                  <b-badge v-else variant="danger">NO ACTIVO</b-badge>
+               </template>
+
+
+
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -372,25 +379,23 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                  <b-col>
-                    <div class="form-group">
-                    <label>Estado</label>
-                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                        <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
+                   <b-col>
+                        <div class="form-group">
+                        <label>Estado</label>
+                        <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
+                            <select v-model="form.status" :disabled="ver"  name="tipo" class="form-control form-control-lg" >
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                    </b-col>
                 </b-row>
         </ValidationObserver>
-        {{form}}
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-      
   </Layout>
 </template>
 

@@ -146,8 +146,9 @@
 
         <button class="btn btn-block btn-success" @click="switchLocPass()">Editar Contraseña</button>
      </b-modal>
-
+      {{user}}
   </Layout>
+ 
 </template>
 
 <script>
@@ -199,6 +200,7 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: ["nombre_tercero","descripcion_tercero","actions"],
+      user:[],
       terceros: [], 
       editMode:false,
         form:{
@@ -241,6 +243,7 @@ export default {
      await this.axios.get('user/pefil')
       .then((response) => {
         this.user = response.data;
+        console.log(response.data,)
       })
       .catch((e)=>{
         console.log('error' + e);
@@ -341,7 +344,7 @@ export default {
     computed: {
         ...mapState(['usuarioDB']),
     rows() {
-       return this.terceros.length
+       return this.user.length
     },
   },
 }

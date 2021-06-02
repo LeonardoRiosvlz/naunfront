@@ -79,8 +79,8 @@ export default {
                           </a>
                         </div>
 
-                        <h4 class="font-size-18 mt-4">Reset Password</h4>
-                        <p class="text-muted">Reset your password to Nazox.</p>
+                        <h4 class="font-size-18 mt-4">Restaurar contraseña</h4>
+                        <p class="text-muted">Restablezca su contraseña a Naun.</p>
                       </div>
 
                       <div class="p-2 mt-5">
@@ -113,19 +113,19 @@ export default {
                             <button
                               class="btn btn-primary w-md waves-effect waves-light"
                               type="submit"
-                            >Reset</button>
+                            >Restaurar</button>
                           </div>
                         </form>
                       </div>
 
                       <div class="mt-5 text-center">
                         <p>
-                          Don't have an account ?
+                          No tienes contraseña ?
                           <router-link
                             tag="a"
                             to="/login"
                             class="font-weight-medium text-primary"
-                          >Log in</router-link>
+                          >Iniciar sesión</router-link>
                         </p>
                         <p>
                           © 2020 Nazox. Crafted with

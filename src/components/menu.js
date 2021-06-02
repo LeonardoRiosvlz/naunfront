@@ -1,7 +1,7 @@
 export const menuItems = [
     {
         id: 1,
-        label: "PRISTEL APP v-1.0.1",
+        label: "NAUN APP v-1.0.1",
         isTitle: true
     },
     {
@@ -74,7 +74,7 @@ export const menuItems = [
             {
                 id: 14,
                 label: 'Subprocesos',
-                link: '/llamadas',
+                link: '/subprocesos',
             },
             {
                 id: 16,

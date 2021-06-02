@@ -77,16 +77,16 @@
       </div>
     </div>
 
-    <b-modal id="modal" false size="lg"  title="Gestión de cargos" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de procesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
               <b-col>
                 <div class="form-group">
                   <label>Tipo de proceso</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
-                        <option value="Administrador">Activo</option>
-                        <option value="Coordinador">No activo</option>
+                    <select v-model="form.tipos_procesos"  name="tipo" class="form-control form-control-lg">
+                        <option value="Tipo de proceso">Tipo de proceso</option>
+                        <option value="Tipo de proceso">Tipo de proceso</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
@@ -95,22 +95,32 @@
               <b-col>
                 <div class="form-group">
                 <label>Versión</label>
-                <ValidationProvider name="Versión" rules="required" v-slot="{ errors }">
-                        <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
+                  <ValidationProvider name="version" rules="required" v-slot="{ errors }">
+                    <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </b-col>
               </b-row>
 
-
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Nombre proceso</label>
+                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                          <input v-model="form.nombre_procesos"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row>
 
               <b-row>
                 <b-col>
                   <div class="form-group">
                     <label>Objetivo del proceso</label>
                     <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <textarea v-model="form.objetivo_procesos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -119,7 +129,7 @@
                   <div class="form-group">
                   <label>Líder del proceso</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                    <select v-model="form.lider_proceso"  name="tipo" class="form-control form-control-lg" >
                         <option value="Administrador">Activo</option>
                         <option value="Coordinador">No activo</option>
                     </select>
@@ -134,7 +144,7 @@
                   <div class="form-group">
                     <label>Tiene subprocesos</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                      <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                      <select v-model="form.subprocesos"  name="tipo" class="form-control form-control-lg" >
                           <option value="Administrador">Si</option>
                           <option value="Coordinador">No</option>
                       </select>
@@ -146,7 +156,7 @@
                   <div class="form-group">
                   <label>Subprocesos relacionados</label>
                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="form.subprocesos_relacionados"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -157,8 +167,8 @@
                 <b-col>
                   <div class="form-group">
                     <label>Codigo</label>
-                    <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <input v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <ValidationProvider name="codigo" rules="required" v-slot="{ errors }">
+                          <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -167,9 +177,9 @@
                 <b-col>
                   <div class="form-group">
                   <label>Actividades del subproceso</label>
-                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                   <ValidationProvider name="actividades" rules="required" v-slot="{ errors }">
                           <div class="row m-0">
-                              <input v-model="form.descripcion"  type="text" class="form-control col-8  mr-3" placeholder=" " :disabled="ver">
+                              <input v-model="form.actividades_subprocesos"  type="text" class="form-control col-8  mr-3" placeholder=" " :disabled="ver">
                               <b-button class="col-3" pill>Agregar</b-button>
                           </div>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -241,17 +251,20 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["Nombre","Tipo de proceso", "Objetivo","Actions"],
+      fields: ["Nombre_proceso","Tipo_proceso", "version", "Objetivo","Actions"],
       cargos: [], 
       editMode:false,
   form:{
           "id": 6,
-          "nombre": "",
-          "descripcion": "",
-          "status": null,
-          "created_at": "",
-          "updated_at": "",
-          "cliente_id": 1,
+          "tipos_procesos": "",
+          "version": "",
+          "nombre_procesos": null,
+          "objetivo_procesos": "",
+          "lider_proceso": "",
+          "subprocesos": "",
+          "subprocesos_relacionados":"",
+          "codigo":"",
+          "actividades_subprocesos":""
       }
     }
   },
@@ -373,11 +386,20 @@ export default {
        }
       },
       setear(id) {
-        for (let index = 0; index < this.cargos.length; index++) {
-          if (this.cargos[index].id===id) {
-            this.form.id=this.cargos[index].id;
-            this.form.cargo=this.cargos[index].cargo;
-            this.form.descripcion=this.cargos[index].descripcion;
+        for (let index = 0; index < this.procesos.length; index++) {
+          if (this.procesos[index].id===id) {
+
+              this.form.id = this.procesos[index].id,
+              this.form.tipos_procesos = this.procesos[index].tipo_procesos,
+              this.form.version = this.procesos[index].verision,
+              this.form.nombre_procesos = this.procesos[index].nombre_procesos,
+              this.form.objetivo_procesos = this.procesos[index].objetivo_procesos,
+              this.form.lider_proceso = this.procesos[index].lider_proceso,
+              this.form.subprocesos = this.procesos[index].subprocesos,
+              this.form.subprocesos_relacionados = this.procesos[index].subprocesos_relacionados,
+              this.form.codigo = this.procesos[index].codigo,
+              this.form.actividades_subprocesos = this.procesos[index].actividades_subprocesos,
+
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }

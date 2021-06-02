@@ -48,6 +48,10 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+
+                <template v-slot:cell(cargo)="data">
+                  {{data.item.user.cargo.nombre}}
+               </template>
                 <template v-slot:cell(actions)="data">
 
                 <b-dropdown size="sm" class="">

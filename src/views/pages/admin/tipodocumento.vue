@@ -80,25 +80,14 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de areas" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de los tipo de procesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
-                <div class="col-sm-6">
-                   <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <img  width="200px" height="200px" style="float:center!importan;" class=""  :src="url" />
-                   </div>
-                    <b-form-file
-                        v-model="file"
-                        placeholder="Seleccione su foto..."
-                        drop-placeholder="Drop file here..."
-                        @change="onFileChange"
-                    ></b-form-file>
-               </div>
               <b-col>
                 <div class="form-group">
-                  <label>TIpo de normativa</label>
+                  <label>Tipo de documento</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                          <select v-model="form.tipo_norma"  name="entidad_id" class="form-control "  :disabled="ver">
+                          <select v-model="form.tipo_documento"  name="entidad_id" class="form-control "  :disabled="ver">
                               <option value="Manual">Manual</option>
                               <option value="inactivo">Cartilla</option>
                               <option value="inactivo">Procedimiento</option>
@@ -107,18 +96,19 @@
                     </ValidationProvider>
                 </div>
               </b-col>
-              </b-row>
-              
-              <b-row>
-                <b-col>
+              <b-col>
                 <div class="form-group">
-                  <label>Nombre de la norma</label>
-                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre_norma"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                  <label>Prefijo</label>
+                  <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                        <input v-model="form.prefijo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
                 </b-col>
+              </b-row>
+              
+              <b-row>
+      
               <b-col>
                 <div class="form-group">
                   <label>Descripcion</label>
@@ -165,7 +155,7 @@ export default {
           text: "Gestión de clientes"
         },
         {
-          text: "Normatividad",
+          text: "tipo de procesos",
           active: true
         }
       ],
@@ -190,14 +180,13 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["tipo_norma ","nombre_norma", "descripcion", "actions"],
-      norma: [], 
-      areas:[],
+      fields: ["tipo_documento ","prefijo", "descripcion", "actions"],
+      doc: [], 
       editMode:false,
       form:{
         'id': '',
-        'tipo_norma':'',
-        'nombre_norma':'',
+        'tipo_documento':'',
+        'prefijo':'',
         'descripcion':''
       }
     }
@@ -217,13 +206,13 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-                this.agregarNormartiva();
+                this.agregarDoc();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarNormativa();
+            this.editarDoc();
           } else {
         }});
       }
@@ -243,7 +232,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarNormativa();
+               this.listarDoc();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
               this.resete();
@@ -253,7 +242,7 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarNormativa(){
+    async editarDoc(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
@@ -262,7 +251,7 @@ export default {
         await this.axios.put('api/normativa', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarAreas();
+               this.listarDoc();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
               this.resete();
@@ -271,7 +260,7 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarNormativas(id){
+     async eliminarDocs(id){
         let data = new FormData();
         data.append('id',id);
         await this.axios.post('api/areas/delete',data, {
@@ -284,14 +273,14 @@ export default {
                       '',
                       'success'
                 );
-                this.listarNormativa();
+                this.listarDoc();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarNormativa(id){
+      eliminarDoc(id){
         this.$swal({
           title: 'Desea borrar esta area?',
           icon: 'question',
@@ -302,7 +291,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarNormativas(id);
+            this.eliminarDocs(id);
           }
         })
       },
@@ -330,7 +319,7 @@ export default {
      data.append('cliente_id',this.cliente.id);
        await this.axios.post('api/areas/listar',data)
         .then((response) => {
-          this.areas = response.data;
+          this.doc = response.data;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -372,12 +361,12 @@ export default {
   },
     created(){
         this.session();
-        this.listarNormativa();
+        this.listarDoc();
       },
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.areas.length;
+      return this.doc.length;
     },
   },
 }
