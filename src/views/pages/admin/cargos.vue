@@ -359,6 +359,11 @@ export default {
           }
         }
   },
+  watch: {
+      cliente: function () {
+       this.listarCargos();
+      },
+    },
     created(){
         this.session();
         this.listarCargos();

@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;">Crear colaborador</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();url_perfil=null">Crear Colaborador</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="areas"
+                :items="perfil"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -55,9 +55,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarArea(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarperfil(data.item.id,data.item.user_id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -80,14 +80,27 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de colaboradores" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestion de Colaboradores de proceso" hide-footer>
           <ValidationObserver ref="form">
+            <b-row class="justify-content-center mb-3">
+                  <div class="col-sm-6">
+                   <div id="preview mb-2" class="row justify-content-center mb-3">
+                     <img  width="200px" height="200px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
+                   </div>
+                    <b-form-file
+                        v-model="foto"
+                        placeholder="Seleccione su foto..."
+                        drop-placeholder="Drop file here..."
+                        @change="onFileChangePerfil"
+                    ></b-form-file>
+               </div>
+            </b-row>
             <b-row>
                 <b-col>
                     <div class="form-group">
-                    <label>Nombre y Apellido</label>
+                    <label>Nombre y Apellido {{form.nombre_apellido}}</label>
                     <ValidationProvider name="nombre y apellido" rules="required" v-slot="{ errors }">
-                            <input v-model="form.nombre_apellido"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
@@ -96,23 +109,13 @@
                     <div class="form-group">
                     <label>Numero de cedula</label>
                     <ValidationProvider name="numero de cedula" rules="required" v-slot="{ errors }">
-                        <input v-model="form.numero_cedula"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <input v-model="form.cedula"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>
             </b-row> 
-
             <b-row>
-                <b-col>
-                    <div class="form-group">
-                    <label>Cargo</label>
-                    <ValidationProvider name="cargo" rules="required" v-slot="{ errors }">
-                            <input v-model="form.cargo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
                 <b-col>
                     <div class="form-group">
                     <label>Telefono</label>
@@ -123,8 +126,6 @@
                     </div>
                 </b-col>
             </b-row>
-
-
             <b-row>
                 <b-col>
                     <div class="form-group">
@@ -144,8 +145,7 @@
                     </ValidationProvider>
                     </div>
                 </b-col>
-            </b-row>      
-
+            </b-row>     
              <b-row>
                 <b-col>
                     <div class="form-group">
@@ -156,37 +156,33 @@
                     </ValidationProvider>
                     </div>
                 </b-col>
-                <b-col>
-                    <div class="form-group">
-                    <label>Nombre de usuario</label>
-                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre_usuario"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                </b-col>
             </b-row>
-
              <b-row>
                 <b-col>
                     <div class="form-group">
                     <label>Estado</label>
                     <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                          <select v-model="form.estado"  name="entidad_id" class="form-control "  :disabled="ver">
-                              <option value="no activado">No activado</option>
-                              <option value="activado">Ativado</option>
+                          <select v-model="form.status"  name="entidad_id" class="form-control "  :disabled="ver">
+                              <option value="activo">Activo</option>
+                              <option value="inactivo">Inactivo</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
                 </b-col>
-                <b-col>
+                <b-col v-if="!editMode&& !ver">
                     <div class="form-group">
-                    <label>Permisos</label>
-                    <ValidationProvider name="permisos" rules="required" v-slot="{ errors }">
-                            <input v-model="form.tipo_proceso_pertenece"  type="email" class="form-control" placeholder=" " :disabled="ver">
-                            <span style="color:red">{{ errors[0] }}</span>
+                    <label>Contraseña</label>
+                    <ValidationProvider name="password" rules="required" v-slot="{ errors }">
+                          <input v-model="form.password"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
+                    </div>
+                </b-col>
+                <b-col v-if="editMode">
+                    <div class="form-group">
+                    <label>Contraseña</label>
+                          <input v-model="form.password"  type="text" class="form-control" placeholder=" " :disabled="ver">
                     </div>
                 </b-col>
             </b-row>
@@ -222,7 +218,7 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Gestión usuarios"
         },
         {
           text: "Colaboradores",
@@ -236,9 +232,9 @@ export default {
       },
       ver:false,
       url:"",
-      url_firma:"",
+      url_perfil:"",
       modal: true,
-      file:null,
+      foto:null,
       perfil:null,
       email: "",
       password: "",
@@ -251,40 +247,26 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-          "Nombre y Apellido",
-          "Numero de cedula",
-          "Cargo",
-          "Telefono",
-          "Celular personal",
-          "Celular corporativo",
-          "Correo electronico",
-          "Nombre de usuario",
-          "Estado",
-          "Permisos",
+          "nombre",
+          "cedula",
+          "cargo",
+          "telefono",
           "actions"],
-      areas: [], 
+      perfil: [], 
       editMode:false,
       form:{
           'id':'',
-          'nombre_apellido':'',
-          'numero_cedula':'',
-          'cargo':'',
+          'nombre':'',
+          'cedula':'',
           'telefono':'',
           'celular_personal':'',
           'celular_corporativo':'',
           'email':'',
           'nombre_usuario':'',
-          'estado':'',
-          'tipo_proceso_pertenece':'',
-          'proceso_lidera':''
+          'status':'',
+          
       }
     }
-  },
-  computed:{
-        ...mapState(['counter'])
-   },
-  created(){
-    this.listarUsers();
   },
   methods: {
     onFiltered(filteredItems) {
@@ -297,24 +279,27 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarArea();
+              this.agregarperfil();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarAreas();
+            this.editarperfil();
           } else {
         }});
       }
     },
-   async agregarArea(){
+   async agregarperfil(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/areas', data, {
+       if (this.foto) {
+        data.append('filename',this.foto);
+       }
+       await this.axios.post('api/perfil', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -323,7 +308,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarAreas();
+               this.listarperfil();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -335,16 +320,19 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarAreas(){
+    async editarperfil(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/areas', data).then(response => {
+      if (this.foto) {
+        data.append('filename',this.foto);
+       }
+        await this.axios.put('api/perfil', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarAreas();
+               this.listarperfil();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 for (var key in formulario) {
@@ -355,10 +343,11 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarAreas(id){
+     async eliminarperfils(id,uid){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/areas/delete',data, {
+        data.append('user_id',uid);
+        await this.axios.post('api/perfil/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -368,16 +357,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarAreas();
+                this.listarperfil();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarAreas(id){
+      eliminarperfil(id,uid){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea borrar este lider?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -386,7 +375,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarAreas(id);
+            this.eliminarperfils(id,uid);
           }
         })
       },
@@ -395,22 +384,36 @@ export default {
         for (var key in formulario) {
              this.form[key]="";
        }
+       this.form.cliente_id=this.cliente.id;
+       this.form.tipo="Colaborador";
       },
       setear(id) {
-        for (let index = 0; index < this.areas.length; index++) {
-          if (this.areas[index].id===id) {
-            this.form.id=this.areas[index].id;
-            this.form.nombre=this.areas[index].nombre;
-            this.form.descripcion=this.areas[index].descripcion;
+        for (let index = 0; index < this.perfil.length; index++) {
+          if (this.perfil[index].id===id) {
+            this.form.id=this.perfil[index].id;
+            this.form.nombre=this.perfil[index].nombre;
+            this.form.cedula=this.perfil[index].cedula;
+            this.form.telefono=this.perfil[index].telefono;
+            this.form.celular_personal=this.perfil[index].celular_personal;
+            this.form.celular_corporativo=this.perfil[index].celular_corporativo;
+            this.form.email=this.perfil[index].email;
+            this.form.nombre_usuario=this.perfil[index].nombre_usuario;
+            this.form.status=this.perfil[index].user.status;
+            this.form.user_id=this.perfil[index].user_id;
+            this.url_perfil=this.perfil[index].user.imagen;
+            console.log(this.url_perfil);
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-      listarAreas(){
-        this.axios.get('api/areas')
+    async listarperfil(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+     data.append('tipo',"Colaborador");
+       await this.axios.post('api/perfil/listar',data)
         .then((response) => {
-          this.areas = response.data.rows;
+          this.perfil = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -420,27 +423,13 @@ export default {
         this.form.username=this.form.email;
         console.log("holas");
       },
-      setRoles(){
-        if (this.form.tipo==="Administrador") {
-            this.form.codigo="";
-            this.form.entidad="No";
-            this.form.cargo=""
-            this.form.roles="3"
-        } else if(this.form.tipo==="Coordinador") {
-            this.form.entidad="No";
-            this.form.cargo="";
-            this.form.roles="2"
-        }else{
-            this.form.roles="1"
-        }
-      },
       onFileChange(e) {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
       },
       onFileChangePerfil(e) {
-      const perfil = e.target.files[0];
-      this.url_perfil = URL.createObjectURL(perfil);
+      const foto = e.target.files[0];
+      this.url_perfil = URL.createObjectURL(foto);
     },
       toggleModal () {
         this.modal = !this.modal
@@ -454,13 +443,23 @@ export default {
           }
         }
   },
+    watch: {
+      cliente: function () {
+       this.listarperfil();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     created(){
+         this.form.cliente_id=this.cliente.id;
+         this.form.tipo="Colaborador";
+        this.listarperfil();
         this.session();
-        this.listarAreas();
       },
     computed: {
+       ...mapState(['usuarioDB','cliente']),
+      
     rows() {
-      return this.areas.length;
+      return this.perfil.length;
     },
   },
 }
