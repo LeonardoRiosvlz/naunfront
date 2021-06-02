@@ -31,7 +31,7 @@ mutations:{
                 localStorage.removeItem('token');
                 state.usuarioDB=''
             }else{
-         
+                
             }
             
             axios.defaults.headers.common['authorization'] = `Bearer ${payload}`;
@@ -41,7 +41,8 @@ mutations:{
         state.usuarioDB=''
     },
     setearCliente(state,payload){
-        state.cliente=payload
+        state.cliente=payload;
+        localStorage.setItem("cliente", JSON.stringify(payload));
     },
     cargars(state){
         state.load=!state.load;

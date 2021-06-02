@@ -295,19 +295,26 @@ export default {
     });
     },
    async  listarContactos(){
-    await this.axios.get('api/clientes')
-      .then((response) => {
-        this.clientes = response.data.rows;
-        this.SetCliente(this.clientes[0]);
-      })
-      .catch((e)=>{
-        console.log('error' + e);
-      })
+      await this.axios.get('api/clientes')
+        .then((response) => {
+          this.clientes = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+    },
   },
-  },
-
+mounted(){
+      if (localStorage.getItem('cliente')) {
+          let client=localStorage.getItem('cliente');
+          client=JSON.parse(client)
+          this.cambiarCliente(client);
+          console.log(client);
+          }
+},
   created(){
       this.listarContactos();
+      
       this.listarNotificaciones();
       this.socket.on('connect', () => {
         this.chanel(this.socket.id)
@@ -338,6 +345,7 @@ export default {
         this.listarNotificaciones();
         
       });
+
   }
 };
 </script>
