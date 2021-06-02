@@ -696,12 +696,13 @@ export default {
         this.session();
         this.listarSedes();
 
-      },
-
-     mounted() {
-
     },
-
+    watch: {
+      cliente: function () {
+       this.listarSedes();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {

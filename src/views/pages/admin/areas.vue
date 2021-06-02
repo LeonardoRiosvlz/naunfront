@@ -347,6 +347,12 @@ export default {
         this.session();
         this.listarAreas();
       },
+   watch: {
+      cliente: function () {
+       this.listarAreas();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {

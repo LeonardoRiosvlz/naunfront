@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear lider</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();url_perfil=null">Crear lider</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -56,7 +56,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarArea(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarperfil(data.item.id,data.item.user_id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -187,7 +187,6 @@
                 </b-col>
             </b-row>
         </ValidationObserver>
-        <pre>{{form}}</pre>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
@@ -265,6 +264,7 @@ export default {
           'email':'',
           'nombre_usuario':'',
           'status':'',
+          
       }
     }
   },
@@ -279,7 +279,7 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarArea();
+              this.agregarperfil();
             } else {}
           });        
         }else{
@@ -290,12 +290,15 @@ export default {
         }});
       }
     },
-   async agregarArea(){
+   async agregarperfil(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
+       if (this.foto) {
+        data.append('filename',this.foto);
+       }
        await this.axios.post('api/perfil', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -323,6 +326,9 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
+      if (this.foto) {
+        data.append('filename',this.foto);
+       }
         await this.axios.put('api/perfil', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
@@ -337,9 +343,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarperfil(id){
+     async eliminarperfils(id,uid){
         let data = new FormData();
         data.append('id',id);
+        data.append('user_id',uid);
         await this.axios.post('api/perfil/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -357,9 +364,9 @@ export default {
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarperfil(id){
+      eliminarperfil(id,uid){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea borrar este lider?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -368,7 +375,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarperfil(id);
+            this.eliminarperfils(id,uid);
           }
         })
       },
@@ -436,13 +443,21 @@ export default {
           }
         }
   },
+    watch: {
+      cliente: function () {
+       this.listarperfil();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     created(){
+         this.form.cliente_id=this.cliente.id;
+         this.form.tipo="Lider";
         this.listarperfil();
         this.session();
-        
       },
     computed: {
        ...mapState(['usuarioDB','cliente']),
+      
     rows() {
       return this.perfil.length;
     },
