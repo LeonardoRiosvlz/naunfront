@@ -276,6 +276,41 @@ export default [
         },
     },
     {
+        path: '/normativa',
+        name: 'normativa',
+        component: () => import('../views/pages/admin/normativa'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+
+    {
+        path: '/tipo-documento',
+        name: 'tipo-documento',
+        component: () => import('../views/pages/admin/tipodocumento'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () => import('../views/pages/admin/notificaciones'),

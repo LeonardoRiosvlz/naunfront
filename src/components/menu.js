@@ -79,20 +79,21 @@ export const menuItems = [
             {
                 id: 16,
                 label: 'Nomatividad',
-                link: '/legalizaciones'
+                link: '/normativa'
             },
-            {
-                id: 16,
-                label: 'Tipo de documentos',
-                link: ''
-            },
+            
             {
                 id: 17,
+                label: 'Tipo de documentos',
+                link: '/tipo-documento'
+            },
+            {
+                id: 18,
                 label: 'Gestor de documentos',
                 link: ''
             },
             {
-                id: 18,
+                id: 19,
                 label: 'Gestor de formatos',
                 link: ''
             },
