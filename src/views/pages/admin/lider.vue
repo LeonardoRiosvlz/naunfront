@@ -78,6 +78,7 @@
     </div>
 
 
+<pre>{{perfil}}</pre>
 
 
     <b-modal id="modal" false size="lg"  title="Gestion de lideres de proceso" hide-footer>
