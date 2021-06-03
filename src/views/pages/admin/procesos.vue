@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="cargos"
+                :items="procesos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -178,13 +178,19 @@
 
               <b-card class="shadow-lg">
                 <h5 class="mb-2">Actividades del subproceso</h5>
+                <b-row class="justify-content-end mr-3">
+                  <b-col>
+                    <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar(cliente.nombre_prestador)"  name="button" v-if="!ver" >Agregar Item</button>
+                  </b-col>
+                </b-row>
+                <div v-for="(acvidades, index) in form.actividades" :key="index">
                 <b-row>
                   <b-col>
                       <div class="form-group">
                       <label>Titulo</label>
                       <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  <input :id="index+'titulo'"  v-model="acvidades.titulo"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -196,31 +202,30 @@
                       <label>Subtitulo</label>
                       <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  <input :id="index+'subtitulo'"  v-model="acvidades.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </div>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                       <div class="form-group">
                       <label>Descripción</label>
                       <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <textarea v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
+                                  <textarea :id="index+'descripcion'"  v-model="acvidades.descripcion"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </div>
                     </b-col>
                 </b-row>
-                <b-row class="justify-content-end mr-3">
-                    <b-button class="col-3" pill @click="cargarActividades">Agregar</b-button>
-                </b-row>
-                {{form.actividades}}
+                </div>
+                <pre>{{form}}</pre>
+ 
+
               </b-card>   
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
@@ -284,37 +289,31 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: ["Nombre_proceso","Tipo_proceso", "version", "Objetivo","Actions"],
-      cargos: [], 
+      procesos: [], 
       editMode:false,
 
   form:{
-          "id": 6,
-          "tipos_procesos": "",
-          "version": "",
-          "nombre_procesos": null,
-          "objetivo_procesos": "",
-          "lider_proceso": "",
-          "subprocesos": "",
-          "subprocesos_relacionados":"",
-          "codigo":"",
-          "actividades":[]
+          'id': 6,
+          'tipos_procesos': '',
+          'version': '',
+          'nombre_procesos': null,
+          'objetivo_procesos': '',
+          'lider_proceso': '',
+          'subprocesos': '',
+          'subprocesos_relacionados':'',
+          'codigo':'',
+          'actividades':[],
       }
     }
   },
-  computed:{
-        ...mapState(['counter'])
-   },
-  created(){
-    this.listarUsers();
-  },
-  methods: {
 
-        cargarActvidades(){
-          this.form.actividades.push({
-            titulo:"",
-            subtitulo:"",
-            descripcion:"",
-          });
+  methods: {
+    cargar(index){
+      this.form.actividades.push({
+        titulo:"",
+        subtitulo:"",
+        descripcion:"",
+      });
       },
       eliminarItem(index){
         this.form.actividades.splice(index, 1);  
@@ -502,8 +501,9 @@ export default {
 
     },
     computed: {
+     ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.cargos.length;
+      return this.procesos.length;
     },
   },
 }
