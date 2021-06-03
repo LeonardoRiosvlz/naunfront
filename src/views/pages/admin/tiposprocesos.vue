@@ -49,7 +49,6 @@
                 @filtered="onFiltered"
               >
                 <template v-slot:cell(actions)="data">
-
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
                     Action
@@ -101,8 +100,6 @@
                 </div>
               </b-col>
               </b-row>
-              
-                       
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
