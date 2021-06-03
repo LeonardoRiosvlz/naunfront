@@ -18,3 +18,9 @@ export default {
   }
 };
 </script>
+<style>
+  .custom-control-label {
+    cursor: pointer;
+    width: 100%;
+}
+</style>

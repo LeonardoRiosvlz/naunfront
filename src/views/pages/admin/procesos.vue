@@ -84,9 +84,8 @@
                 <div class="form-group">
                   <label>Tipo de proceso</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                    <select v-model="form.tipos_procesos"  name="tipo" class="form-control form-control-lg">
-                        <option value="Tipo de proceso">Tipo de proceso</option>
-                        <option value="Tipo de proceso">Tipo de proceso</option>
+                    <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg">
+                         <option value="Tipo de proceso" v-for="(tipo,index) in tipos" :key="index">{{tipo.nombre}}</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
@@ -108,7 +107,7 @@
                   <div class="form-group">
                     <label>Nombre proceso</label>
                     <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <input v-model="form.nombre_procesos"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -120,7 +119,7 @@
                   <div class="form-group">
                     <label>Objetivo del proceso</label>
                     <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <textarea v-model="form.objetivo_procesos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                          <textarea v-model="form.objetivos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -129,9 +128,8 @@
                   <div class="form-group">
                   <label>Líder del proceso</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                    <select v-model="form.lider_proceso"  name="tipo" class="form-control form-control-lg" >
-                        <option value="Administrador">Activo</option>
-                        <option value="Coordinador">No activo</option>
+                    <select v-model="form.lider_id"  name="tipo" class="form-control form-control-lg" >
+                        <option value="Tipo de proceso" v-for="(liders,index) in lider" :key="index">{{liders.nombre}}</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -144,20 +142,11 @@
                   <div class="form-group">
                     <label>Tiene subprocesos</label>
                     <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                      <select v-model="form.subprocesos"  name="tipo" class="form-control form-control-lg" >
+                      <select v-model="form.tiene_sp"  name="tipo" class="form-control form-control-lg" >
                           <option value="Administrador">Si</option>
                           <option value="Coordinador">No</option>
                       </select>
                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                  <div class="form-group">
-                  <label>Subprocesos relacionados</label>
-                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                          <input v-model="form.subprocesos_relacionados"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
                 </b-col>
@@ -168,70 +157,176 @@
                   <div class="form-group">
                     <label>Codigo</label>
                     <ValidationProvider name="codigo" rules="required" v-slot="{ errors }">
-                          <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="form.codigo_prefijo"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
                 </b-col>
-
               </b-row> 
 
-              <b-card class="shadow-lg">
-                <h5 class="mb-2">Actividades del subproceso</h5>
-                <b-row class="justify-content-end mr-3">
-                  <b-col>
-                    <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar(cliente.nombre_prestador)"  name="button" v-if="!ver" >Agregar Item</button>
-                  </b-col>
+              <b-row>
+                  <div class="col-12">
+                    <b-button class="btn btn-info btn-block" id="show-btn" @click="$bvModal.show('actividades')">Actividades del proceso</b-button>
+                  </div>
                 </b-row>
-                <div v-for="(acvidades, index) in form.actividades" :key="index">
-                <b-row>
-                  <b-col>
-                      <div class="form-group">
-                      <label>Titulo</label>
-                      <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
-                              <div class="row m-0">
-                                  <input :id="index+'titulo'"  v-model="acvidades.titulo"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
-                              </div>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </div>
-                    </b-col>
-
-                    <b-col>
-                      <div class="form-group">
-                      <label>Subtitulo</label>
-                      <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
-                              <div class="row m-0">
-                                  <input :id="index+'subtitulo'"  v-model="acvidades.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
-                              </div>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </div>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                      <div class="form-group">
-                      <label>Descripción</label>
-                      <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
-                              <div class="row m-0">
-                                  <textarea :id="index+'descripcion'"  v-model="acvidades.descripcion"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
-                              </div>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </div>
-                    </b-col>
-                </b-row>
-                </div>
-                <pre>{{form}}</pre>
- 
-
-              </b-card>   
+              <b-row class="mt-3">
+                <b-col>
+                  <ul class="pl-4">
+                      <li class="mt-2" v-for="(acvidades, index) in form.actividades" :key="index" style="list-style:none">{{acvidades.titulo}}</li>
+                    </ul>
+                </b-col>
+              </b-row>
+              <b-row>
+                 <div class="col-12">
+                      <b-button class="btn btn-primary btn-block" id="show-btn" @click="$bvModal.show('recursos')">Recursos del proceso</b-button>
+                  </div>
+              </b-row>
+                <b-row class="mt-3">
+                <b-col>
+                  <ul class="pl-4">
+                      <li class="mt-2" v-for="(recursos, index) in form.recursos" :key="index" style="list-style:none">{{recursos.titulo}}</li>
+                    </ul>
+                </b-col>
+              </b-row>
+   
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
 
+      <b-modal id="actividades" centered  false size="lg"  title="Actividades del proceso" hide-footer>
+            <b-card class="shadow-lg">
+                <ValidationObserver ref="form">
+               
+                <div v-for="(acvidades, index) in form.actividades" :key="index" class="card p-3">
+                  <div class="row m-0 justify-content-end">
+                    <button class="btn" @click="acvidades.show = false"   v-if="acvidades.show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                    <button class="btn" @click="acvidades.show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                    <button class="btn"><b-card-sub-title >Eliminar</b-card-sub-title></button>
+                  </div>
+                  
+                  <b-form-checkbox v-model="acvidades.show"  switch class="mb-1 col-12" v-if="acvidades.show">
+                      <div class="col-12">
+                    <b-row class="pt-3">
+                      <b-col>
+                          <div class="form-group">
+                          <label>Titulo</label>
+                          <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <input :id="index+'titulo'"  v-model="acvidades.titulo"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+
+                        <b-col>
+                          <div class="form-group">
+                          <label>Subtitulo</label>
+                          <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <input :id="index+'subtitulo'"  v-model="acvidades.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                          <div class="form-group">
+                          <label>Descripción</label>
+                          <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <textarea :id="index+'descripcion'"  v-model="acvidades.descripcion"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                    </b-row>
+                  </div>
+                  </b-form-checkbox>
+                
+                  <b-form-checkbox v-model="acvidades.show"  switch class="mb-1" v-else>
+                    <h4 >{{acvidades.titulo}}</h4>
+                  </b-form-checkbox>
+                </div>
+                 <b-row class="justify-content-end mr-3">
+                  <b-col>
+                    <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar()"  name="button" v-if="!ver" >Agregar Item</button>
+                  </b-col>
+                </b-row>
+                </ValidationObserver>
+              </b-card> 
+      </b-modal>
+
+      <b-modal id="recursos" centered  false size="lg"  title="Recursos del proceso" hide-footer>
+            <b-card class="shadow-lg">
+                <ValidationObserver ref="form">
+               
+                <div v-for="(recursos, index) in form.recursos" :key="index" class="card p-3">
+                  <div class="row m-0 justify-content-end">
+                    <button class="btn" @click="recursos.show = false"   v-if="recursos.show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                    <button class="btn" @click="recursos.show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                    <button class="btn"><b-card-sub-title >Eliminar</b-card-sub-title></button>
+                  </div>
+                  
+                  <b-form-checkbox v-model="recursos.show"  switch class="mb-1 col-12" v-if="recursos.show">
+                      <div class="col-12">
+                    <b-row class="pt-3">
+                      <b-col>
+                          <div class="form-group">
+                          <label>Titulo</label>
+                          <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <input :id="index+'titulo'"  v-model="recursos.titulo"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+
+                        <b-col>
+                          <div class="form-group">
+                          <label>Subtitulo</label>
+                          <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <input :id="index+'subtitulo'"  v-model="recursos.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                          <div class="form-group">
+                          <label>Descripción</label>
+                          <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
+                                  <div class="row m-0">
+                                      <textarea :id="index+'descripcion'"  v-model="recursos.descripcion"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
+                                  </div>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                    </b-row>
+                  </div>
+                  </b-form-checkbox>
+                
+                  <b-form-checkbox v-model="recursos.show"  switch class="mb-1" v-else>
+                    <h4 >{{recursos.titulo}}</h4>
+                  </b-form-checkbox>
+                </div>
+                 <b-row class="justify-content-end mr-3">
+                  <b-col>
+                    <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargarRecursos()"  name="button" v-if="!ver" >Agregar Item</button>
+                  </b-col>
+                </b-row>
+                </ValidationObserver>
+              </b-card> 
+      </b-modal>
   </Layout>
 </template>
 
@@ -291,18 +386,20 @@ export default {
       fields: ["Nombre_proceso","Tipo_proceso", "version", "Objetivo","Actions"],
       procesos: [], 
       editMode:false,
-
+      lider:[],
+      tipos:[],
+      show:true,
   form:{
           'id': 6,
-          'tipos_procesos': '',
+          'tipo_id': '',
           'version': '',
-          'nombre_procesos': null,
-          'objetivo_procesos': '',
-          'lider_proceso': '',
-          'subprocesos': '',
-          'subprocesos_relacionados':'',
+          'nombre': null,
+          'objetivos': '',
+          'lider_id': '',
+          'tiene_sp': '',
           'codigo':'',
           'actividades':[],
+          'recursos':[]
       }
     }
   },
@@ -313,13 +410,43 @@ export default {
         titulo:"",
         subtitulo:"",
         descripcion:"",
+        show:true,
       });
       },
       eliminarItem(index){
         this.form.actividades.splice(index, 1);  
       },
-
-
+      cargarRecursos(index){
+        this.form.recursos.push({
+          titulo:"",
+          subtitulo:"",
+          descripcion:"",
+          show:true,
+        });
+      },
+    async listarperfil(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+     data.append('tipo',"Lider");
+       await this.axios.post('api/perfil/listar',data)
+        .then((response) => {
+          this.lider = response.data.rows;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+      async listartipos(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/tipo_procesos/listar',data)
+            .then((response) => {
+              this.tipos = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -492,16 +619,23 @@ export default {
           }
         }
   },
+    watch: {
+      cliente: function () {
+       this.listarperfil();
+       this.listartipos();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     created(){
         this.session();
         this.listarCargos();
-
       },
      mounted() {
 
     },
     computed: {
      ...mapState(['usuarioDB','cliente']),
+
     rows() {
       return this.procesos.length;
     },

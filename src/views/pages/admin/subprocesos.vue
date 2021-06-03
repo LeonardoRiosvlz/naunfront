@@ -153,13 +153,19 @@
 
               <b-card class="shadow-lg">
                 <h5 class="mb-2">Actividades del subproceso</h5>
+                <b-row class="justify-content-end mr-3">
+                  <b-col>
+                    <button style="float:right" v-b-tooltip.hover title="Agregar un item a la lista" class="btn btn-success my-4 btn-sm btn-block" type="button" @click="cargar()"  name="button" v-if="!ver" >Agregar Item</button>
+                  </b-col>
+                </b-row>
+                <div v-for="(acvidades, index) in form.actividades" :key="index" class="card p-3">
                 <b-row>
                   <b-col>
                       <div class="form-group">
                       <label>Titulo</label>
                       <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  <input :id="index+'titulo'"  v-model="acvidades.titulo"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -171,32 +177,31 @@
                       <label>Subtitulo</label>
                       <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                                  <input :id="index+'subtitulo'"  v-model="acvidades.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </div>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                       <div class="form-group">
                       <label>Descripción</label>
                       <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
                               <div class="row m-0">
-                                  <textarea v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
+                                  <textarea :id="index+'descripcion'"  v-model="acvidades.descripcion"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
                               </div>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </div>
                     </b-col>
                 </b-row>
-                <b-row class="justify-content-end mr-3">
-                    <b-button class="col-3" pill>Agregar</b-button>
-                </b-row>
-               
-              </b-card>
+                </div>
+                <pre>{{form}}</pre>
+ 
+
+              </b-card>   
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -269,7 +274,7 @@ export default {
           "objetivo_subprocesos": "",
           "lider_subproceso": "",
           "codigo":"",
-          "actividades_subprocesos":""
+           'actividades':[],
       }
     }
   },
@@ -280,7 +285,16 @@ export default {
     this.listarUsers();
   },
   methods: {
-
+      cargar(index){
+        this.form.actividades.push({
+          titulo:"",
+          subtitulo:"",
+          descripcion:"",
+        });
+      },
+      eliminarItem(index){
+        this.form.actividades.splice(index, 1);  
+      },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
