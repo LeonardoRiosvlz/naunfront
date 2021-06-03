@@ -174,22 +174,54 @@
                   </div>
                 </b-col>
 
-                <b-col>
-                  <div class="form-group">
-                  <label>Actividades del subproceso</label>
-                   <ValidationProvider name="actividades" rules="required" v-slot="{ errors }">
-                          <div class="row m-0">
-                              <input v-model="form.actividades_subprocesos"  type="text" class="form-control col-8  mr-3" placeholder=" " :disabled="ver">
-                              <b-button class="col-3" pill>Agregar</b-button>
-                          </div>
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                   
-                  </div>
-                    
-                </b-col>
+              </b-row> 
 
-              </b-row>    
+              <b-card class="shadow-lg">
+                <h5 class="mb-2">Actividades del subproceso</h5>
+                <b-row>
+                  <b-col>
+                      <div class="form-group">
+                      <label>Titulo</label>
+                      <ValidationProvider name="titulo" rules="required" v-slot="{ errors }">
+                              <div class="row m-0">
+                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                              </div>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+
+                    <b-col>
+                      <div class="form-group">
+                      <label>Subtitulo</label>
+                      <ValidationProvider name="subtitulo" rules="required" v-slot="{ errors }">
+                              <div class="row m-0">
+                                  <input v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
+                              </div>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+                </b-row>
+
+                <b-row>
+                    <b-col>
+                      <div class="form-group">
+                      <label>Descripción</label>
+                      <ValidationProvider name="descripción" rules="required" v-slot="{ errors }">
+                              <div class="row m-0">
+                                  <textarea v-model="form.actividades_subprocesos"  type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"></textarea>
+                              </div>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+                </b-row>
+                <b-row class="justify-content-end mr-3">
+                    <b-button class="col-3" pill @click="cargarActividades">Agregar</b-button>
+                </b-row>
+                {{form.actividades}}
+              </b-card>   
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -254,6 +286,7 @@ export default {
       fields: ["Nombre_proceso","Tipo_proceso", "version", "Objetivo","Actions"],
       cargos: [], 
       editMode:false,
+
   form:{
           "id": 6,
           "tipos_procesos": "",
@@ -264,7 +297,7 @@ export default {
           "subprocesos": "",
           "subprocesos_relacionados":"",
           "codigo":"",
-          "actividades_subprocesos":""
+          "actividades":[]
       }
     }
   },
@@ -275,6 +308,18 @@ export default {
     this.listarUsers();
   },
   methods: {
+
+        cargarActvidades(){
+          this.form.actividades.push({
+            titulo:"",
+            subtitulo:"",
+            descripcion:"",
+          });
+      },
+      eliminarItem(index){
+        this.form.actividades.splice(index, 1);  
+      },
+
 
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
