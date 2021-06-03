@@ -360,6 +360,12 @@ export default {
      mounted() {
 
     },
+     watch: {
+      cliente: function () {
+       this.listartipos();
+        this.title=this.cliente.nombre_prestador;
+      },
+    },
     computed: {
     ...mapState(['usuarioDB','cliente']),
     rows() {
