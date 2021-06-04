@@ -61,8 +61,6 @@
                <template v-slot:cell(estado)="data">
                   <b-badge v-if="data.item.user.status === 'activo'" variant="success">ACTIVO </b-badge>
                   <b-badge v-else variant="danger">NO ACTIVO</b-badge>
-
-                  {{data.item}}
                </template>
                
                 <template v-slot:cell(actions)="data">
@@ -447,7 +445,6 @@
      </b-modal>
 
 
-  {{cliente}}
 
   </Layout>
 </template>

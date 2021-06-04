@@ -88,7 +88,7 @@
                 <div class="form-group">
                   <label>Proceso</label>
                   <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
-                    <select v-model="form.proceso_id"  name="proceso" class="form-control form-control-lg" :disabled="ver">
+                    <select v-model="form.proceso_id"  name="proceso_id" class="form-control form-control-lg" :disabled="ver">
                         <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index">{{proceso.nombre}}</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
@@ -128,8 +128,8 @@
                 </b-col>
               <b-col>
                 <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
-                  <label>Lider de subproceso</label>
-                    <v-select v-model="form.lider_id" :options="usuarios" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" :disabled="ver"></v-select>
+                  <label>Lider de proceso</label>
+                    <v-select v-model="form.lider_id" :options="usuarios" :disabled="ver" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </b-col>
@@ -548,7 +548,8 @@ export default {
               this.form.nombre = this.subprocesos[index].nombre;
               this.form.objetivos = this.subprocesos[index].objetivos;
               this.form.lider_id = this.subprocesos[index].lider_id;
-              this.form.proceso = this.subprocesos[index].proceso;
+              this.form.proceso_id = this.subprocesos[index].proceso_id;
+              this.form.alcance = this.subprocesos[index].alcance;
               this.form.actividades = JSON.parse( this.subprocesos[index].actividades);
               this.form.recursos = JSON.parse( this.subprocesos[index].recursos);
               this.form.codigo_prefijo = this.subprocesos[index].codigo_prefijo;
