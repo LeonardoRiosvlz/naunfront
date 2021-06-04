@@ -49,15 +49,8 @@
                 @filtered="onFiltered"
               >
 
-                  <template v-slot:cell(nombre)="data">
-                      <li style="list-style:none">
-                          <b>{{data.item.nombre}}</b>
-                          <ul>
-                              <li v-for="(item, index) in data.item.subproceso" :key="index">
-                                <a href="#">{{item.nombre}}</a>
-                              </li>
-                          </ul>
-                      </li>
+                  <template v-slot:cell(proceso)="data">
+                     {{data.item.proceso.nombre}}
                   </template>
 
                 <template v-slot:cell(actions)="data">
@@ -88,33 +81,20 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Gestión de procesos" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestión de subprocesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
               <b-col>
                 <div class="form-group">
-                  <label>Tipo de proceso</label>
-                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }">
-                    <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg">
-                         <option :value="tipo.id" v-for="(tipo,index) in tipos" :key="index">{{tipo.nombre}}</option>
-                    </select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-                </div>
-              </b-col>
-              <b-col>
-                <div class="form-group">
                   <label>Proceso</label>
                   <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
-                    <select v-model="form.proceso"  name="tipo" class="form-control form-control-lg">
+                    <select v-model="form.proceso_id"  name="proceso" class="form-control form-control-lg" :disabled="ver">
                         <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index">{{proceso.nombre}}</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
                 </div>
               </b-col>
-              </b-row>
-              <b-row>
                 <b-col>
                   <div class="form-group">
                     <label>Nombre subproceso</label>
@@ -125,8 +105,8 @@
                   </div>
                 </b-col>
               </b-row>
-              <b-row>
-                <b-col>
+              <b-row >
+                 <b-col>
                   <div class="form-group">
                     <label>Objetivo del subproceso</label>
                     <ValidationProvider name="objeto" rules="required" v-slot="{ errors }">
@@ -135,10 +115,21 @@
                     </ValidationProvider>
                   </div>
                 </b-col>
+              </b-row>
+              <b-row class="mb-3">
+                <b-col>
+                  <div class="form-group">
+                    <label>Alcance</label>
+                    <ValidationProvider name="alcance" rules="required" v-slot="{ errors }">
+                          <input v-model="form.alcance"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
               <b-col>
                 <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
                   <label>Lider de subproceso</label>
-                    <v-select v-model="form.lider_id" :options="usuarios" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
+                    <v-select v-model="form.lider_id" :options="usuarios" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" :disabled="ver"></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </b-col>
@@ -296,7 +287,7 @@
                 </b-row>
               </b-card> 
             </b-modal>
-            {{subprocesos}}
+           
   </Layout>
 </template>
 
@@ -364,13 +355,13 @@ export default {
       show:true,
     form:{
       'id': 6,
-      'tipo_id': '',
-      'proceso':'',
+      'proceso_id':'',
       'version': '',
       'nombre': null,
       'objetivos': '',
       'lider_id': '',
       'tiene_sp': '',
+      'alcance':'',
       'actividades':[],
       'recursos':[]
       }
@@ -378,7 +369,6 @@ export default {
 },
   methods: {
     cargar(index){
-      this.form.actividades = []
       this.form.actividades.push({
         titulo:"",
         subtitulo:"",
@@ -390,7 +380,6 @@ export default {
         this.form.actividades.splice(index, 1);  
       },
       cargarRecursos(index){
-        this.form.recursos = []
         this.form.recursos.push({
           titulo:"",
           subtitulo:"",
@@ -485,6 +474,7 @@ export default {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
+             console.log(response)
             if (response.status==200) {
                this.$swal(
                    'Agregado exito!',
@@ -535,11 +525,18 @@ export default {
           }
         })
       },
-      resete(){
+        resete(){
         var formulario = this.form;
+
         for (var key in formulario) {
-             this.form[key]="";
-       }
+            if (key=='actividades'||key=='recursos') {
+                 this.form[key]=[];
+            }else{
+                this.form[key]="";
+            }
+        }
+       this.form.actividades = [],
+       
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {

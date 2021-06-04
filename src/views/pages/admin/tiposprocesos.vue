@@ -48,6 +48,23 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+
+                    <template v-slot:cell(nombre)="data">
+                      <div class="col-6">
+                        <b-button  v-b-toggle="'collapse-1'" variant="link" class="py-0 px-3" style="background:transparent; border:none; color:#000">{{data.item.nombre}}</b-button>
+                        <b-collapse id="collapse-1" v-for="(proceso, index) in data.item.procesos" :key="index" class="mt-2">
+                          <b-card class="py-1" >
+                            <b-button v-b-toggle="index+'for'" size="sm" variant="link" class="py-0 px-3" style="background:transparent; border:none; color:#000" >{{proceso.nombre}}</b-button>
+                            <b-collapse :id="index+'for'" class="mt-2">
+                              <p v-for="(subprocesos, index) in proceso.subprocesos" :key="index" class="mt-2 ml-4">
+                                {{subprocesos.nombre}}
+                              </p>
+                            </b-collapse>
+                          </b-card>
+                        </b-collapse>
+                      </div>
+                  </template>
+
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -104,7 +121,6 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-     <pre>{{tipos}}</pre>
   </Layout>
 </template>
 

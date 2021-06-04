@@ -155,7 +155,7 @@
                     <div class="form-group">
                         <label>Departamento</label>
                         <ValidationProvider name="departamento" rules="required" v-slot="{ errors }">
-                            <select v-model="form.codigo_departamento" @change="depp()" name="ciudad" class="form-control" :disabled="ver" >
+                            <select v-model="form.departamento" @change="depp()" name="ciudad" class="form-control" :disabled="ver" >
                                 <option v-for="departamento in colombia" :value="departamento.id" :key="departamento.id">{{departamento.departamento}}</option>
                             </select>
                         <span style="color:red">{{ errors[0] }}</span>
