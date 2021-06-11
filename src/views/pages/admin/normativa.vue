@@ -86,10 +86,7 @@
                 <div class="form-group">
                   <label>Tipo de norma</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                    <select v-model="form.tipo"  name="tipo" class="form-control form-control-lg" :disabled="ver">
-                        <option value="Decreto">Decreto</option>
-                        <option value="Ley">Ley</option>
-                    </select>
+                     <input v-model="form.tipo"  type="text" class="form-control" placeholder=" " :disabled="ver">
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
                 </div>

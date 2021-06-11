@@ -90,7 +90,7 @@ export const menuItems = [
             {
                 id: 18,
                 label: 'Gestor de documentos',
-                link: ''
+                link: '/gestordoc'
             },
             {
                 id: 19,

@@ -48,8 +48,9 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-
-      
+                <template v-slot:cell(nombre)="data">
+                   {{data.item.nombre}}
+                </template>
 
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
@@ -86,11 +87,7 @@
                 <div class="form-group">
                   <label>Tipo de documento</label>
                   <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                    <select v-model="form.nombre"  name="tipo" class="form-control form-control-lg" :disabled="ver">
-                        <option value="Manual">Manual</option>
-                        <option value="Cartilla">Cartilla</option>
-                        <option value="Procedimiento">Procedimiento</option>
-                    </select>
+                     <input v-model="form.nombre" type="text" class="form-control" placeholder=" " :disabled="ver">
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
                 </div>
