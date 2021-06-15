@@ -205,12 +205,13 @@ export default {
       'nombre': null,
       'descripcion': '',
       'archivo': '',
+      
       }
     }
   },
 
   methods: {
-
+    
    async listarperfil(){
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
