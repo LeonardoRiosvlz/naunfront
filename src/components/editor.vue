@@ -150,7 +150,7 @@ export default {
               click: () => { this.page_format_mm = [w, h]; }
             }
           }),
-          menu_width: 70,
+          menu_width: 80,
           menu_height: 280
         },
         { // Margins menu
