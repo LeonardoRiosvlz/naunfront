@@ -106,6 +106,23 @@ export default [
         },
     }, 
     {
+        path: '/documentos',
+        name: 'documentos',
+        component: () => import('../views/pages/admin/documentos'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    }, 
+    {
         path: '/sedes',
         name: 'sedes',
         component: () => import('../views/pages/admin/sedes'),
