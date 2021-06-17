@@ -496,7 +496,7 @@ export default {
 
 
   methods: {
-     depp(){
+    depp(){
       this.form.departamento=this.colombia[this.form.codigo_departamento].departamento;
       console.log(this.colombia[this.form.codigo_departamento].departamento);
     },
