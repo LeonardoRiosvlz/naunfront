@@ -145,7 +145,7 @@
                     <div class="form-group">
                       <label>Tipo de docemento</label>
                       <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.tipo"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                        <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
                             <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
@@ -314,7 +314,7 @@
                         <label>Tiempos de alerta para emisión</label>
                           <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                               <select v-model="form.fecha_alerta" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                                <option value="12">12 meses</option>
+                                <option value="12 meses">12 meses</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
@@ -587,7 +587,7 @@ export default {
       fecha_suma:'',
       form:{
             'id': 6,
-            'tipo': '',
+            'tipo_id': '',
             'nombre': null,
             'archivo': '',
             'normativas':[],
