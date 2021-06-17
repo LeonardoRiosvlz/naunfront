@@ -225,6 +225,40 @@ export default [
         },
     },
     {
+        path: '/clasificacion-actividades',
+        name: 'clasificacion-actividades',
+        component: () => import('../views/pages/eventos/clasificacion'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/actividades',
+        name: 'actividades',
+        component: () => import('../views/pages/eventos/eventos'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/consultor',
         name: 'consultor',
         component: () => import('../views/pages/admin/consultor'),
