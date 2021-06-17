@@ -35,7 +35,7 @@ if(token) {
     delete axios.defaults.headers.common['authorization'];
 }
 
-//axios.defaults.baseURL = 'https://naun.herokuapp.com/';
+axios.defaults.baseURL = 'https://naun.herokuapp.com/';
 //axios.defaults.baseURL = 'http://localhost:4000/';
 
 
