@@ -820,6 +820,7 @@ export default {
                 'Content-Type': 'multipart/form-data'
               }}).then(response => {
                 if (response.status==200) {
+                  console.log(response.status)
                     this.sedes = response.data.rows
                   }
                 }).catch(e => {
