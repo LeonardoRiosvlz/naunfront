@@ -64,7 +64,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -199,7 +199,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "status" ],
+      fields: ["nombre","descripcion", "status", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -377,10 +377,10 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarProcesos(id){
+     async eliminarPlantillas(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/normatividad/delete',data, {
+        await this.axios.post('api/plantillas/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -390,16 +390,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarProceso();
+                this.listarplantillas();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarProceso(id){
+      eliminarPlantilla(id){
         this.$swal({
-          title: 'Desea borrar este cargo?',
+          title: 'Desea borrar esta plantilla?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -408,7 +408,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarProcesos(id);
+            this.eliminarPlantillas(id);
           }
         })
       },
@@ -429,7 +429,7 @@ export default {
               this.form.documento = this.plantillas[index].documento;
               this.form.nombre = this.plantillas[index].nombre;
               this.form.descripcion = this.plantillas[index].descripcion;
-              
+              this.form.status = this.plantillas[index].status;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
