@@ -120,15 +120,15 @@
                     </ValidationProvider>
                     </div>
                     </b-col>
-                    <b-col>
+                    <!-- <b-col>
                       <div class="form-group">
                         <label>Documento</label>
                         <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                              <input v-model="form.documento"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                              <input  type="text" class="form-control" placeholder=" " :disabled="ver"/>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </div>
-                    </b-col>
+                    </b-col> -->
                   </b-row>
 
                
@@ -199,7 +199,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "estado"],
+      fields: ["nombre","descripcion", "status" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -222,8 +222,9 @@ export default {
             'nombre':'',
             'descripcion':'',
             'status':'',
-            'documento':'',      
-            'cliente_id':'',
+            'documento':[{
+              'nombre': 'Pedro'
+            }],      
           }
         }
   },
@@ -303,24 +304,30 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarDocumento();
+              this.agregarPlantilla();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarProceso();
+            this.editarPlantilla();
           } else {
         }});
       }
     },
-   async editarProceso(){
+   async editarPlantilla(){
         let data = new FormData();
       var formulario = this.form;
+        
         for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
-        await this.axios.put('api/normatividad', data, {
+          if (key=='documento') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+      console.log(formulario);
+        await this.axios.put('api/plantillas', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -330,7 +337,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarProceso();
+               this.listarplantillas();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 this.resete();
@@ -340,18 +347,18 @@ export default {
               this.$swal(e.response.data);
           });
       },
-  async agregarDocumento(){
+  async agregarPlantilla(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-          if (key=='normativas') {
+          if (key=='documento') {
               data.append(key,JSON.stringify(formulario[key]));
           } else {
               data.append(key,formulario[key]);
           }
       }
       console.log(formulario)
-       await this.axios.post('api/documentos', data, {
+       await this.axios.post('api/plantillas', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -360,7 +367,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listardocscreados();
+               this.listarplantillas();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario   
                this.resete();
@@ -408,7 +415,7 @@ export default {
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
-            if (key=='normativas') {
+            if (key=='documento') {
                  this.form[key]=[];
             }else{
                 this.form[key]="";
@@ -416,13 +423,13 @@ export default {
         }
       },
       setear(id) {
-        for (let index = 0; index < this.documentos.length; index++) {
-          if (this.documentos[index].id===id) {
-              this.form.id = this.documentos[index].id;
-              this.form.tipo = this.documentos[index].tipo;
-              this.form.nombre = this.documentos[index].nombre;
-              this.form.descripcion = this.documentos[index].descripcion;
-              this.url_perfil = this.documentos[index].archivo;
+        for (let index = 0; index < this.plantillas.length; index++) {
+          if (this.plantillas[index].id===id) {
+              this.form.id = this.plantillas[index].id;
+              this.form.documento = this.plantillas[index].documento;
+              this.form.nombre = this.plantillas[index].nombre;
+              this.form.descripcion = this.plantillas[index].descripcion;
+              
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
