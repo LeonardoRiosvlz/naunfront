@@ -420,6 +420,7 @@ export default {
             }else{
                 this.form[key]="";
             }
+           this.form.cliente_id=this.cliente.id;
         }
       },
       setear(id) {
@@ -548,15 +549,7 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarperfil();
-        this.listartipos();
-        this.listarProceso();
-        this.listarSubproceso();
         this.listarplantillas();
-        this.listarNormatividad();
-        this.listardocscreados();
-        this.listarCargos();
-        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
       },
     },
