@@ -2,31 +2,155 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear Plantilla</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Plantilla</b-button>
     </div>
+  
+
     <div class="row">
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-              <Editor/>
+            <h4 class="card-title"></h4>
+            <div class="row mt-4">
+              <div class="col-sm-12 col-md-6">
+                <div id="tickets-table_length" class="dataTables_length">
+                  <label class="d-inline-flex align-items-center">
+                    Show&nbsp;
+                    <b-form-select v-model="perPage" size="sm" :options="pageOptions"></b-form-select>&nbsp;entries
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Search -->
+              <div class="col-sm-12 col-md-6 row m-0 justify-content-end">
+                <div class="clearfix mb-3 pr-3">
+                    <b-button class="float-right btn-info" left>Exportar</b-button>
+                </div>
+                <div id="tickets-table_filter" class="dataTables_filter text-md-right">
+                  <label class="d-inline-flex align-items-center">
+                    Search:
+                    <b-form-input
+                      v-model="filter"
+                      type="search"
+                      placeholder="Search..."
+                      class="form-control form-control-sm ml-2"
+                    ></b-form-input>
+                  </label>
+                </div>
+              </div>
+              <!-- End search -->
+            </div>
+            <!-- Table -->
+            <div class="table-responsive mb-0">
+              <b-table
+                :items="plantillas"
+                :fields="fields"
+                responsive="sm"
+                :per-page="perPage"
+                :current-page="currentPage"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                :filter="filter"
+                :filter-included-fields="filterOn"
+                @filtered="onFiltered"
+              >
+
+      
+
+                <template v-slot:cell(actions)="data">
+                <b-dropdown size="sm" class="">
+                  <template v-slot:button-content>
+                    Action
+                    <i class="mdi mdi-chevron-down"></i>
+                  </template>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                </b-dropdown>
+                </template>
+              </b-table>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="dataTables_paginate paging_simple_numbers float-right">
+                  <ul class="pagination pagination-rounded mb-0">
+                    <!-- pagination -->
+                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
+        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
+          <ValidationObserver  ref="form">
+                <b-row>
+                  <b-col>
+                    <div class="form-group">
+                      <label>Nombre de la plantilla</label>
+                      <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col class="form-group">
+                        <label>Descripcion</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                      <div class="form-group">
+                      <label>Estado</label>
+                      <ValidationProvider name="estado" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.status"  name="status" class="form-control form-control-lg" :disabled="ver">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                    </b-col>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Documento</label>
+                        <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                              <input v-model="form.documento"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </div>
+                    </b-col>
+                  </b-row>
 
-
-
+               
+          </ValidationObserver>
+          <pre>{{form}}</pre>
+        
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+     </b-modal>
+  
   </Layout>
 </template>
 
 <script>
+import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-import Editor from "@/components/editor";
+import summernote from '@/components/summer'
 
 
 /**
@@ -39,17 +163,17 @@ export default {
     PageHeader,
     ValidationProvider,
     ValidationObserver,
-    Editor
+    vSelect
   },
   data() {
     return {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Sistema Integral de gestion"
         },
         {
-          text: "Areas",
+          text: "Gestor de Plantillas",
           active: true
         }
       ],
@@ -60,10 +184,11 @@ export default {
       },
       ver:false,
       url:"",
-      url_firma:"",
+      url_perfil:"",
       modal: true,
+      foto:null,
       file:null,
-      firma:null,
+      perfil:null,
       email: "",
       password: "",
       totalRows: 1,
@@ -74,26 +199,100 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","actions"],
-      areas: [], 
+      fields: ["nombre","descripcion", "estado"],
+      procesos: [], 
+      subprocesos:[],
+      subproceso:[],
+      tiposdocumentos:[],
+      cargos:[],
+      tipos:[],
       editMode:false,
+      usuarios:[],
+      normativa:[],
+      show:true,
+      normativas:[],
+      titulo:'',
+      documentos:[],
+      articulo:"",
+      sedes:"",
+      fecha_suma:'',
+      plantillas: [],
       form:{
-        'id': '',
-        'nombre':'',
-        'descripcion':'',
-        'status':'',
-        'documento':'',
-        'created_at':'',
-        'updated_at':'',
-        'cliente_id':'',
-      }
-    }
+            'id': 6,
+            'nombre':'',
+            'descripcion':'',
+            'status':'',
+            'documento':'',      
+            'cliente_id':'',
+          }
+        }
   },
 
-  created(){
-    this.listarUsers();
-  },
   methods: {
+    suma(){
+    },
+    capSubproceso(proceso){
+      for (let index = 0; index < this.procesos.length; index++) {
+       if(this.procesos[index].id == this.form.proceso){
+         this.subproceso = this.procesos[index].subprocesos
+         console.log(this.subproceso)
+       }
+        
+      }
+    },
+    cargarNorma(){
+      this.form.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        texto : ''
+      });
+    },
+   async listarperfil(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/perfil/lista',data)
+        .then((response) => {
+          this.usuarios = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+      async listartipos(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/normatividad/listar',data)
+            .then((response) => {
+              this.tipos = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
+        async listarCargos(){
+      let data = new FormData();
+      data.append('cliente_id',this.cliente.id);
+        await this.axios.post('api/cargos/listar',data)
+          .then((response) => {
+            this.cargos = response.data;
+            this.listarperfil();
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      },
+      async listardocscreados(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/documentos/listar',data)
+            .then((response) => {
+              this.documentos = response.data;
+              console.log(response)
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -104,24 +303,55 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarArea();
+              this.agregarDocumento();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarAreas();
+            this.editarProceso();
           } else {
         }});
       }
     },
-   async agregarPlantilla(){
-     let data = new FormData();
+   async editarProceso(){
+        let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/plantillas', data, {
+        await this.axios.put('api/normatividad', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+              console.log(response)
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listarProceso();
+               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               ///limpiar el formulario
+                this.resete();
+              }
+            }).catch(e => {
+              console.log(e.response.data.menssage);
+              this.$swal(e.response.data);
+          });
+      },
+  async agregarDocumento(){
+     let data = new FormData();
+      var formulario = this.form;
+        for (var key in formulario) {
+          if (key=='normativas') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+      console.log(formulario)
+       await this.axios.post('api/documentos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -130,38 +360,20 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarAreas();
+               this.listardocscreados();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
+               ///limpiar el formulario   
+               this.resete();
               }
             }).catch(e => {
-              console.log(e.response.data.menssage);
+              console.log(e.response.data.menssag);
               this.$swal(e.response.data);
           });
       },
-    async editarPlantillas(){
-     let data = new FormData();
-       var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
-        await this.axios.put('api/plantillas', data).then(response => {
-            if (response.status==200) {
-               this.$swal('Editado con exito','','success');
-               this.listarAreas();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
-              }
-            }).catch(e => {
-                this.$swal('ocurrio un problema','','warning');
-            });
-     },
-     async eliminarPlantillas(id){
+     async eliminarProcesos(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/plantillas/delete',data, {
+        await this.axios.post('api/normatividad/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -171,16 +383,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarAreas();
+                this.listarProceso();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarPlantilla(id){
+      eliminarProceso(id){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea borrar este cargo?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -189,38 +401,105 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarAreas(id);
+            this.eliminarProcesos(id);
           }
         })
       },
-      resete(){
-        var formulario = this.form;
-        for (var key in formulario) {
-             this.form[key]="";
-       }
-       this.form.cliente_id=this.cliente.id;
+        resete(){
+          var formulario = this.form;
+          for (var key in formulario) {
+            if (key=='normativas') {
+                 this.form[key]=[];
+            }else{
+                this.form[key]="";
+            }
+        }
       },
       setear(id) {
-        for (let index = 0; index < this.areas.length; index++) {
-          if (this.areas[index].id===id) {
-            this.form.id=this.areas[index].id;
-            this.form.nombre=this.areas[index].nombre;
-            this.form.descripcion=this.areas[index].descripcion;
+        for (let index = 0; index < this.documentos.length; index++) {
+          if (this.documentos[index].id===id) {
+              this.form.id = this.documentos[index].id;
+              this.form.tipo = this.documentos[index].tipo;
+              this.form.nombre = this.documentos[index].nombre;
+              this.form.descripcion = this.documentos[index].descripcion;
+              this.url_perfil = this.documentos[index].archivo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async listarPlantillas(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/plantillas/listar',data)
-        .then((response) => {
-          this.areas = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
+
+       async  listarSedes(){
+        let data = new FormData();
+          data.append("cliente_id",this.cliente.id);
+          await this.axios.post('api/sedes/listar',data, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }}).then(response => {
+                if (response.status==200) {
+                    this.sedes = response.data.rows
+                  }
+                }).catch(e => {
+                  console.log(e.response.data.menssage);
+                  this.$swal(e.response.data);
+            });
+      },
+        async  listarplantillas(){
+            let data = new FormData();
+            data.append('cliente_id',this.cliente.id);
+            await this.axios.post('api/plantillas/listar',data)
+            .then((response) => {
+                console.log(response.data)
+                this.plantillas = response.data;
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
+        async  listarProceso(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+            await this.axios.post('api/procesos/listar',data)
+            .then((response) => {
+                this.procesos = response.data.rows;
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+      },
+        async  listarSubproceso(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+            await this.axios.post('api/subprocesos/listar',data)
+            .then((response) => {
+                this.subprocesos = response.data.rows;
+                console.log(response.data)
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+      },
+        async listartipos(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/tipo_procesos/listar',data)
+            .then((response) => {
+              this.tipos = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
+      async listarNormatividad(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/normatividad/listar',data)
+            .then((response) => {
+              this.normativas = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
       },
       setEmail(){
         this.form.username=this.form.email;
@@ -244,6 +523,10 @@ export default {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
       },
+      onFileChangePerfil(e) {
+        const foto = e.target.files[0];
+        this.url_perfil = URL.createObjectURL(foto);
+      },
       toggleModal () {
         this.modal = !this.modal
       },
@@ -256,20 +539,61 @@ export default {
           }
         }
   },
-    created(){
-        this.session();
-        this.listarPlantillas();
-      },
-   watch: {
+    watch: {
       cliente: function () {
-
+        this.listarperfil();
+        this.listartipos();
+        this.listarProceso();
+        this.listarSubproceso();
+        this.listarplantillas();
+        this.listarNormatividad();
+        this.listardocscreados();
+        this.listarCargos();
+        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
       },
     },
+    created(){
+      this.session();
+      console.log(this.form)
+      },
+     mounted() {
+        const $ = require('jquery')
+        window.$ = $
+          $(document).ready(function() {
+          $('.summernote').summernote({
+            placeholder: 'Escribe aquí',
+            tabsize: 2,
+            height: 100,
+            toolbar: [
+              ['style', ['style']],
+              ['font', ['bold', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            callbacks: {
+              onImageUpload: function(files) {
+                for (let i = 0; i < files.length; i++) {
+                  self.lastFile = files[i]
+                  self.sendFile()
+                }
+              },
+              onChange: function(content, e) {
+                  let len = content.length
+                  self.validateLimit(len)
+              }
+            }
+          });
+        });
+    },
     computed: {
-      ...mapState(['usuarioDB','cliente']),
+     ...mapState(['usuarioDB','cliente']),
+
     rows() {
-      return this.areas.length;
+      return this.plantillas.length;
     },
   },
 }
