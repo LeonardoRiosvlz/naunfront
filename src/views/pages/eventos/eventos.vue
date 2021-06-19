@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="clasificacion"
+                :items="eventos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -55,9 +55,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarclasificacion(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;buscarEvento(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarEvento(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -81,128 +81,255 @@
 
 
     <b-modal id="modal" false size="lg"  title="Gestión de actividades" hide-footer>
+
           <ValidationObserver ref="form">
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Nombre</label>
-                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>
-              <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Descripción</label>
-                  <ValidationProvider name="descripcion" rules="required|alpha_spaces" v-slot="{ errors }">
-                        <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row> 
-              <div class="row">
-                <div class="col-md-12">
-                    <h5 class="font-size-14 mb-4">Clasificacion de actividades</h5>
-                    <div class="row">
-                        <div class="col-3" v-for="(clasificacion, index) in clasificacion" :key="index">
-                            
-                            <div class="form-check mb-3">
-                                <input
-                                class="form-check-input"
-                                type="radio"
-                                name="exampleRadios"
-                                :id="'exampleRadios1'+index"
-                                :value="calisficacion.id"
-                                checked
-                                />
-                                <label class="form-check-label " for="exampleRadios1" :style="'color:'+clasificacion.color">{{clasificacion.nombre}}</label>
+            <div class="row">
+                <div class="col-lg-12">
+                      <b-tabs content-class="p-3 text-muted">
+                        <b-tab active class="border-0">
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="fas fa-home"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                          </template>
+                            <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Nombre</label>
+                                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              </b-row>
+                              <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Descripción</label>
+                                  <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                        <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              </b-row> 
+                              <div class="row">
+                                <div class="col-md-12">
+                                    <h5 class="font-size-14 mb-4">Clasificacion de actividades</h5>
+                                    <div class="row">
+                                        <div class="col-3" v-for="(clasificacion, index) in clasificacion" :key="index">
+                                            
+                                            <div class="form-check mb-3">
+                                                <input
+                                                v-model="form.clasificacion_id"
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="exampleRadios"
+                                                :id="'exampleRadios1'+index"
+                                                :value="clasificacion.id"
+                                                checked
+                                                />
+                                                <label class="form-check-label " for="exampleRadios1" :style="'color:'+clasificacion.color">{{clasificacion.nombre}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                            <b-row> 
+                                <b-col>
+                                  <div class="form-group">
+                                    <label >Fecha de programacion </label>
+                                    <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
+                                      <b-form-input id="date-time" v-model="form.fecha_programada"  type="datetime-local"></b-form-input>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                  </div>
+                                </b-col>
+                                <b-col>
+                                <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
+                                  <label>Periodo</label>
+                                    <select class="custom-select" id="date-time" v-model="form.periodo">
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                      </select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>  
+                            <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Lugar</label>
+                                  <ValidationProvider name="lugar" rules="required" v-slot="{ errors }">
+                                        <input v-model="form.lugar"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row> 
+                        </b-tab>
+                        <b-tab>
+                          <template v-slot:title  v-if="editMode">
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                          </template>
+                           <b-row>
+                              <div class="col-10">
+                                <div class="form-group">
+                                  <label>Cargo</label>
+                                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                                      <v-select  v-model="form.cargo_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </div>
+                               <div class="col-2">
+                                  <button class="btn btn-success my-4" @click="vincularResponsable()" :disabled="!form.cargo_id">Vincular</button>
+                               </div>
+                            </b-row>
+                            <div class="row" v-if="editMode">
+                              <div class="col-lg-6" v-for="responsable in responsables" :key="responsable.id">
+                                <b-card no-body>
+                                  <b-row no-gutters class="align-items-center">
+                                    <b-col md="4">
+                                      <b-card-img :src="require('@/assets/images/small/img-2.jpg')" class="rounded-0"></b-card-img>
+                                    </b-col>
+                                    <b-col md="8">
+                                      <b-card-body :title="responsable.cargo.nombre">
+                                        <b-card-text>{{responsable.cargo.user.nombre}}</b-card-text>
+                                         <button class="btn btn-danger" @click="desvincularResponsable(responsable.id)">Desvincular</button>
+                                      </b-card-body>
+                                    </b-col>
+                                  </b-row>
+                                </b-card>
+                              </div>
+                            </div>
+                        </b-tab>
+                        <b-tab>
+                          <template v-slot:title  v-if="editMode">
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">COMPROMETIDOS</span>
+                          </template>
+                           <b-row>
+                              <div class="col-10">
+                                <div class="form-group">
+                                  <label>Cargo</label>
+                                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                                      <v-select  v-model="form.cargo_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </div>
+                               <div class="col-2">
+                                  <button class="btn btn-success my-4" @click="vincularComprometido()" :disabled="!form.cargo_id">Vincular</button>
+                               </div>
+                            </b-row>
+                            <div class="row" v-if="editMode">
+                              <div class="col-lg-6" v-for="responsable in comprometidos" :key="responsable.id">
+                                <b-card no-body>
+                                  <b-row no-gutters class="align-items-center">
+                                    <b-col md="4">
+                                      <b-card-img :src="require('@/assets/images/small/img-2.jpg')" class="rounded-0"></b-card-img>
+                                    </b-col>
+                                    <b-col md="8">
+                                      <b-card-body :title="responsable.cargo.nombre">
+                                        <b-card-text>{{responsable.cargo.user.nombre}}</b-card-text>
+                                         <button class="btn btn-danger" @click="desvincularComprometido(responsable.id)">Desvincular</button>
+                                      </b-card-body>
+                                    </b-col>
+                                  </b-row>
+                                </b-card>
+                              </div>
+                            </div>
+                        </b-tab>
+                        <b-tab>
+                          <template v-slot:title  v-if="editMode">
+                            <span class="d-inline-block d-sm-none">
+                              <i class="fas fa-cog"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">INVITADOS EXTERNOS</span>
+                          </template>
+                           <h5>Invitados</h5>
+                            <b-row v-if="editMode">
+                                <div class="col-12">
+                                    <div class=" row">
+                                        <div class="form-group col-3">
+                                            <label>Nombre </label>
+                                                <input v-model="nombre"  type="text" class="form-control" placeholder=" ">
+                                        </div>
+                                        <div class="form-group col-3">
+                                    <label>Cargo</label>
+                                        <input v-model="cargo"  type="text" class="form-control" placeholder=" ">
+                                    </div>
+                                        <div class="form-group col-3">
+                                            <label>Email </label>
+                                                <input v-model="email"  type="text" class="form-control" placeholder=" ">
+                                        </div>
+                                        <div class="form-group col-3">
+                                    <label>Telefono </label>
+                                        <input v-model="telefono"  type="text" class="form-control" placeholder=" ">
+                                    </div>
+                                    </div>
+                                </div >
+                                <div class="col-12">
+                                  <label></label>
+                                  <button class="btn btn-success btn-block mb-2" @click="cargarInvitados()" >+</button>
+                                </div >
+                              </b-row>    
+                              <table class="table" v-if="editMode">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Cargo</th>
+                                    <th scope="col">Telefono</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Eliminar</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="(invitado,index) in form.invitados_externos" :key="index">
+                                    <th scope="row">{{invitado.nombre}}</th>
+                                    <td>{{invitado.cargo}}</td>
+                                    <td>{{invitado.telefono}}</td>
+                                    <td>{{invitado.email}}</td>
+                                    <td>{{index}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </b-tab>
+                      </b-tabs>
                 </div>
-            </div>
-            <b-row> 
-                <b-col>
-                  <div class="form-group">
-                    <label >Fecha de programacion </label>
-                    <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
-                      <b-form-input id="date-time" v-model="form.fecha_programacion"  type="datetime-local"></b-form-input>
-                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </div>
-                </b-col>
-                <b-col>
-                <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
-                  <label>Periodo</label>
-                    <select class="custom-select" id="date-time" v-model="form.periodo">
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                      </select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-col>
-            </b-row>  
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Lugar</label>
-                  <ValidationProvider name="lugar" rules="required" v-slot="{ errors }">
-                        <input v-model="form.lugar"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>  
-              <hr>
-              <h5>Invitados</h5>
-            <b-row>
-                <div class="col-12">
-                    <div class=" row">
-                        <div class="form-group col-3">
-                            <label>Nombre </label>
-                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" ">
-                        </div>
-                        <div class="form-group col-3">
-                    <label>Cargo</label>
-                        <input v-model="form.cargo"  type="text" class="form-control" placeholder=" ">
-                     </div>
-                        <div class="form-group col-3">
-                            <label>Email </label>
-                                <input v-model="form.email"  type="text" class="form-control" placeholder=" ">
-                        </div>
-                        <div class="form-group col-3">
-                    <label>Telefono </label>
-                        <input v-model="form.telefono"  type="text" class="form-control" placeholder=" ">
-                     </div>
-                    </div>
-                </div >
-                <div class="col-12">
-                  <label></label>
-                  <button class="btn btn-success btn-block mb-2" @click="cargarInvitados()" :disabled="form.objetivo===''">+</button>
-                </div >
-              </b-row>    
+       
+              </div>
+ 
         </ValidationObserver>
+   
    
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
        
      </b-modal>
+
   </Layout>
 </template>
 
 <script>
+import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-
+import moment from 'moment';
 
 /**
  * Dashboard component
@@ -213,7 +340,8 @@ export default {
     Layout,
     PageHeader,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    vSelect
   },
   data() {
     return {
@@ -248,22 +376,31 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","color","actions"],
+      fields: ["nombre","lugar","fecha_programada","status","actions"],
       clasificacion: [], 
+      eventos: [],
+      cargos: [],
       editMode:false,
       form:{
-        'id': '',
+        'id':'',
         'nombre':'',
-        'cargo':'',
-        'email':'',
-        'telefono':'',
-        'color':'',
         'descripcion':'',
+        'observaciones':'',
+        'lugar':'',
+        'invitados_externos':[],
+        'periodo':'',
+        'status':'',
+        'fecha_programada':'',
+        'fecha_ejecucion':'',
         'cliente_id':'',
-        'created_at':'',
-        'updated_at':'',
-        'invitados':[],
-      }
+        'clasificacion_id':'',
+      },
+      comprometidos:[],
+      responsables:[],
+      nombre:'',
+      cargo:'',
+      telefono:'',
+      email:'',
     }
   },
 
@@ -281,7 +418,7 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarclasificacion();
+              this.agregarEvento();
             } else {}
           });        
         }else{
@@ -292,13 +429,13 @@ export default {
         }});
       }
     },
-   async agregarclasificacion(){
+   async agregarEvento(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/eventos/calisficacion', data, {
+       await this.axios.post('api/eventos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -307,26 +444,26 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarclasificacion();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
+               this.listarEventos();
+               this.setear(response.data.id);
+               this.editMode=true;         
               }
             }).catch(e => {
               console.log(e.response.data.menssage);
               this.$swal(e.response.data);
           });
       },
-    async editarclasificacion(){
+    async editarEvento(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/eventos/calisficacion', data).then(response => {
+        await this.axios.put('api/eventos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarclasificacion();
+               this.listarEventos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
               this.resete();
@@ -335,10 +472,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarclasificacions(id){
+     async eliminarEventos(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/eventos/calisficacion/delete',data, {
+        await this.axios.post('api/eventos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -348,16 +485,45 @@ export default {
                       '',
                       'success'
                 );
-                this.listarclasificacion();
+                this.listarEventos();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarclasificacion(id){
+    async buscarEvento(id){
+        let data = new FormData();
+        data.append('id',id);
+        await this.axios.post('api/eventos/find',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                    this.form.id=response.data.id;
+                    this.form.nombre=response.data.nombre;
+                    this.form.descripcion=response.data.descripcion;
+                    this.form.observaciones=response.data.observaciones;
+                    this.form.lugar=response.data.lugar;
+                    this.form.inivitados_externos=JSON.parse(response.data.inivitados_externos);
+                    this.form.periodo=response.data.periodo;
+                    this.form.status=response.data.status;
+                    this.form.fecha_programada=moment(response.data.fecha_programada).format("YYYY-MM-DDTHH:MM");
+                    this.form.fecha_ejecucion=response.data.fecha_ejecucion;
+                    this.form.cliente_id=response.data.cliente_id;
+                    this.form.clasificacion_id=response.data.clasificacion_id;
+                    this.responsables=response.data.responsables;
+                    this.comprometidos=response.data.comprometidos;
+                    this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+                    }
+              }).catch(e => {
+                console.log(e.response.data.menssage);
+                this.$swal(e.response.data);
+          });
+      },
+      vincularResponsable(){
         this.$swal({
-          title: 'Desea borrar esta area?',
+          title: 'Desea vincularlo a esta activida?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -366,24 +532,190 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarclasificacions(id);
+            this.vincularResponsables();
+          }
+        })
+      },
+      async vincularResponsables(){
+        let data = new FormData();
+        data.append('cargo_id',this.form.cargo_id);
+        data.append('evento_id',this.form.id);
+
+        await this.axios.post('api/eventos/responsables/agregar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Vinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      },
+            vincularComprometido(){
+        this.$swal({
+          title: 'Desea vincularlo a esta activida?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.vincularComprometidos();
+          }
+        })
+      },
+      async vincularComprometidos(){
+        let data = new FormData();
+        data.append('cargo_id',this.form.cargo_id);
+        data.append('evento_id',this.form.id);
+
+        await this.axios.post('api/eventos/comprometidos/agregar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Vinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      },  
+      eliminarEvento(id){
+        this.$swal({
+          title: 'Desea borrar esta actividad?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.eliminarEventos(id);
+          }
+        })
+      },
+      async desvincularResponsables(id){
+        let data = new FormData();
+        data.append('id',id);
+        await this.axios.post('api/eventos/responsables/eliminar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Desvinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      }, 
+     desvincularResponsable(id){
+        this.$swal({
+          title: 'Desea desvincular este cargo?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.desvincularResponsables(id);
+          }
+        })
+      },
+            async desvincularComprometidos(id){
+        let data = new FormData();
+        data.append('id',id);
+        await this.axios.post('api/eventos/comprometidos/eliminar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Desvinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      }, 
+     desvincularComprometido(id){
+        this.$swal({
+          title: 'Desea desvincular este cargo?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.desvincularComprometidos(id);
           }
         })
       },
       resete(){
         var formulario = this.form;
         for (var key in formulario) {
-             this.form[key]="";
+          if (!this.form[key]==="invitados_externos") {
+              this.form[key]="";
+          }  
        }
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.clasificacion.length; index++) {
-          if (this.clasificacion[index].id===id) {
-            this.form.id=this.clasificacion[index].id;
-            this.form.nombre=this.clasificacion[index].nombre;
-            this.form.descripcion=this.clasificacion[index].descripcion;
-            this.form.color=this.clasificacion[index].color;
+        for (let index = 0; index < this.eventos.length; index++) {
+          if (this.eventos[index].id===id) {
+            this.form.id=this.eventos[index].id;
+            this.form.nombre=this.eventos[index].nombre;
+            this.form.descripcion=this.eventos[index].descripcion;
+            this.form.observaciones=this.eventos[index].observaciones;
+            this.form.lugar=this.eventos[index].lugar;
+            this.form.inivitados_externos=JSON.parse(this.eventos[index].inivitados_externos);
+            this.form.periodo=this.eventos[index].periodo;
+            this.form.status=this.eventos[index].status;
+            this.form.fecha_programada=moment(this.eventos[index].fecha_programada).format("YYYY-MM-DDTHH:MM");
+            this.form.fecha_ejecucion=this.eventos[index].fecha_ejecucion;
+            this.form.cliente_id=this.eventos[index].cliente_id;
+            this.form.clasificacion_id=this.eventos[index].clasificacion_id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -400,16 +732,39 @@ export default {
           console.log('error' + e);
         })
       },
+    async listarCargos(){
+      let data = new FormData();
+      data.append('cliente_id',this.cliente.id);
+        await this.axios.post('api/cargos/listar',data)
+          .then((response) => {
+            this.cargos = response.data;
+            this.listarperfil();
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      },
+    async listarEventos(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/eventos/listar',data)
+        .then((response) => {
+          this.eventos = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },  
     cargarInvitados(){
-      this.form.objetivos.push({
-       nombre:this.form.nombre,
-       telefono:this.form.telefono,
-       cargo:this.form.cargo,
-       email:this.form.email,
+      this.form.invitados_externos.push({
+       nombre:this.nombre,
+       telefono:this.telefono,
+       cargo:this.cargo,
+       email:this.email,
       });
     },
     eliminarInvitados(index){
-       this.form.invitados.splice(index, 1);  
+       this.form.invitados_externos.splice(index, 1);  
     },
       onFileChange(e) {
         const file = e.target.files[0];
@@ -430,19 +785,23 @@ export default {
     created(){
         this.session();
         this.listarclasificacion();
+        this.listarEventos();
+        this.listarCargos();
       },
    watch: {
       cliente: function () {
-       this.listarclasificacion();
+        this.listarclasificacion();
+        this.listarEventos();
+        this.listarCargos();
        this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
-        this.form.cliente_id=this.usuarioDB.c
+        this.form.cliente_id=this.usuarioDB.cliente_id;
       },
     },
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.clasificacion.length;
+      return this.eventos.length;
     },
   },
 }
