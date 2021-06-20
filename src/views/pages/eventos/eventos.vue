@@ -183,10 +183,7 @@
                               <div class="col-10">
                                 <div class="form-group">
                                   <label>Cargo</label>
-                                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                                      <v-select  v-model="form.cargo_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                    </ValidationProvider>
+                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 </div>
                               </div>
                                <div class="col-2">
@@ -222,10 +219,7 @@
                               <div class="col-10">
                                 <div class="form-group">
                                   <label>Cargo</label>
-                                    <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                                      <v-select  v-model="form.cargo_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                    </ValidationProvider>
+                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 </div>
                               </div>
                                <div class="col-2">
@@ -259,7 +253,7 @@
                           </template>
                            <h5>Invitados</h5>
                             <b-row v-if="editMode">
-                                <div class="col-12">
+                                <div class="col-11">
                                     <div class=" row">
                                         <div class="form-group col-3">
                                             <label>Nombre </label>
@@ -279,7 +273,7 @@
                                     </div>
                                     </div>
                                 </div >
-                                <div class="col-12">
+                                <div class="col-1 my-2">
                                   <label></label>
                                   <button class="btn btn-success btn-block mb-2" @click="cargarInvitados()" >+</button>
                                 </div >
@@ -300,22 +294,18 @@
                                     <td>{{invitado.cargo}}</td>
                                     <td>{{invitado.telefono}}</td>
                                     <td>{{invitado.email}}</td>
-                                    <td>{{index}}</td>
+                                    <td><button class="btn btn-danger" @click="eliminarInvitados(index)">Eliminar</button></td>
                                   </tr>
                                 </tbody>
                               </table>
                         </b-tab>
                       </b-tabs>
                 </div>
-       
+        
               </div>
- 
         </ValidationObserver>
-   
-   
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
-       
      </b-modal>
 
   </Layout>
@@ -380,6 +370,7 @@ export default {
       clasificacion: [], 
       eventos: [],
       cargos: [],
+      cargo:'',
       editMode:false,
       form:{
         'id':'',
@@ -407,6 +398,7 @@ export default {
   created(){
     this.listarUsers();
   },
+
   methods: {
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
@@ -424,17 +416,37 @@ export default {
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarclasificacion();
+            this.editarEvento();
           } else {
         }});
       }
     },
+   buscarAgregados(){
+     for (let index = 0; index < this.comprometidos.length; index++) {
+      if (this.comprometidos[index].cargo.id===this.cargo) {
+           this.$swal('Ya este cargo ha sido vinculado!','','warning');
+           this.cargo="";
+           return;
+      } 
+     }
+     for (let index = 0; index < this.responsables.length; index++) {
+      if (this.responsables[index].cargo.id===this.cargo) {
+           this.$swal('Ya este cargo ha sido vinculado!','','warning');
+           this.cargo="";
+           return;
+      } 
+     }
+   },
    async agregarEvento(){
      let data = new FormData();
-      var formulario = this.form;
+     var formulario = this.form;
         for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
+          if (key=='invitados_externos') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
        await this.axios.post('api/eventos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -446,7 +458,7 @@ export default {
                     'success');
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                this.listarEventos();
-               this.setear(response.data.id);
+               this.buscarEvento(response.data.id);
                this.editMode=true;         
               }
             }).catch(e => {
@@ -456,10 +468,14 @@ export default {
       },
     async editarEvento(){
      let data = new FormData();
-       var formulario = this.form;
+     var formulario = this.form;
         for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
+          if (key=='invitados_externos') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
         await this.axios.put('api/eventos', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
@@ -505,7 +521,7 @@ export default {
                     this.form.descripcion=response.data.descripcion;
                     this.form.observaciones=response.data.observaciones;
                     this.form.lugar=response.data.lugar;
-                    this.form.inivitados_externos=JSON.parse(response.data.inivitados_externos);
+                    this.form.invitados_externos=JSON.parse(response.data.invitados_externos);
                     this.form.periodo=response.data.periodo;
                     this.form.status=response.data.status;
                     this.form.fecha_programada=moment(response.data.fecha_programada).format("YYYY-MM-DDTHH:MM");
@@ -797,6 +813,10 @@ export default {
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.cliente_id;
       },
+      cargo:function(){
+        this.buscarAgregados();
+        this.form.cargo_id=this.cargo;
+      }
     },
     computed: {
       ...mapState(['usuarioDB','cliente']),

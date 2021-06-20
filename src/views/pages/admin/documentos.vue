@@ -1,12 +1,9 @@
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-    <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear Area</b-button>
-    </div>
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card ex1" >
           <div class="card-body">
               <Editor/>
           </div>
@@ -271,3 +268,11 @@ export default {
   },
 }
 </script>
+<style scoped>
+.ex1 {
+  background-color: lightblue;
+  height: 1500px;
+  overflow-y: scroll;
+}
+
+</style>

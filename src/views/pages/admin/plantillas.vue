@@ -85,7 +85,7 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="xl"  title="Gestor de plantillas" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
                   <b-col>
@@ -120,17 +120,8 @@
                     </ValidationProvider>
                     </div>
                     </b-col>
-                    <!-- <b-col>
-                      <div class="form-group">
-                        <label>Documento</label>
-                        <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                              <input  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </div>
-                    </b-col> -->
                   </b-row>
-
+            
                
           </ValidationObserver>
           <pre>{{form}}</pre>
