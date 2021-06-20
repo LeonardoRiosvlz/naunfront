@@ -43,7 +43,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="plantillas"
+                :items="grupos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -64,7 +64,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarGrupoestandar(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -185,7 +185,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre del grupo de estandares de acreditacion","codigo", "descripcion", "actions" ],
+      fields: ["nombre","codigo", "descripcion", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -202,7 +202,7 @@ export default {
       articulo:"",
       sedes:"",
       fecha_suma:'',
-      estandares: [],
+      grupos: [],
       form:{
             'id': 6,
             'nombre':'',
@@ -301,14 +301,11 @@ export default {
     },
    async editarGrupoestandar(){
         let data = new FormData();
+      
       var formulario = this.form;
         
         for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+          data.append(key,formulario[key]);
       }
       console.log(formulario);
         await this.axios.put('api/estandares', data, {
@@ -335,12 +332,8 @@ export default {
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
-      }
+          data.append(key,formulario[key]);
+        }
       console.log(formulario)
        await this.axios.post('api/estandares', data, {
            headers: {
@@ -407,12 +400,12 @@ export default {
         }
       },
       setear(id) {
-        for (let index = 0; index < this.plantillas.length; index++) {
-          if (this.plantillas[index].id===id) {
-              this.form.id = this.plantillas[index].id;
-              this.form.nombre = this.plantillas[index].nombre;
-              this.form.descripcion = this.plantillas[index].descripcion;
-              this.form.codigo = this.plantillas[index].codigo;
+        for (let index = 0; index < this.grupos.length; index++) {
+          if (this.grupos[index].id===id) {
+              this.form.id = this.grupos[index].id;
+              this.form.nombre = this.grupos[index].nombre;
+              this.form.descripcion = this.grupos[index].descripcion;
+              this.form.codigo = this.grupos[index].codigo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -437,10 +430,10 @@ export default {
         async  listargruposestandares(){
             let data = new FormData();
             data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/estandares/listar',data)
+            await this.axios.post('api/estandares/grupos/listar',data)
             .then((response) => {
                 console.log(response.data)
-                this.plantillas = response.data;
+                this.grupos = response.data;
             })
             .catch((e)=>{
                 console.log('error' + e);
@@ -583,7 +576,7 @@ export default {
      ...mapState(['usuarioDB','cliente']),
 
     rows() {
-      return this.plantillas.length;
+      return this.grupos.length;
     },
   },
 }
