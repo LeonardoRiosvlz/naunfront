@@ -2,9 +2,11 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="row">
+
       <div class="col-12">
         <div class="card ex1" >
           <div class="card-body">
+              <button class="btn btn-success " @click="editarPlantilla()">Guardar</button>
               <Editor/>
           </div>
         </div>
@@ -40,13 +42,13 @@ export default {
   },
   data() {
     return {
-      title: "Administracion",
+      title: "E",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Sistema integral de gestión"
         },
         {
-          text: "Areas",
+          text: "Plantillas ",
           active: true
         }
       ],
@@ -73,14 +75,15 @@ export default {
       sortDesc: false,
       fields: ["nombre","descripcion","actions"],
       areas: [], 
+      plantillas: [],
       editMode:false,
       form:{
-        'id': '',
-        'nombre':'',
-        'descripcion':'',
-        'created_at':'',
-        'updated_at':'',
-      }
+            'id': 6,
+            'nombre':'',
+            'descripcion':'',
+            'status':'',
+            'documento':[],      
+     }
     }
   },
 
@@ -93,7 +96,7 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     }, 
-    ...mapActions(['guardarUsuario']),
+    ...mapActions(['guardarUsuario','cargarDocumento']),
     switchLoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
@@ -109,69 +112,7 @@ export default {
         }});
       }
     },
-   async agregarArea(){
-     let data = new FormData();
-      var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
-       await this.axios.post('api/areas', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            if (response.status==200) {
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.listarAreas();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
-              }
-            }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
-          });
-      },
-    async editarAreas(){
-     let data = new FormData();
-       var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
-        await this.axios.put('api/areas', data).then(response => {
-            if (response.status==200) {
-               this.$swal('Editado con exito','','success');
-               this.listarAreas();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
-              }
-            }).catch(e => {
-                this.$swal('ocurrio un problema','','warning');
-            });
-     },
-     async eliminarAreas(id){
-        let data = new FormData();
-        data.append('id',id);
-        await this.axios.post('api/areas/delete',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Eliminado con exito!',
-                      '',
-                      'success'
-                );
-                this.listarAreas();
-                }
-              }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
-          });
-      }, 
+
       eliminarArea(id){
         this.$swal({
           title: 'Desea borrar esta area?',
@@ -194,28 +135,42 @@ export default {
        }
        this.form.cliente_id=this.cliente.id;
       },
-      setear(id) {
-        for (let index = 0; index < this.areas.length; index++) {
-          if (this.areas[index].id===id) {
-            this.form.id=this.areas[index].id;
-            this.form.nombre=this.areas[index].nombre;
-            this.form.descripcion=this.areas[index].descripcion;
-            this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-            return;
-          }
-        }
-      },
-    async listarAreas(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/areas/listar',data)
-        .then((response) => {
-          this.areas = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
+
+        async  listarPlantilla(){
+            let data = new FormData();
+            data.append('id',this.$route.params.id);
+            await this.axios.post('api/plantillas/find',data)
+            .then((response) => {
+                console.log(response.data)
+                this.plantillas = response.data;
+                let payload=JSON.parse(this.plantillas.documento);  
+                this.cargarDocumento(payload);
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
+        async  editarPlantilla(){
+            let data = new FormData();
+            data.append('id',this.$route.params.id);
+            data.append('documento',JSON.stringify(this.doc));
+        await this.axios.put('api/plantillas/editar', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+              console.log(response)
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listarplantilla();
+              }
+            }).catch(e => {
+              console.log(e.response.data.menssage);
+              this.$swal(e.response.data);
+          });
+        },
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -252,16 +207,19 @@ export default {
   },
     created(){
         this.session();
-        this.listarAreas();
+        this.listarPlantilla();
       },
    watch: {
       cliente: function () {
 
         this.title=this.cliente.nombre_prestador;
       },
+      doc:function(){
+        this.form.documento=this.doc;
+      }
     },
     computed: {
-      ...mapState(['usuarioDB','cliente']),
+      ...mapState(['usuarioDB','cliente','doc']),
     rows() {
       return this.areas.length;
     },

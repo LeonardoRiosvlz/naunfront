@@ -414,6 +414,40 @@ export default [
         },
     },
     {
+        path: '/gruposestandares',
+        name: 'gruposestandares',
+        component: () => import('../views/pages/admin/gruposestandares'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/estandares',
+        name: 'estandares',
+        component: () => import('../views/pages/admin/estandares'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () => import('../views/pages/admin/notificaciones'),
@@ -482,9 +516,9 @@ export default [
         },
     },
     {
-        path: '/cajero_details/:id/:entidad',
-        name: 'cajero_details',
-        component: () => import('../views/pages/procesos/cajero_details'),
+        path: '/plantilla/:id',
+        name: 'plantilla',
+        component: () => import('../views/pages/admin/plantilla'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

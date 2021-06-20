@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Plantilla</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Acreditacion</b-button>
     </div>
   
 
@@ -85,14 +85,34 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="xl"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
-                  <b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Numero del estandar</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Codigo del estandar</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
                     <div class="form-group">
-                      <label>Nombre de la plantilla</label>
-                      <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                      <label>Nombre del grupo de estandares</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                            <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                        </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
@@ -108,20 +128,15 @@
                       </b-col>
                   </b-row>
                   <b-row>
-                    <b-col>
-                      <div class="form-group">
-                      <label>Estado</label>
-                      <ValidationProvider name="estado" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.status"  name="status" class="form-control form-control-lg" :disabled="ver">
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                    </b-col>
+                    <b-col class="form-group">
+                        <label>Criterios</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
                   </b-row>
-            
+                
                
           </ValidationObserver>
           <pre>{{form}}</pre>
@@ -161,10 +176,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Sistema Integral de gestion"
+          text: "Sistema de gestion de calidad"
         },
         {
-          text: "Gestor de Plantillas",
+          text: "Gestion de grupos de estandares de acreditacion",
           active: true
         }
       ],
@@ -190,7 +205,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "status", "actions" ],
+      fields: ["numero","codigo", "nombre", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -207,13 +222,15 @@ export default {
       articulo:"",
       sedes:"",
       fecha_suma:'',
-      plantillas: [],
+      estandares: [],
       form:{
             'id': 6,
-            'nombre':'',
+            'numero':'',
             'descripcion':'',
-            'status':'',
-            'documento':[],      
+            'criterios':'',
+            'codigo':'',
+            'cliente_id':'',
+            'grupo_id':'',     
           }
         }
   },
@@ -409,7 +426,6 @@ export default {
             }else{
                 this.form[key]="";
             }
-           this.form.cliente_id=this.cliente.id;
         }
       },
       setear(id) {
@@ -446,7 +462,7 @@ export default {
             data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/plantillas/listar',data)
             .then((response) => {
-      
+                console.log(response.data)
                 this.plantillas = response.data;
             })
             .catch((e)=>{
@@ -538,9 +554,17 @@ export default {
   },
     watch: {
       cliente: function () {
+        this.listarperfil();
+        this.listartipos();
+        this.listarProceso();
+        this.listarSubproceso();
         this.listarplantillas();
+        this.listarNormatividad();
+        this.listardocscreados();
+        this.listarCargos();
+        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
-      }
+      },
     },
     created(){
       this.session();

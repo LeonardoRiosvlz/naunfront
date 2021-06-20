@@ -16,7 +16,8 @@ const store = new Vuex.Store({
     token:'',
     usuarioDB:'',
     cliente:'',
-    counter:'s',
+    counter:'',
+    doc:[],
     load:false
 },
 mutations:{
@@ -46,6 +47,9 @@ mutations:{
     },
     cargars(state){
         state.load=!state.load;
+    },
+    cargarDocs(state,payload){
+        state.doc=payload;
     }
 },
 actions:{
@@ -61,6 +65,9 @@ actions:{
     },
     cargar({commit}){
         commit('cargars')
+    },
+    cargarDocumento({commit},payload){
+        commit('cargarDocs', payload)
     }
 }
 })
