@@ -482,9 +482,9 @@ export default [
         },
     },
     {
-        path: '/cajero_details/:id/:entidad',
-        name: 'cajero_details',
-        component: () => import('../views/pages/procesos/cajero_details'),
+        path: '/plantilla/:id',
+        name: 'plantilla',
+        component: () => import('../views/pages/admin/plantilla'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

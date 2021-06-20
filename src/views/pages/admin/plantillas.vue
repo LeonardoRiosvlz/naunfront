@@ -213,9 +213,7 @@ export default {
             'nombre':'',
             'descripcion':'',
             'status':'',
-            'documento':[{
-              'nombre': 'Pedro'
-            }],      
+            'documento':[],      
           }
         }
   },
@@ -448,7 +446,7 @@ export default {
             data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/plantillas/listar',data)
             .then((response) => {
-                console.log(response.data)
+      
                 this.plantillas = response.data;
             })
             .catch((e)=>{
@@ -542,7 +540,7 @@ export default {
       cliente: function () {
         this.listarplantillas();
         this.title=this.cliente.nombre_prestador;
-      },
+      }
     },
     created(){
       this.session();
