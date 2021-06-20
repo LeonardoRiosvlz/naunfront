@@ -43,7 +43,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="plantillas"
+                :items="estandares"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
