@@ -85,7 +85,7 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="xl"  title="Gestor de plantillas" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
                   <b-col>
@@ -120,17 +120,8 @@
                     </ValidationProvider>
                     </div>
                     </b-col>
-                    <!-- <b-col>
-                      <div class="form-group">
-                        <label>Documento</label>
-                        <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                              <input  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </div>
-                    </b-col> -->
                   </b-row>
-
+            
                
           </ValidationObserver>
           <pre>{{form}}</pre>
@@ -222,9 +213,7 @@ export default {
             'nombre':'',
             'descripcion':'',
             'status':'',
-            'documento':[{
-              'nombre': 'Pedro'
-            }],      
+            'documento':[],      
           }
         }
   },
@@ -420,6 +409,7 @@ export default {
             }else{
                 this.form[key]="";
             }
+           this.form.cliente_id=this.cliente.id;
         }
       },
       setear(id) {
@@ -456,7 +446,7 @@ export default {
             data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/plantillas/listar',data)
             .then((response) => {
-                console.log(response.data)
+      
                 this.plantillas = response.data;
             })
             .catch((e)=>{
@@ -548,17 +538,9 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarperfil();
-        this.listartipos();
-        this.listarProceso();
-        this.listarSubproceso();
         this.listarplantillas();
-        this.listarNormatividad();
-        this.listardocscreados();
-        this.listarCargos();
-        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
-      },
+      }
     },
     created(){
       this.session();
