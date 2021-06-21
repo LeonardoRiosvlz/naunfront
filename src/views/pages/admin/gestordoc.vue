@@ -249,7 +249,7 @@
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col v-if="form.creado==='creado'">
+                        <b-col v-if="form.creado==='creado'">  
                           <div class="form-group">
                             <label>Fecha de elaboración</label>
                             <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
