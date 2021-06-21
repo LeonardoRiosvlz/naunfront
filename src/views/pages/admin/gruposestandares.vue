@@ -318,7 +318,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarplantillas();
+               this.listargruposestandares();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 this.resete();
