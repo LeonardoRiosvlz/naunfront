@@ -429,11 +429,12 @@ export default {
       setear(id) {
         for (let index = 0; index < this.estandares.length; index++) {
           if (this.estandares[index].id===id) {
-              this.form.id = this.estandares[index].id;
-              this.form.documento = this.estandares[index].documento;
-              this.form.nombre = this.estandares[index].nombre;
-              this.form.descripcion = this.estandares[index].descripcion;
-              this.form.status = this.estandares[index].status;
+              this.form.id=this.estandares[index].id,
+              this.form.numero=this.estandares[index].numero,
+              this.form.descripcion=this.estandares[index].descripcion,
+              this.form.criterios=this.estandares[index].criterios,
+              this.form.codigo=this.estandares[index].codigo,
+              this.form.grupo_id=this.estandares[index].grupo_id,    
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -458,10 +459,10 @@ export default {
         async  listarestandares(){
             let data = new FormData();
             data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/plantillas/listar',data)
+            await this.axios.post('api/estandares/listar',data)
             .then((response) => {
                 console.log(response.data)
-                this.plantillas = response.data;
+                this.estandares = response.data;
             })
             .catch((e)=>{
                 console.log('error' + e);

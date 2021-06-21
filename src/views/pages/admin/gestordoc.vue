@@ -93,7 +93,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -389,7 +389,7 @@
 
 
           </ValidationObserver>
-          <pre>{{form}}</pre>
+          <pre>{{documentos}}</pre>
         
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -474,13 +474,15 @@ export default {
       form:{
             'id': 6,
             'tipo_id': '',
+            'subproceso_id':'',
+            'proceso_id':'',
+            'creado':'',
+
             'nombre': null,
             'archivo': '',
             'normativas':[],
-            'creado':'',
             'consecutivo':'',
             'version':'',
-            'subproceso_id':'',
             'elaboracion':'',
             'revision':'',
             'aprobacion':'',
@@ -488,7 +490,6 @@ export default {
             'fecha_emicion':'',
             'intervalo':'',
             'status':'',
-            'proceso_id':'',
             'sedes_id':'',
             'elabora_id':'',
             'aprueba_id':'',
@@ -582,18 +583,22 @@ export default {
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarProceso();
+            this.editarDocumento();
           } else {
         }});
       }
     },
-   async editarProceso(){
+   async editarDocumento(){
         let data = new FormData();
       var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
+         for (var key in formulario) {
+          if (key=='normativas') {
+                data.append(key,JSON.stringify(formulario[key]));
+            } else {
+                data.append(key,formulario[key]);
+            }
         }
-        await this.axios.put('api/normatividad', data, {
+        await this.axios.put('api/documentos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -603,7 +608,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarProceso();
+               this.listardocscreados();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 this.resete();
@@ -643,10 +648,10 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarProcesos(id){
+     async eliminarDocs(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/normatividad/delete',data, {
+        await this.axios.post('api/documentos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -656,16 +661,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listarProceso();
+                this.listardocscreados();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarProceso(id){
+      eliminarDoc(id){
         this.$swal({
-          title: 'Desea borrar este cargo?',
+          title: 'Desea borrar este documento?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -674,7 +679,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarProcesos(id);
+            this.eliminarDocs(id);
           }
         })
       },
@@ -695,7 +700,7 @@ export default {
               this.form.id = this.documentos[index].id;
               this.form.tipo_id = this.documentos[index].tipo_id;
               this.form.nombre = this.documentos[index].nombre;
-              this.form.normativas = this.documentos[index].normativas;
+              this.form.normativas = JSON.parse(this.documentos[index].normativas);
               this.form.creado = this.documentos[index].creado;
               this.form.consecutivo = this.documentos[index].consecutivo;
               this.form.version = this.documentos[index].version;
