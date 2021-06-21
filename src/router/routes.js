@@ -550,8 +550,8 @@ export default [
         },
     },
     {
-        path: '/calendario',
-        name: 'calendario',
+        path: '/cronograma',
+        name: 'cronograma',
         component: () => import('../views/pages/calendar'),
         meta: {
             beforeEnter: (to, from, next) => {

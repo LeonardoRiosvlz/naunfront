@@ -8,7 +8,7 @@ import listPlugin from "@fullcalendar/list";
 import esLocale from '@fullcalendar/core/locales/es';
 import Swal from "sweetalert2";
 import { required } from "vuelidate/lib/validators";
-
+import {mapState,mapMutations, mapActions} from 'vuex'
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 
@@ -25,16 +25,17 @@ export default {
   components: { FullCalendar, Layout, PageHeader },
   data() {
     return {
-      title: "Calendar",
+      title: "Calendario",
       items: [
         {
-          text: "Nazox",
+          text: "Gestion de eventos",
         },
         {
-          text: "Calendar",
+          text: "Calendario",
           active: true,
         },
       ],
+      clasificacion:[],
       calendarEvents:[],
       eventos:[],
       calendarOptions: {
@@ -59,8 +60,8 @@ export default {
         dateClick: this.dateClicked,
         eventClick: this.editEvent,
         eventsSet: this.handleEvents,
-        events:[]
-        ,
+        events:[],
+        
         weekends: true,
         selectable: true,
         selectMirror: true,
@@ -93,12 +94,26 @@ export default {
       category: { required },
     },
   },
-  mounted(){
-		  this.ListarCoordinador();
+  computed: {
+  ...mapState(['usuarioDB','cliente'])
   },
+  mounted(){
+		  this.listarAdmin();
+      this.listarclasificacion();
+  },
+    watch: {
+      cliente: function () {
+        this.listarAdmin();
+        this.listarclasificacion();
+        this.title=this.cliente.nombre_prestador;
+      }
+    },
   methods: {
-  async  ListarCoordinador(){
-    await  this.axios.get('/api/calendario/coordinador')
+  async listarAdmin(){
+    console.log("heyt");
+    let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+    await  this.axios.post('/api/eventos/calendario',data)
       .then((response) => {
         this.calendarOptions.events = response.data;
       })
@@ -106,6 +121,29 @@ export default {
         console.log('error' + e);
       })
     },
+    async listarclasificacion(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/eventos/calisficacion/listar',data)
+        .then((response) => {
+          this.clasificacion = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+     async buscarEvento(index){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+     data.append('clasificacion_id',index);
+       await this.axios.post('/api/eventos/calendario/find',data)
+        .then((response) => {
+          this.calendarOptions.events = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
     /**
      * Modal form submit
      */
@@ -229,7 +267,18 @@ export default {
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="row">
-      <div class="col-12">
+      <div class="col-3">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group">
+              <a href="#" v-for="clasificacion in clasificacion" :key="clasificacion.id" @click="buscarEvento(clasificacion.id)">
+                <li class="list-group-item text-white"  :style="'background:'+clasificacion.color">{{clasificacion.nombre}}</li>
+              </a>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-9">
         <div class="card">
           <div class="card-body">
             <div class="app-calendar">
@@ -339,5 +388,6 @@ export default {
       </form>
     </b-modal>
     <pre>{{calendarOptions.events}}</pre>
+    <pre>{{clasificacion}}</pre>
   </Layout>
 </template>

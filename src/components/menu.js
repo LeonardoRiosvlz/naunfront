@@ -111,17 +111,17 @@ export const menuItems = [
             {
                 id:  21,
                 label: 'Cronograma',
-                link: ''
+                link: 'cronograma'
             },
             {
                 id: 22,
                 label: 'Clasificación de eventos',
-                link: ''
+                link: 'clasificacion-actividades'
             },
             {
                 id: 23,
                 label: 'Eventos o actividades',
-                link: ''
+                link: 'actividades'
             },
         ]
     },
