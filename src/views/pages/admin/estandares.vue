@@ -64,7 +64,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarEstandares(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -91,8 +91,8 @@
                     <b-col>
                         <div class="form-group">
                             <label>Numero del estandar</label>
-                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <ValidationProvider name="numero" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.numero"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -110,8 +110,8 @@
                     <div class="form-group">
                       <label>Nombre del grupo de estandares</label>
                       <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
-                            <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                        <select v-model="form.grupo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                            <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index"></option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -131,7 +131,7 @@
                     <b-col class="form-group">
                         <label>Criterios</label>
                         <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                              <textarea v-model="form.criterios"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                               <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                       </b-col>
@@ -339,7 +339,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarplantillas();
+               this.listarestandares();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 this.resete();
@@ -365,7 +365,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarplantillas();
+               this.listarestandares();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario   
                this.resete();
