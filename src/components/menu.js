@@ -141,9 +141,9 @@ export const menuItems = [
                 link: '/estandares'
             },
             {
-                id: 23,
-                label: 'Base de aunto evaluación',
-                link: ''
+                id: 30,
+                label: 'Base de auto evaluación',
+                link: '/baseautoevaluacion'
             },
             {
                 id: 23,
