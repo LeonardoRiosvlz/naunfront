@@ -119,7 +119,6 @@
                 
                
           </ValidationObserver>
-          <pre>{{form}}</pre>
         
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
