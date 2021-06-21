@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Acreditacion</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Agregar grupo</b-button>
     </div>
   
 
@@ -185,7 +185,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","codigo", "descripcion", "actions" ],
+      fields: ["nombre del grupo de estandares de acreditacion","codigo", "descripcion", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -308,7 +308,7 @@ export default {
           data.append(key,formulario[key]);
       }
       console.log(formulario);
-        await this.axios.put('api/estandares', data, {
+        await this.axios.put('api/estandares/grupos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -335,7 +335,7 @@ export default {
           data.append(key,formulario[key]);
         }
       console.log(formulario)
-       await this.axios.post('api/estandares', data, {
+       await this.axios.post('api/estandares/grupos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -354,10 +354,10 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarGrupoestandar(id){
+     async eliminarGrupoestandares(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/estandares/delete',data, {
+        await this.axios.post('api/estandares/grupos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -385,19 +385,16 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarGrupoestandar(id);
+            this.eliminarGrupoestandares(id);
           }
         })
       },
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
-            if (key=='documento') {
-                 this.form[key]=[];
-            }else{
-                this.form[key]="";
-            }
+            this.form[key]="";
         }
+        this.form.cliente_id= this.cliente_id;
       },
       setear(id) {
         for (let index = 0; index < this.grupos.length; index++) {

@@ -101,7 +101,7 @@
                         <div class="form-group">
                             <label>Codigo del estandar</label>
                             <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -310,27 +310,23 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarPlantilla();
+              this.agregarEstandar();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarPlantilla();
+            this.editarEstandar();
           } else {
         }});
       }
     },
-   async editarPlantilla(){
+   async editarEstandar(){
         let data = new FormData();
       var formulario = this.form;
         
-        for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+      for (var key in formulario) {
+          data.append(key,formulario[key]);
       }
       console.log(formulario);
         await this.axios.put('api/plantillas', data, {
@@ -353,15 +349,11 @@ export default {
               this.$swal(e.response.data);
           });
       },
-  async agregarPlantilla(){
+  async agregarEstandar(){
      let data = new FormData();
       var formulario = this.form;
-        for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+      for (var key in formulario) {
+          data.append(key,formulario[key]);
       }
       console.log(formulario)
        await this.axios.post('api/plantillas', data, {
@@ -383,7 +375,7 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarPlantillas(id){
+     async eliminarEstandares(id){
         let data = new FormData();
         data.append('id',id);
         await this.axios.post('api/plantillas/delete',data, {
@@ -396,14 +388,14 @@ export default {
                       '',
                       'success'
                 );
-                this.listarplantillas();
+                this.listarestandares();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarPlantilla(id){
+      eliminarEstandar(id){
         this.$swal({
           title: 'Desea borrar esta plantilla?',
           icon: 'question',
@@ -414,28 +406,26 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarPlantillas(id);
+            this.eliminarEstandares(id);
           }
         })
       },
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
-            if (key=='documento') {
-                 this.form[key]=[];
-            }else{
-                this.form[key]="";
-            }
+            this.form[key]="";
         }
+        this.form.cliente_id= this.cliente_id;
+        
       },
       setear(id) {
-        for (let index = 0; index < this.plantillas.length; index++) {
-          if (this.plantillas[index].id===id) {
-              this.form.id = this.plantillas[index].id;
-              this.form.documento = this.plantillas[index].documento;
-              this.form.nombre = this.plantillas[index].nombre;
-              this.form.descripcion = this.plantillas[index].descripcion;
-              this.form.status = this.plantillas[index].status;
+        for (let index = 0; index < this.estandares.length; index++) {
+          if (this.estandares[index].id===id) {
+              this.form.id = this.estandares[index].id;
+              this.form.documento = this.estandares[index].documento;
+              this.form.nombre = this.estandares[index].nombre;
+              this.form.descripcion = this.estandares[index].descripcion;
+              this.form.status = this.estandares[index].status;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -457,7 +447,7 @@ export default {
                   this.$swal(e.response.data);
             });
       },
-        async  listarplantillas(){
+        async  listarestandares(){
             let data = new FormData();
             data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/plantillas/listar',data)
@@ -558,7 +548,7 @@ export default {
         this.listartipos();
         this.listarProceso();
         this.listarSubproceso();
-        this.listarplantillas();
+        this.listarestandares();
         this.listarNormatividad();
         this.listardocscreados();
         this.listarCargos();
@@ -606,7 +596,7 @@ export default {
      ...mapState(['usuarioDB','cliente']),
 
     rows() {
-      return this.plantillas.length;
+      return this.estandares.length;
     },
   },
 }
