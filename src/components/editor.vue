@@ -396,4 +396,7 @@ body {
     --bar-button-active-bkg: #e6f4ea;
     --bar-button-open-bkg: #e6f4ea;
   }
+  .ex1[data-v-3923ae0e]{
+    height:80vh!important;
+  }
 </style>

@@ -164,7 +164,7 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+           text: "Sistema integral de gestión"
         },
         {
           text: "Normatividad",

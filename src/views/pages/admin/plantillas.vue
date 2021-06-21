@@ -63,9 +63,11 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                   <b-dropdown-item-button><a :href="'plantilla/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                   
                 </b-dropdown>
                 </template>
               </b-table>

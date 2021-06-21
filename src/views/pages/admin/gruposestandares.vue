@@ -159,7 +159,7 @@ export default {
           text: "Sistema de gestion de calidad"
         },
         {
-          text: "Gestion de grupos de estandares de acreditacion",
+          text: "Grupos estandares de acreditacion",
           active: true
         }
       ],
@@ -185,7 +185,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre del grupo de estandares de acreditacion","codigo", "descripcion", "actions" ],
+      fields: ["nombre","codigo", "descripcion", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -389,7 +389,7 @@ export default {
           }
         })
       },
-        resete(){
+      resete(){
           var formulario = this.form;
           for (var key in formulario) {
             this.form[key]="";
