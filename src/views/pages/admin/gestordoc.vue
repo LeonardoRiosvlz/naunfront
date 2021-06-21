@@ -249,10 +249,10 @@
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col>
+                        <b-col v-if="form.creado==='no creado'">
                           <div class="form-group">
                             <label>Fecha de elaboración</label>
-                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                            <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
                                   <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                   <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
@@ -269,7 +269,7 @@
                           </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col>
+                        <b-col v-if="form.creado==='no creado'">
                           <div class="form-group">
                             <label>Fecha de revisión</label>
                             <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -289,7 +289,7 @@
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col>
+                        <b-col v-if="form.creado==='no creado'">
                           <div class="form-group">
                             <label>Fecha de aprobación</label>
                             <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
@@ -926,6 +926,7 @@ export default {
                 this.form[key]="";
             }
         }
+         this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
         for (let index = 0; index < this.documentos.length; index++) {
