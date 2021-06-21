@@ -499,8 +499,9 @@ export default {
 
   methods: {
     suma(){
-      
-      this.form.fecha_alerta = moment(this.fecha_emicion).add(this.form.intervalo, 'month').format("YYYY-MM-DDTHH:MM");
+      let fecha= moment(this.fecha_emicion).format('YYYY/MM/DD HH:mm');
+      console.log(fecha);
+      this.form.fecha_alerta = moment(fecha).add(this.form.intervalo, 'month').format("YYYY-MM-DDTHH:MM");
       console.log(this.form.fecha_alerta)
     },
     capSubproceso(proceso){
