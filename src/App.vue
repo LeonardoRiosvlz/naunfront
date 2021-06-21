@@ -23,4 +23,7 @@ export default {
     cursor: pointer;
     width: 100%;
 }
+.ex1{
+  height:70vh!important;
+}
 </style>

@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Plantilla</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Acreditacion</b-button>
     </div>
   
 
@@ -43,7 +43,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="plantillas"
+                :items="estandares"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -63,11 +63,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                   <b-dropdown-item-button><a :href="'plantilla/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                   
                 </b-dropdown>
                 </template>
               </b-table>
@@ -87,14 +85,34 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="xl"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
-                  <b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Numero del estandar</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Codigo del estandar</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
                     <div class="form-group">
-                      <label>Nombre de la plantilla</label>
-                      <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                      <label>Nombre del grupo de estandares</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                            <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                        </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                     </div>
@@ -110,20 +128,15 @@
                       </b-col>
                   </b-row>
                   <b-row>
-                    <b-col>
-                      <div class="form-group">
-                      <label>Estado</label>
-                      <ValidationProvider name="estado" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.status"  name="status" class="form-control form-control-lg" :disabled="ver">
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                    </b-col>
+                    <b-col class="form-group">
+                        <label>Criterios</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
                   </b-row>
-            
+                
                
           </ValidationObserver>
           <pre>{{form}}</pre>
@@ -163,10 +176,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Sistema Integral de gestion"
+          text: "Sistema de gestion de calidad"
         },
         {
-          text: "Gestor de Plantillas",
+          text: "Gestion de grupos de estandares de acreditacion",
           active: true
         }
       ],
@@ -192,7 +205,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "status", "actions" ],
+      fields: ["numero","codigo", "nombre", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -209,13 +222,15 @@ export default {
       articulo:"",
       sedes:"",
       fecha_suma:'',
-      plantillas: [],
+      estandares: [],
       form:{
             'id': 6,
-            'nombre':'',
+            'numero':'',
             'descripcion':'',
-            'status':'',
-            'documento':[],      
+            'criterios':'',
+            'codigo':'',
+            'cliente_id':'',
+            'grupo_id':'',     
           }
         }
   },
@@ -295,27 +310,23 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarPlantilla();
+              this.agregarEstandar();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarPlantilla();
+            this.editarEstandar();
           } else {
         }});
       }
     },
-   async editarPlantilla(){
+   async editarEstandar(){
         let data = new FormData();
       var formulario = this.form;
         
-        for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+      for (var key in formulario) {
+          data.append(key,formulario[key]);
       }
       console.log(formulario);
         await this.axios.put('api/plantillas', data, {
@@ -338,15 +349,11 @@ export default {
               this.$swal(e.response.data);
           });
       },
-  async agregarPlantilla(){
+  async agregarEstandar(){
      let data = new FormData();
       var formulario = this.form;
-        for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+      for (var key in formulario) {
+          data.append(key,formulario[key]);
       }
       console.log(formulario)
        await this.axios.post('api/plantillas', data, {
@@ -368,7 +375,7 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarPlantillas(id){
+     async eliminarEstandares(id){
         let data = new FormData();
         data.append('id',id);
         await this.axios.post('api/plantillas/delete',data, {
@@ -381,14 +388,14 @@ export default {
                       '',
                       'success'
                 );
-                this.listarplantillas();
+                this.listarestandares();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarPlantilla(id){
+      eliminarEstandar(id){
         this.$swal({
           title: 'Desea borrar esta plantilla?',
           icon: 'question',
@@ -399,29 +406,26 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarPlantillas(id);
+            this.eliminarEstandares(id);
           }
         })
       },
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
-            if (key=='documento') {
-                 this.form[key]=[];
-            }else{
-                this.form[key]="";
-            }
-           this.form.cliente_id=this.cliente.id;
+            this.form[key]="";
         }
+        this.form.cliente_id= this.cliente_id;
+        
       },
       setear(id) {
-        for (let index = 0; index < this.plantillas.length; index++) {
-          if (this.plantillas[index].id===id) {
-              this.form.id = this.plantillas[index].id;
-              this.form.documento = this.plantillas[index].documento;
-              this.form.nombre = this.plantillas[index].nombre;
-              this.form.descripcion = this.plantillas[index].descripcion;
-              this.form.status = this.plantillas[index].status;
+        for (let index = 0; index < this.estandares.length; index++) {
+          if (this.estandares[index].id===id) {
+              this.form.id = this.estandares[index].id;
+              this.form.documento = this.estandares[index].documento;
+              this.form.nombre = this.estandares[index].nombre;
+              this.form.descripcion = this.estandares[index].descripcion;
+              this.form.status = this.estandares[index].status;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -443,12 +447,12 @@ export default {
                   this.$swal(e.response.data);
             });
       },
-        async  listarplantillas(){
+        async  listarestandares(){
             let data = new FormData();
             data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/plantillas/listar',data)
             .then((response) => {
-      
+                console.log(response.data)
                 this.plantillas = response.data;
             })
             .catch((e)=>{
@@ -540,9 +544,17 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarplantillas();
+        this.listarperfil();
+        this.listartipos();
+        this.listarProceso();
+        this.listarSubproceso();
+        this.listarestandares();
+        this.listarNormatividad();
+        this.listardocscreados();
+        this.listarCargos();
+        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
-      }
+      },
     },
     created(){
       this.session();
@@ -584,7 +596,7 @@ export default {
      ...mapState(['usuarioDB','cliente']),
 
     rows() {
-      return this.plantillas.length;
+      return this.estandares.length;
     },
   },
 }

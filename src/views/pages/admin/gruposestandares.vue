@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Plantilla</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Agregar grupo</b-button>
     </div>
   
 
@@ -43,7 +43,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="plantillas"
+                :items="grupos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -63,11 +63,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                   <b-dropdown-item-button><a :href="'plantilla/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarPlantilla(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarGrupoestandar(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                   
                 </b-dropdown>
                 </template>
               </b-table>
@@ -87,18 +85,27 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="xl"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
-                  <b-col>
-                    <div class="form-group">
-                      <label>Nombre de la plantilla</label>
-                      <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Nombre del grupo de estandares</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Codigo</label>
+                            <ValidationProvider name="codigo" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
                   </b-row>
                   <b-row>
                     <b-col class="form-group">
@@ -109,21 +116,7 @@
                         </ValidationProvider>
                       </b-col>
                   </b-row>
-                  <b-row>
-                    <b-col>
-                      <div class="form-group">
-                      <label>Estado</label>
-                      <ValidationProvider name="estado" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.status"  name="status" class="form-control form-control-lg" :disabled="ver">
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                    </b-col>
-                  </b-row>
-            
+                
                
           </ValidationObserver>
           <pre>{{form}}</pre>
@@ -163,10 +156,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Sistema Integral de gestion"
+          text: "Sistema de gestion de calidad"
         },
         {
-          text: "Gestor de Plantillas",
+          text: "Grupos estandares de acreditacion",
           active: true
         }
       ],
@@ -192,7 +185,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "status", "actions" ],
+      fields: ["nombre","codigo", "descripcion", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -209,13 +202,13 @@ export default {
       articulo:"",
       sedes:"",
       fecha_suma:'',
-      plantillas: [],
+      grupos: [],
       form:{
             'id': 6,
             'nombre':'',
             'descripcion':'',
-            'status':'',
-            'documento':[],      
+            'codigo':'',
+            'cliente_id':''     
           }
         }
   },
@@ -295,30 +288,27 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarPlantilla();
+              this.agregarGrupoestandar();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarPlantilla();
+            this.editarGrupoestandar();
           } else {
         }});
       }
     },
-   async editarPlantilla(){
+   async editarGrupoestandar(){
         let data = new FormData();
+      
       var formulario = this.form;
         
         for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
+          data.append(key,formulario[key]);
       }
       console.log(formulario);
-        await this.axios.put('api/plantillas', data, {
+        await this.axios.put('api/estandares/grupos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -328,7 +318,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarplantillas();
+               this.listargruposestandares();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
                 this.resete();
@@ -338,18 +328,14 @@ export default {
               this.$swal(e.response.data);
           });
       },
-  async agregarPlantilla(){
+  async agregarGrupoestandar(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-          if (key=='documento') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
-      }
+          data.append(key,formulario[key]);
+        }
       console.log(formulario)
-       await this.axios.post('api/plantillas', data, {
+       await this.axios.post('api/estandares/grupos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -358,7 +344,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarplantillas();
+               this.listargruposestandares();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario   
                this.resete();
@@ -368,10 +354,10 @@ export default {
               this.$swal(e.response.data);
           });
       },
-     async eliminarPlantillas(id){
+     async eliminarGrupoestandares(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/plantillas/delete',data, {
+        await this.axios.post('api/estandares/grupos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -381,14 +367,14 @@ export default {
                       '',
                       'success'
                 );
-                this.listarplantillas();
+                this.listargruposestandares();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarPlantilla(id){
+      eliminarGrupoestandar(id){
         this.$swal({
           title: 'Desea borrar esta plantilla?',
           icon: 'question',
@@ -399,29 +385,24 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarPlantillas(id);
+            this.eliminarGrupoestandares(id);
           }
         })
       },
-        resete(){
+      resete(){
           var formulario = this.form;
           for (var key in formulario) {
-            if (key=='documento') {
-                 this.form[key]=[];
-            }else{
-                this.form[key]="";
-            }
-           this.form.cliente_id=this.cliente.id;
+            this.form[key]="";
         }
+        this.form.cliente_id= this.cliente_id;
       },
       setear(id) {
-        for (let index = 0; index < this.plantillas.length; index++) {
-          if (this.plantillas[index].id===id) {
-              this.form.id = this.plantillas[index].id;
-              this.form.documento = this.plantillas[index].documento;
-              this.form.nombre = this.plantillas[index].nombre;
-              this.form.descripcion = this.plantillas[index].descripcion;
-              this.form.status = this.plantillas[index].status;
+        for (let index = 0; index < this.grupos.length; index++) {
+          if (this.grupos[index].id===id) {
+              this.form.id = this.grupos[index].id;
+              this.form.nombre = this.grupos[index].nombre;
+              this.form.descripcion = this.grupos[index].descripcion;
+              this.form.codigo = this.grupos[index].codigo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -443,13 +424,13 @@ export default {
                   this.$swal(e.response.data);
             });
       },
-        async  listarplantillas(){
+        async  listargruposestandares(){
             let data = new FormData();
             data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/plantillas/listar',data)
+            await this.axios.post('api/estandares/grupos/listar',data)
             .then((response) => {
-      
-                this.plantillas = response.data;
+                console.log(response.data)
+                this.grupos = response.data;
             })
             .catch((e)=>{
                 console.log('error' + e);
@@ -540,9 +521,17 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarplantillas();
+        this.listarperfil();
+        this.listartipos();
+        this.listarProceso();
+        this.listarSubproceso();
+        this.listargruposestandares();
+        this.listarNormatividad();
+        this.listardocscreados();
+        this.listarCargos();
+        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
-      }
+      },
     },
     created(){
       this.session();
@@ -584,7 +573,7 @@ export default {
      ...mapState(['usuarioDB','cliente']),
 
     rows() {
-      return this.plantillas.length;
+      return this.grupos.length;
     },
   },
 }

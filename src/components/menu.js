@@ -131,12 +131,17 @@ export const menuItems = [
         icon: 'ri-calendar-2-line',
         subItems: [
             {
-                id:  21,
+                id:  28,
                 label: 'Grupos estandares de acreditacion',
-                link: ''
+                link: '/gruposestandares'
             },
             {
-                id: 22,
+                id: 29,
+                label: 'Gestion de estandares de acreditacion',
+                link: '/estandares'
+            },
+            {
+                id: 23,
                 label: 'Base de aunto evaluación',
                 link: ''
             },
