@@ -85,7 +85,7 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestor de grupos estandares" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
                     <b-col>
@@ -376,7 +376,7 @@ export default {
       }, 
       eliminarGrupoestandar(id){
         this.$swal({
-          title: 'Desea borrar esta plantilla?',
+          title: 'Desea borrar este grupo?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -394,7 +394,7 @@ export default {
           for (var key in formulario) {
             this.form[key]="";
         }
-        this.form.cliente_id= this.cliente_id;
+        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
         for (let index = 0; index < this.grupos.length; index++) {

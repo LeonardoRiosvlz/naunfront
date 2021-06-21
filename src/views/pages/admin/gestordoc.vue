@@ -186,7 +186,7 @@
                       <div class="form-group">
                         <label>Proceso</label>
                         <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                          <select v-model="form.proceso"  name="tipo" class="form-control form-control-lg" :disabled="ver"  @change="capSubproceso()">
+                          <select v-model="form.proceso_id"  name="tipo" class="form-control form-control-lg" :disabled="ver"  @change="capSubproceso()">
                             <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -197,7 +197,7 @@
                       <div v-if="subproceso.length!= 0 " class="form-group">
                         <label>Subproceso</label>
                         <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                          <select v-model="form.sub_proceso"  name="tipo" class="form-control form-control-lg" :disabled="ver" >
+                          <select v-model="form.subproceso_id"  name="tipo" class="form-control form-control-lg" :disabled="ver" >
                             <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -480,7 +480,7 @@ export default {
             'creado':'',
             'consecutivo':'',
             'version':'',
-            'sub_proceso':'',
+            'subproceso_id':'',
             'elaboracion':'',
             'revision':'',
             'aprobacion':'',
@@ -488,7 +488,7 @@ export default {
             'fecha_emicion':'',
             'intervalo':'',
             'status':'',
-            'proceso':{},
+            'proceso_id':'',
             'sedes_id':'',
             'elabora_id':'',
             'aprueba_id':'',
@@ -699,7 +699,7 @@ export default {
               this.form.creado = this.documentos[index].creado;
               this.form.consecutivo = this.documentos[index].consecutivo;
               this.form.version = this.documentos[index].version;
-              this.form.sub_proceso = this.documentos[index].sub_proceso;
+              this.form.subproceso_id = this.documentos[index].subproceso_id;
               this.form.elaboracion = this.documentos[index].elaboracion;
               this.form.revision = this.documentos[index].revision;
               this.form.aprobacion = this.documentos[index].aprobacion;
@@ -707,7 +707,7 @@ export default {
               this.form.fecha_emicion = this.documentos[index].fecha_emicion;
               this.form.intervalo = this.documentos[index].intervalo;
               this.form.status = this.documentos[index].status;
-              this.form.proceso = this.documentos[index].proceso;
+              this.form.proceso_id = this.documentos[index].proceso_id;
               this.form.sedes_id = this.documentos[index].sedes_id;
               this.form.elabora_id = this.documentos[index].elabora_id;
               this.form.aprueba_id = this.documentos[index].aprueba_id;
