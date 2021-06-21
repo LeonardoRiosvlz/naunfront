@@ -23,9 +23,6 @@
               
               <!-- Search -->
               <div class="col-sm-12 col-md-6 row m-0 justify-content-end">
-                <div class="clearfix mb-3 pr-3">
-                    <b-button class="float-right btn-info" left>Exportar</b-button>
-                </div>
                 <div id="tickets-table_filter" class="dataTables_filter text-md-right">
                   <label class="d-inline-flex align-items-center">
                     Search:

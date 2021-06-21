@@ -134,7 +134,6 @@
                       </b-col>
                   </b-row>
           </ValidationObserver>
-          <pre>{{form}}</pre>
         
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -200,7 +199,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["numero","codigo", "nombre", "actions" ],
+      fields: ["numero","codigo", "actions" ],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
