@@ -499,6 +499,7 @@ export default {
 
   methods: {
     suma(){
+      
       this.form.fecha_alerta = moment(this.fecha_emicion).add(this.form.intervalo, 'month').format("YYYY-MM-DDTHH:MM");
       console.log(this.form.fecha_alerta)
     },
