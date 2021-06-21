@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear Acreditacion</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear estandar</b-button>
     </div>
   
 
@@ -23,9 +23,6 @@
               
               <!-- Search -->
               <div class="col-sm-12 col-md-6 row m-0 justify-content-end">
-                <div class="clearfix mb-3 pr-3">
-                    <b-button class="float-right btn-info" left>Exportar</b-button>
-                </div>
                 <div id="tickets-table_filter" class="dataTables_filter text-md-right">
                   <label class="d-inline-flex align-items-center">
                     Search:
@@ -85,7 +82,7 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Gestor de plantillas" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestor de estandares" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
                     <b-col>
@@ -108,10 +105,10 @@
                     </b-col>
                     <b-col>
                     <div class="form-group">
-                      <label>Nombre del grupo de estandares</label>
+                      <label> Grupo de estandares</label>
                       <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
                         <select v-model="form.grupo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
-                            <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index"></option>
+                            <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -136,8 +133,6 @@
                         </ValidationProvider>
                       </b-col>
                   </b-row>
-                
-               
           </ValidationObserver>
           <pre>{{form}}</pre>
         
@@ -179,7 +174,7 @@ export default {
           text: "Sistema de gestion de calidad"
         },
         {
-          text: "Gestion de grupos de estandares de acreditacion",
+          text: "Gestion de estandares de acreditacion",
           active: true
         }
       ],
@@ -223,6 +218,7 @@ export default {
       sedes:"",
       fecha_suma:'',
       estandares: [],
+      grupos:[],
       form:{
             'id': 6,
             'numero':'',
@@ -300,6 +296,18 @@ export default {
               console.log('error' + e);
             })
       },
+          async  listargruposestandares(){
+            let data = new FormData();
+            data.append('cliente_id',this.cliente.id);
+            await this.axios.post('api/estandares/grupos/listar',data)
+            .then((response) => {
+                console.log(response.data)
+                this.grupos = response.data;
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -329,7 +337,7 @@ export default {
           data.append(key,formulario[key]);
       }
       console.log(formulario);
-        await this.axios.put('api/plantillas', data, {
+        await this.axios.put('api/estandares', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -356,7 +364,7 @@ export default {
           data.append(key,formulario[key]);
       }
       console.log(formulario)
-       await this.axios.post('api/plantillas', data, {
+       await this.axios.post('api/estandares', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -378,7 +386,7 @@ export default {
      async eliminarEstandares(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/plantillas/delete',data, {
+        await this.axios.post('api/estandares/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -415,7 +423,7 @@ export default {
           for (var key in formulario) {
             this.form[key]="";
         }
-        this.form.cliente_id= this.cliente_id;
+       this.form.cliente_id=this.cliente.id;
         
       },
       setear(id) {
@@ -553,6 +561,7 @@ export default {
         this.listardocscreados();
         this.listarCargos();
         this.listarSedes();
+        this.listargruposestandares();
         this.title=this.cliente.nombre_prestador;
       },
     },

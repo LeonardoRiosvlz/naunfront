@@ -506,7 +506,7 @@ export default {
     },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
-       if(this.procesos[index].id == this.form.proceso){
+       if(this.procesos[index].id == this.form.proceso_id){
          this.subproceso = this.procesos[index].subprocesos
          console.log(this.subproceso)
        }
