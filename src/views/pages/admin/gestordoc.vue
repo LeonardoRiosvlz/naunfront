@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Gestionar documentos</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Registar documentos</b-button>
     </div>
     <div class="row m-0 justify-content-between">
         <div class="row m-0 col-6 pl-0">
@@ -114,16 +114,16 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Crear documentos" hide-footer>
+        <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
-              <b-row>
+              <b-row class="mb-3">
                 <div class="col-md-5">
                     <div class="form-group">
                       <label>Vas a: </label>
-                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                      <ValidationProvider name="tipo de documento" rules="required" v-slot="{ errors }" >
                         <select v-model="form.creado" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                            <option value="no creado" selected>Subir documento creado</option>
-                            <option value="creado">Crear documento</option>
+                            <option value="Creado" selected>Subir documento creado</option>
+                            <option value="No creado">Crear documento</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -139,9 +139,9 @@
                       </span>
                       <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
                     </template>
-                  <b-row>
+                  <b-row class="mt-3">
                   <b-col>
-                    <div class="form-group mt-3">
+                    <div class="form-group ">
                       <label>Nombre del documento</label>
                       <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
                         <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
@@ -209,27 +209,23 @@
                     <b-col>
                       <div class="form-group">
                         <label>Sede</label>
-                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                          <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
                               <v-select  v-model="form.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                       </div>
                     </b-col>
-                  </b-row>
-                    <b-row class="justify-content-center mb-3">
-                  <div class="col-sm-6">
-                  <div id="preview mb-2" class="row justify-content-center mb-3">
-                    <img  width="100px" height="100px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
-                   </div>
+                    <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
                     <b-form-file
                         v-model="foto"
                         :disabled="ver"
-                        placeholder="Seleccione su foto..."
+                        placeholder="Seleccione un documento..."
                         drop-placeholder="Drop file here..."
                         @change="onFileChangePerfil"
                     ></b-form-file>
                   </div>
-                  </b-row> 
+                  </b-row>
+                     
                     </b-tab>
                     <b-tab>
                       <template v-slot:title>
@@ -243,13 +239,13 @@
                         <b-col>
                           <div class="form-group">
                             <label>Elaboró</label>
-                              <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                              <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col v-if="form.creado==='creado'">  
+                        <b-col v-if="form.creado==='No creado'">  
                           <div class="form-group">
                             <label>Fecha de elaboración</label>
                             <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -263,13 +259,13 @@
                         <b-col>
                           <div class="form-group">
                             <label>Revisó</label>
-                            <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
                               <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col v-if="form.creado==='creado'">
+                        <b-col v-if="form.creado==='No creado'">
                           <div class="form-group">
                             <label>Fecha de revisión</label>
                             <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -283,16 +279,16 @@
                         <b-col>
                           <div class="form-group">
                             <label>Aprobó</label>
-                            <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-col v-if="form.creado==='creado'">
+                        <b-col v-if="form.creado==='No creado'">
                           <div class="form-group">
                             <label>Fecha de aprobación</label>
-                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                            <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
                                   <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                   <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
@@ -359,11 +355,11 @@
                                 <label>Tiempos de alerta para emisión</label>
                                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                                       <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                                        <option value="1">1 mes</option>
-                                        <option value="2">2 mes</option>
-                                        <option value="4">4 mes</option>
-                                        <option value="6">6 mes</option>
-                                        <option value="12">12 mes</option>
+                                        <option value="1 mes">1 mes</option>
+                                        <option value="2 meses">2 mes</option>
+                                        <option value="4 meses">4 mes</option>
+                                        <option value="6 meses">6 mes</option>
+                                        <option value="12 meses">12 mes</option>
                                       </select>
                                       <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
@@ -376,8 +372,9 @@
                               <label>Estado</label>
                               <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                                   <select  v-model="form.status" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                                    <option value="Aprobado">Aprobado</option>
-                                    <option value="No aprobado">No aprobado</option>
+                                    <option value="Inahabilitado">Inahabilitado</option>
+                                    <option value="En elaboracióSn">En elaboracion</option>
+                                    <option value="Elaborado">Elaborado</option>
                                   </select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
@@ -387,9 +384,7 @@
                     </b-tab>
               </b-tabs>
 
-
           </ValidationObserver>
-          <pre>{{documentos}}</pre>
         
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -429,7 +424,7 @@ export default {
            text: "Sistema integral de gestión"
         },
         {
-          text: "Normatividad",
+          text: "Gestion de documentos",
           active: true
         }
       ],
@@ -455,7 +450,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","tipo_documento", "prefijo","version","actions"],
+      fields: ["nombre", "version", "fecha_emicion", "fecha_alerta", "actions"],
       procesos: [], 
       subprocesos:[],
       subproceso:[],
@@ -471,13 +466,13 @@ export default {
       documentos:[],
       articulo:"",
       sedes:"",
+      rango:0,
       form:{
             'id': 6,
             'tipo_id': '',
             'subproceso_id':'',
             'proceso_id':'',
             'creado':'',
-
             'nombre': null,
             'archivo': '',
             'normativas':[],
@@ -500,9 +495,13 @@ export default {
 
   methods: {
     suma(){
-      let fecha= moment(this.fecha_emicion).format('YYYY/MM/DD HH:mm');
-      console.log(fecha);
-      this.form.fecha_alerta = moment(fecha).add(this.form.intervalo, 'month').format("YYYY-MM-DDTHH:MM");
+      var regex = /(\d+)/g;
+      for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
+          var valor = this.form.intervalo.match(regex)
+          this.rango = valor[index]
+      }
+      let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
+      this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
       console.log(this.form.fecha_alerta)
     },
     capSubproceso(proceso){
@@ -821,7 +820,7 @@ export default {
       },
       onFileChangePerfil(e) {
         const foto = e.target.files[0];
-        this.url_perfil = URL.createObjectURL(foto);
+        this.form.archivo = URL.createObjectURL(foto);
       },
       toggleModal () {
         this.modal = !this.modal
