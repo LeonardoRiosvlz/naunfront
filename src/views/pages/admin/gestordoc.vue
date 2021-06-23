@@ -218,11 +218,11 @@
                     </b-col>
                     <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
                     <b-form-file
-                        v-model="foto"
+                        v-model="file"
                         :disabled="ver"
                         placeholder="Seleccione un documento..."
                         drop-placeholder="Drop file here..."
-                        @change="onFileChangePerfil"
+                        @change="onFileChange"
                     ></b-form-file>
                   </div>
                   </b-row>
@@ -386,7 +386,7 @@
               </b-tabs>
 
           </ValidationObserver>
-        
+        {{form}}
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
@@ -816,14 +816,11 @@ export default {
         }
       },
       onFileChange(e) {
-        const file = e.target.files[0];
-        this.url = URL.createObjectURL(file);
-      },
-      onFileChangePerfil(e) {
         const foto = e.target.files[0];
-        this.form.archivo = URL.createObjectURL(foto);
+        this.form.archivo = URL.createObjectURL(file);
         this.$store.emmit('docs', this.form.archivo)
       },
+
       toggleModal () {
         this.modal = !this.modal
       },

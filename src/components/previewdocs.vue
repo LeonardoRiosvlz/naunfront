@@ -1,5 +1,5 @@
 <template>
-  <VueDocPreview value="newteach.pbworks.com%2Ff%2Fele%2Bnewsletter.docx" type="office" />
+  <VueDocPreview value="@/assets/Analisisdelmetodo.docx" type="office" />
 </template>
    
 <script> 
