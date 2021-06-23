@@ -1,0 +1,10 @@
+	
+Deuda Alejadro = 450 	
+90 x mes	
+
+		mes 	monto	resto
+	        marzo    90	 360
+		mayo     160     200
+	
+	Devuda valeria
+	25$

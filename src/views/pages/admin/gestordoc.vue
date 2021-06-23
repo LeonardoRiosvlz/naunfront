@@ -92,6 +92,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                    <b-dropdown-item-button><a :href="'gestordocs/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
@@ -821,6 +822,7 @@ export default {
       onFileChangePerfil(e) {
         const foto = e.target.files[0];
         this.form.archivo = URL.createObjectURL(foto);
+        this.$store.emmit('docs', this.form.archivo)
       },
       toggleModal () {
         this.modal = !this.modal
