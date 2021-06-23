@@ -92,7 +92,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button><a :href="'gestordocs/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
+                    <b-dropdown-item-button><a :href="'documentos/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
@@ -374,7 +374,7 @@
                                   <select  v-model="form.status" name="tipo" class="form-control form-control-lg" :disabled="ver">
                                     <option value="Inaahabilitado">Inahabilitado</option>
                                     <option value="En elaboración">En elaboración</option>
-                                    <option value="Elborado">Elaborado</option>
+                                    <option value="Elaborado">Elaborado</option>
                                   </select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
@@ -629,6 +629,9 @@ export default {
               data.append(key,formulario[key]);
           }
       }
+        if (this.logo) {
+        data.append('filename',this.logo);
+       }
       console.log(formulario)
        await this.axios.post('api/documentos', data, {
            headers: {
@@ -684,6 +687,7 @@ export default {
           }
         })
       },
+      
         resete(){
           var formulario = this.form;
           for (var key in formulario) {

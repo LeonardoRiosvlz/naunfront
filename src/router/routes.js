@@ -207,23 +207,7 @@ export default [
             }
         },
     },
-    {
-        path: '/vista',
-        name: 'vista',
-    component: () => import('../components/previewdocs'),
-        meta: {
-            beforeEnter: (to, from, next) => {
-                if (!store.state.usuarioDB) {
-                    console.log(store.state.usuarioDB);
-                    // Redirect to the home page instead
-                    next({ name: 'login' })
-                } else {
-                    // Continue to the login page
-                   next()
-                }
-            }
-        },
-    },
+ 
     {
         path: '/lider',
         name: 'lider',
@@ -553,6 +537,23 @@ export default [
         path: '/plantilla/:id',
         name: 'plantilla',
         component: () => import('../views/pages/admin/plantilla'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/documentos/:id',
+        name: 'documentos',
+        component: () => import('@/components/previewdocs'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
