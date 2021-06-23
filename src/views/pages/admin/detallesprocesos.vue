@@ -1,43 +1,58 @@
 <template>
     <Layout>
-        <PageHeader :title="title" :items="items" />
-    <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear procesos</b-button>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"></h4>
-            <div class="row mt-4">
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_length" class="dataTables_length">
-                  <label class="d-inline-flex align-items-center">
-                    Show&nbsp;
-                    <b-form-select v-model="perPage" size="sm" :options="pageOptions"></b-form-select>&nbsp;entries
-                  </label>
+    
+
+    <ValidationObserver ref="form">
+            <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Nombre proceso</label>
+                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <div class="form-group">
+                  <label>Tipo de proceso</label>
+                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                    <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                         <option :value="tipo.id" v-for="(tipo,index) in tipos" :key="index">{{tipo.nombre}}</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
                 </div>
-              </div>
-  
-            </div>
-            <!-- Table -->
-            <div class="table-responsive mb-0">
+              </b-col>
+              <b-col>
+                <div class="form-group">
+                <label>Versión</label>
+                  <ValidationProvider name="version" rules="required" v-slot="{ errors }">
+                    <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                    <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+              <b-col>
+                  <div class="form-group">
+                    <label>Objetivo del proceso</label>
+                    <ValidationProvider name="objeto" rules="required" v-slot="{ errors }">
+                        <textarea v-model="form.objetivos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row>
+             
+                
+            
+   
               
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="dataTables_paginate paging_simple_numbers float-right">
-                  <ul class="pagination pagination-rounded mb-0">
-                    <!-- pagination -->
-                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+           
+    </ValidationObserver>
 
        
       
