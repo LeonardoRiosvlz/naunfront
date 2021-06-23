@@ -92,6 +92,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                    <b-dropdown-item-button><a :href="'gestordocs/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
@@ -217,11 +218,10 @@
                     </b-col>
                     <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
                     <b-form-file
-                        v-model="foto"
-                        :disabled="ver"
-                        placeholder="Seleccione un documento..."
+                        v-model="logo"
+                        placeholder="Seleccione una imagen..."
                         drop-placeholder="Drop file here..."
-                        @change="onFileChangePerfil"
+                         @change="onFileChangeLogo"
                     ></b-form-file>
                   </div>
                   </b-row>
@@ -372,9 +372,9 @@
                               <label>Estado</label>
                               <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                                   <select  v-model="form.status" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                                    <option value="Inahabilitado">Inahabilitado</option>
-                                    <option value="En elaboracióSn">En elaboracion</option>
-                                    <option value="Elaborado">Elaborado</option>
+                                    <option value="Inaahabilitado">Inahabilitado</option>
+                                    <option value="En elaboración">En elaboración</option>
+                                    <option value="Elborado">Elaborado</option>
                                   </select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
@@ -385,7 +385,7 @@
               </b-tabs>
 
           </ValidationObserver>
-        
+        {{form}}
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
@@ -433,6 +433,8 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      url_logo:null,
+      logo:null,
       ver:false,
       url:"",
       url_perfil:"",
@@ -716,7 +718,7 @@ export default {
               this.form.elabora_id = this.documentos[index].elabora_id;
               this.form.aprueba_id = this.documentos[index].aprueba_id;
               this.form.revisa_id = this.documentos[index].revisa_id;
-              this.url_perfil = this.documentos[index].archivo;
+              this.url_logo=this.documentos[index].archivo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -814,14 +816,11 @@ export default {
             this.form.roles="1"
         }
       },
-      onFileChange(e) {
-        const file = e.target.files[0];
-        this.url = URL.createObjectURL(file);
+      onFileChangeLogo(e) {
+        const logo = e.target.files[0];
+        this.url_logo = URL.createObjectURL(logo);
       },
-      onFileChangePerfil(e) {
-        const foto = e.target.files[0];
-        this.form.archivo = URL.createObjectURL(foto);
-      },
+
       toggleModal () {
         this.modal = !this.modal
       },

@@ -18,7 +18,8 @@ const store = new Vuex.Store({
     cliente:'',
     counter:'',
     doc:[],
-    load:false
+    load:false,
+    archivo:''
 },
 mutations:{
     obtenerUsuario(state,payload){
@@ -31,8 +32,6 @@ mutations:{
             if ( state.usuarioDB.exp < current_time) {
                 localStorage.removeItem('token');
                 state.usuarioDB=''
-            }else{
-                
             }
             
             axios.defaults.headers.common['authorization'] = `Bearer ${payload}`;
@@ -50,6 +49,10 @@ mutations:{
     },
     cargarDocs(state,payload){
         state.doc=payload;
+    },
+    docs(state, value){
+        state.archivo = value;
+        console.log(state.archivo)
     }
 },
 actions:{
