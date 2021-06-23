@@ -2,13 +2,76 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear clasificacion</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear</b-button>
     </div>
+    
     <div class="row">
       <div class="col-12">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title"></h4>
+              <b-row> 
+                  <b-col>
+                    <div class="form-group">
+                      <label >Desde </label>
+                        <b-form-input id="date-time" v-model="buscador.desde"  type="datetime-local"></b-form-input>
+                    </div>
+                  </b-col>
+                   <b-col>
+                    <div class="form-group">
+                      <label >Hasta </label>
+                        <b-form-input id="date-time" v-model="buscador.hasta"  type="datetime-local" @change="filtro()" :disabled="!buscador.desde"></b-form-input>
+                    </div>
+                  </b-col>
+                  <b-col>
+                    <label>Clasificacion del evento</label>
+                      <select class="custom-select" id="date-time" v-model="buscador.clasificacion_id" @change="filtro()">
+                          <option :value="clasificacion.id" v-for="clasificacion in clasificacion" :key="clasificacion.id">{{clasificacion.nombre}}</option>
+                        </select>
+                </b-col>
+                <b-col>
+                    <label>Estado</label>
+                      <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
+                          <option value="Creada">Creada</option>
+                          <option value="Programada">Programada</option>
+                          <option value="Cumplida">Cumplida</option>
+                          <option value="No realizada">No realizada</option>
+                      </select>
+                </b-col>
+                <b-col>
+                    <label>Periodo</label>
+                      <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
+                          <option value="2021">2021</option>
+                          <option value="2022">2022</option>
+                          <option value="2023">2023</option>
+                          <option value="2024">2024</option>
+                      </select>
+                </b-col>
+              </b-row>
+
+            <div class="row">
+              <div class="col-md-4">
+                <b-card bg-variant="warning" class="text-white-15">
+                  <h5 class="mt-0 mb-0 text-white">
+                    <i class="mdi mdi-clock mr-3"></i> PROGRAMADAS
+                  </h5>
+                </b-card>
+              </div>
+              <div class="col-md-4">
+                <b-card bg-variant="success" class="text-white-15">
+                  <h5 class="mt-0 mb-0 text-white">
+                    <i class="mdi mdi-calendar-check mr-3"></i> CUMPLIDAS
+                  </h5>
+                </b-card>
+              </div>
+              <div class="col-md-4">
+                <b-card bg-variant="danger" class="text-white-15">
+                  <h5 class="mt-0 mb-0 text-white">
+                    <i class="mdi mdi-alert-outline mr-3"></i> NO REALIZADAS
+                  </h5>
+                </b-card>
+              </div>  
+            </div> 
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
                 <div id="tickets-table_length" class="dataTables_length">
@@ -338,10 +401,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Gestión de eventos"
         },
         {
-          text: "clasificacion",
+          text: "actividades",
           active: true
         }
       ],
@@ -386,6 +449,13 @@ export default {
         'cliente_id':'',
         'clasificacion_id':'',
       },
+      buscador:{
+        'clasificacion_id':'',
+        'desde':'',
+        'hasta':'',
+        'status':'',
+        'periodo':'',
+      },
       comprometidos:[],
       responsables:[],
       nombre:'',
@@ -397,6 +467,7 @@ export default {
 
   created(){
     this.listarUsers();
+ 
   },
 
   methods: {
@@ -437,6 +508,29 @@ export default {
       } 
      }
    },
+   async filtro(){
+     let data = new FormData();
+     var formulario = this.buscador;
+        for (var key in formulario) {
+          if (key=='invitados_externos') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+      data.append('cliente_id',this.cliente.id);
+    await this.axios.post('api/eventos/filtro',data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }}).then(response => {
+          if (response.status==200) {
+                this.eventos=response.data;
+                }
+          }).catch(e => {
+            console.log(e.response.data.menssage);
+            this.$swal(e.response.data);
+      });
+  },
    async agregarEvento(){
      let data = new FormData();
      var formulario = this.form;
@@ -466,6 +560,7 @@ export default {
               this.$swal(e.response.data);
           });
       },
+
     async editarEvento(){
      let data = new FormData();
      var formulario = this.form;
@@ -812,6 +907,7 @@ export default {
        this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.cliente_id;
+     
       },
       cargo:function(){
         this.buscarAgregados();
