@@ -109,6 +109,7 @@
                     <label>Nombre proceso</label>
                     <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
                           <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <a href="/detallesprocesos.vue"></a>
                           <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
