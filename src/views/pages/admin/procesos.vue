@@ -91,11 +91,11 @@
                 </div>
                <b-col>
                 <div class="form-group">
-                  <label>Habilitar caracterización</label>
+                  <label>Estado</label>
                   <ValidationProvider name="habilitar caracterizacion" rules="required" v-slot="{ errors }">
-                    <select v-model="form.habilitado"  name="tipo" class="form-control " :disabled="ver">
-                        <option value="Si">Si</option>
-                        <option value="No">No</option>
+                    <select v-model="form.estado"  name="tipo" class="form-control " disabled>
+                        <option value="Borrador">Borrador</option>
+                        <option value="Habilitado">Habilitado</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
@@ -361,6 +361,7 @@ export default {
       'version': '',
       'nombre': null,
       'objetivos': '',
+      'estado': 'Borrador',
       'lider_id': '',
       'tiene_sp': '',
       'habilitado': 'No',
@@ -539,6 +540,7 @@ export default {
        this.form.actividades = [],
        
        this.form.cliente_id=this.cliente.id;
+       this.form.estado="Borrador";
       },
       setear(id) {
         for (let index = 0; index < this.procesos.length; index++) {
@@ -553,6 +555,7 @@ export default {
               this.form.actividades = JSON.parse( this.procesos[index].actividades);
               this.form.recursos = JSON.parse( this.procesos[index].recursos);
               this.form.codigo_prefijo = this.procesos[index].codigo_prefijo;
+              this.form.estado = this.procesos[index].estado;
               this.form.habilitado = this.procesos[index].habilitado;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;

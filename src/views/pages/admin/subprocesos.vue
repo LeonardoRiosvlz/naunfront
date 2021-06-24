@@ -48,7 +48,9 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-
+                  <template v-slot:cell(tipo)="data">
+                     {{data.item.proceso.tipo_proceso.nombre}}
+                  </template>
                   <template v-slot:cell(proceso)="data">
                      {{data.item.proceso.nombre}}
                   </template>
@@ -84,11 +86,43 @@
         <b-modal id="modal" false size="lg"  title="Gestión de subprocesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
+              <div class="col-8">
+                <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
+                  <label>Lider de proceso</label>
+                    <v-select v-model="form.lider_id" :options="usuarios" :disabled="ver" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+               <b-col>
+                <div class="form-group">
+                  <label>Estado</label>
+                  <ValidationProvider name="habilitar caracterizacion" rules="required" v-slot="{ errors }">
+                    <select v-model="form.estado"  name="tipo" class="form-control " disabled>
+                        <option value="Borrador">Borrador</option>
+                        <option value="Habilitado">Habilitado</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+            </b-row>
+            <b-row>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Tipo de proceso</label>
+                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                    <select v-model="form.tipo_id" @change="listarProceso()" name="tipo" class="form-control " :disabled="ver">
+                         <option :value="tipo.id" v-for="(tipo,index) in tipos" :key="index">{{tipo.nombre}}</option>
+                    </select>
+                    <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+                </div>
+              </div>
               <b-col>
                 <div class="form-group">
                   <label>Proceso</label>
                   <ValidationProvider name="proceso" rules="required" v-slot="{ errors }">
-                    <select v-model="form.proceso_id"  name="proceso_id" class="form-control form-control-lg" :disabled="ver">
+                    <select v-model="form.proceso_id"  name="proceso_id" class="form-control " :disabled="ver">
                         <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index">{{proceso.nombre}}</option>
                     </select>
                     <span style="color:red">{{ errors[0] }}</span>
@@ -105,6 +139,26 @@
                   </div>
                 </b-col>
               </b-row>
+          <b-row>
+           <b-col>
+              <div class="form-group">
+              <label>Versión</label>
+                <ValidationProvider name="version" rules="required" v-slot="{ errors }">
+                  <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </b-col>
+              <b-col>
+                <div class="form-group">
+                  <label>Codigo</label>
+                  <ValidationProvider name="codigo" rules="required" v-slot="{ errors }">
+                        <input v-model="form.codigo_prefijo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+            </b-row> 
               <b-row >
                  <b-col>
                   <div class="form-group">
@@ -126,37 +180,9 @@
                     </ValidationProvider>
                   </div>
                 </b-col>
-              <b-col>
-                <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
-                  <label>Lider de proceso</label>
-                    <v-select v-model="form.lider_id" :options="usuarios" :disabled="ver" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-col>
               </b-row>    
               <b-row>
             </b-row> 
-            <b-row>
-           <b-col>
-              <div class="form-group">
-              <label>Versión</label>
-                <ValidationProvider name="version" rules="required" v-slot="{ errors }">
-                  <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                  <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </div>
-            </b-col>
-              <b-col>
-                <div class="form-group">
-                  <label>Codigo</label>
-                  <ValidationProvider name="codigo" rules="required" v-slot="{ errors }">
-                        <input v-model="form.codigo_prefijo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-            </b-row> 
-
               <b-row>
                 <div class="col-12">
                   <b-button class="btn btn-info btn-block" id="show-btn" @click="$bvModal.show('actividades')">Actividades del subproceso</b-button>
@@ -255,14 +281,6 @@
                           </div>
                         </div>
                       </b-col>
-                      <b-col>
-                          <div class="form-group">
-                          <label>Subtitulo</label>
-                            <div class="row m-0">
-                                <input :id="index+'subtitulo'"  v-model="recursos.subtitulo"   type="text" class="form-control  mr-3" placeholder=" " :disabled="ver"/>
-                            </div>
-                          </div>
-                        </b-col>
                     </b-row>
                     <b-row>
                         <b-col>
@@ -287,7 +305,7 @@
                 </b-row>
               </b-card> 
             </b-modal>
-           
+         
   </Layout>
 </template>
 
@@ -346,7 +364,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","proceso","objetivos","actions"],
+      fields: ["nombre","tipo","proceso","objetivos","actions"],
       procesos: [], 
       subprocesos:[],
       editMode:false,
@@ -362,6 +380,8 @@ export default {
       'lider_id': '',
       'tiene_sp': '',
       'alcance':'',
+      'estado':'',
+      'tipo_id':'',
       'actividades':[],
       'recursos':[]
       }
@@ -382,7 +402,6 @@ export default {
       cargarRecursos(index){
         this.form.recursos.push({
           titulo:"",
-          subtitulo:"",
           descripcion:"",
           show:true,
         });
@@ -536,7 +555,7 @@ export default {
             }
         }
        this.form.actividades = [],
-       
+       this.form.estado="Borrador";
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
@@ -544,6 +563,7 @@ export default {
           if (this.subprocesos[index].id===id) {
               this.form.id = this.subprocesos[index].id;
               this.form.tipo_id = this.subprocesos[index].tipo_id;
+              this.form.estado = this.subprocesos[index].estado;
               this.form.version = this.subprocesos[index].version;
               this.form.nombre = this.subprocesos[index].nombre;
               this.form.objetivos = this.subprocesos[index].objetivos;
@@ -569,6 +589,17 @@ export default {
           .catch((e)=>{
             console.log('error' + e);
           })
+      },
+      async listartipos(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/tipo_procesos/listar',data)
+            .then((response) => {
+              this.tipos = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
       },
       setEmail(){
         this.form.username=this.form.email;
@@ -605,8 +636,8 @@ export default {
         },
       async  listarProceso(){
       let data = new FormData();
-      data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/procesos/listar',data)
+      data.append('tipo_id',this.form.tipo_id);
+        await this.axios.post('api/procesos/find/tipo',data)
           .then((response) => {
             this.procesos = response.data.rows;
           })
@@ -619,7 +650,6 @@ export default {
       cliente: function () {
        this.listarperfil();
        this.listartipos();
-        this.listarProceso();
         this.listarSubproceso()
         this.title=this.cliente.nombre_prestador;
       },
