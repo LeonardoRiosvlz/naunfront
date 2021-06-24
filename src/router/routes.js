@@ -466,7 +466,7 @@ export default [
         },
     },
     {
-        path: '/detallesprocesos',
+        path: '/detalles-procesos/:id',
         name: 'detallesprocesos',
         component: () => import('../views/pages/admin/detallesprocesos'),
         meta: {

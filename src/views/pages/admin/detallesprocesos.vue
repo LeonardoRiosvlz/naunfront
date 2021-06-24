@@ -1,7 +1,7 @@
 <template>
     <Layout>
     <PageHeader :title="title" :items="items" />
-    <h1 class="mt-4">Vacunacion en el barrio tocumare</h1>
+    <h1 class="mt-4">{{detalles.nombre}}</h1>
     <p class="ml-3" style="font-size:18px">Tipo de proceso de este proceso va aqui</p>
     <div class="">
       <div class="col-12">
@@ -158,6 +158,7 @@ export default {
       editMode:false,
       usuarios:[],
       tipos:[],
+      detalles:[],
       show:true,
   form:{
       'id': 6,
@@ -174,25 +175,7 @@ export default {
   },
 
   methods: {
-    cargar(index){
-      this.form.actividades.push({
-        titulo:"",
-        subtitulo:"",
-        descripcion:"",
-        show:true,
-      });
-      },
-      eliminarItem(index){
-        this.form.actividades.splice(index, 1);  
-      },
-      cargarRecursos(index){
-        this.form.recursos.push({
-          titulo:"",
-          subtitulo:"",
-          descripcion:"",
-          show:true,
-        });
-      },
+
    async listarperfil(){
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
@@ -204,17 +187,7 @@ export default {
           console.log('error' + e);
         })
       },
-      async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/tipo_procesos/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
+
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -236,100 +209,24 @@ export default {
         }});
       }
     },
-   async editarProceso(){
+   async buscarprocesos(){
         let data = new FormData();
-      var formulario = this.form;
-        for (var key in formulario) {
-            if (key=='actividades'||key=='recursos') {
-                data.append(key,JSON.stringify(formulario[key]));
-            }else{
-                data.append(key,formulario[key]);
-            }
-        }
-        await this.axios.put('api/procesos', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            if (response.status==200) {
-              console.log(response)
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.listarProceso();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-                this.resete();
+         data.append('id',this.$route.params.id);
+          await this.axios.post('api/procesos/find',data)
+            .then((response) => {
+              for (let i = 0; i < response.data.rows.length; i++) {
+                this.detalles = response.data.rows[i];  
+                 console.log( this.detalles)
               }
-            }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
-          });
+             
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
       },
-  async agregarProceso(){
-     let data = new FormData();
-      var formulario = this.form;
-        for (var key in formulario) {
-            if (key=='actividades'||key=='recursos') {
-                data.append(key,JSON.stringify(formulario[key]));
-            }else{
-                data.append(key,formulario[key]);
-            }
-        }
-       await this.axios.post('api/procesos', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            if (response.status==200) {
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.listarProceso();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario   
-               this.resete();
-              }
-            }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
-          });
-      },
-     async eliminarProcesos(id){
-        let data = new FormData();
-        data.append('id',id);
-        await this.axios.post('api/procesos/delete',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Eliminado con exito!',
-                      '',
-                      'success'
-                );
-                this.listarProceso();
-                }
-              }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
-          });
-      }, 
-      eliminarProceso(id){
-        this.$swal({
-          title: 'Desea borrar este cargo?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.eliminarProcesos(id);
-          }
-        })
-      },
+
+
+
       resete(){
         var formulario = this.form;
 
@@ -362,17 +259,7 @@ export default {
           }
         }
       },
-    async  listarProceso(){
-      let data = new FormData();
-      data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/procesos/listar',data)
-          .then((response) => {
-            this.procesos = response.data.rows;
-          })
-          .catch((e)=>{
-            console.log('error' + e);
-          })
-      },
+
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -410,13 +297,12 @@ export default {
     watch: {
       cliente: function () {
        this.listarperfil();
-       this.listartipos();
-        this.listarProceso();
         this.title=this.cliente.nombre_prestador;
       },
     },
     created(){
         this.session();
+         this.buscarprocesos()
        console.log(this.form)
       },
      mounted() {

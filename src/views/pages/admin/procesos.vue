@@ -49,8 +49,9 @@
                 @filtered="onFiltered"
               >
 
-      
-
+                <template v-slot:cell(nombre)="data">
+                     <a :href="'detalles-procesos/'+data.item.id" style="color:#000;">{{data.item.nombre}}</a>
+                </template>
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -372,6 +373,9 @@ export default {
   },
 
   methods: {
+    buttoncap(id){
+      console.log(id)
+    },
     cargar(index){
       this.form.actividades.push({
         titulo:"",
