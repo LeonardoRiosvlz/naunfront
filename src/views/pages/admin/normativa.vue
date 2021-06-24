@@ -49,8 +49,9 @@
                 @filtered="onFiltered"
               >
 
-      
-
+                <template v-slot:cell(archivo)="data">
+                  <a :href="data.item.archivo" download> Archivo</a>
+                </template>
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -115,14 +116,14 @@
                  <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">
                    <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <img  width="100px" height="100px" style="float:center!importan; border-radius:100%" class=""  :src="url_perfil" />
+                     <pre>{{form}}</pre>
                    </div>
+                   
                     <b-form-file
                         v-model="foto"
                         :disabled="ver"
                         placeholder="Seleccione su foto..."
                         drop-placeholder="Drop file here..."
-                        @change="onFileChangePerfil"
                     ></b-form-file>
                </div>
                
@@ -133,7 +134,7 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-  
+
   </Layout>
 </template>
 
@@ -193,7 +194,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["tipo","nombre", "descripcion","actions"],
+      fields: ["tipo","nombre", "descripcion","archivo","actions"],
       procesos: [], 
       editMode:false,
       usuarios:[],
@@ -261,6 +262,9 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
+      if (this.foto) {
+        data.append('filename',this.foto);
+       }
         await this.axios.put('api/normatividad', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -287,6 +291,10 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
+      if (this.foto) {
+        console.log("hay archivo");
+        data.append('filename',this.foto);
+       }
        await this.axios.post('api/normatividad', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -358,7 +366,7 @@ export default {
               this.form.tipo = this.normativa[index].tipo;
               this.form.nombre = this.normativa[index].nombre;
               this.form.descripcion = this.normativa[index].descripcion;
-              this.url_perfil = this.normativa[index].archivo;
+              this.form.archivo = this.normativa[index].archivo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }

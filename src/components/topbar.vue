@@ -194,7 +194,7 @@ import moment from 'moment';
 export default {
   data() {
     return {
-      socket : io('https://naun.herokuapp.com/'),
+      socket : io('https://naunapp.herokuapp.com/'),
       canal: '',
       user: '',
       message: '',
