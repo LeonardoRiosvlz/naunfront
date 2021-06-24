@@ -14,67 +14,87 @@
        </div>
 
 
-       <div class="row m-0">
 
-         <div class="col-6">
-            <b-card title="Card title" sub-title="Card subtitle">
-              <b-card-text>
-                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                content.
-              </b-card-text>
+         <div class="col-12">
+            <b-card title="Actividades" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-              <b-card-text>A second paragraph of text in the card.</b-card-text>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-              <a href="#" class="card-link">Card link</a>
-              <b-link href="#" class="card-link">Another link</b-link>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                </div>
             </b-card>
           </div>
 
+        <div class="col-12">
+            <b-card title="Recursos" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-          <div class="col-6">
-            <b-card title="Card title" sub-title="Card subtitle">
-              <b-card-text>
-                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                content.
-              </b-card-text>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-              <b-card-text>A second paragraph of text in the card.</b-card-text>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                </div>
+            </b-card>
+          </div> 
 
-              <a href="#" class="card-link">Card link</a>
-              <b-link href="#" class="card-link">Another link</b-link>
+            <div class="col-12">
+            <b-card title="Subprocesos" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
+
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
+
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                </div>
             </b-card>
           </div>
-          <div class="col-6">
-            <b-card title="Card title" sub-title="Card subtitle">
-              <b-card-text>
-                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                content.
-              </b-card-text>
-
-              <b-card-text>A second paragraph of text in the card.</b-card-text>
-
-              <a href="#" class="card-link">Card link</a>
-              <b-link href="#" class="card-link">Another link</b-link>
-            </b-card>
-          </div>
-
-
-          <div class="col-6">
-            <b-card title="Card title" sub-title="Card subtitle">
-              <b-card-text>
-                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                content.
-              </b-card-text>
-
-              <b-card-text>A second paragraph of text in the card.</b-card-text>
-
-              <a href="#" class="card-link">Card link</a>
-              <b-link href="#" class="card-link">Another link</b-link>
-            </b-card>
-          </div>
-       </div>
-      
-   
        
     </Layout>
 </template>
