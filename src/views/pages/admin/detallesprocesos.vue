@@ -47,7 +47,8 @@
             <b-card title="Subprocesos" >
               <div class="row m-0 d-flex">
                   <div class="col-6" v-for="(sub, index) in subprocesos" :key="index">
-                    <b-card :title="sub.nombre" >
+                    <b-card>
+                    <a :href="'/detalles-subprocesos/'+sub.id">{{sub.nombre}}</a>
                       <b-card-text>
                        {{sub.objetivos}}
                       </b-card-text>
