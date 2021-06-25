@@ -2,40 +2,27 @@
     <Layout>
     <PageHeader :title="title" :items="items" />
     <h1 class="mt-4">{{detalles.nombre}}</h1>
-    <p class="ml-3" style="font-size:18px">Tipo de proceso de este proceso va aqui</p>
+    <p class="ml-3" style="font-size:18px">{{detalles.tipo_proceso.nombre}}</p>
     <div class="">
       <div class="col-12">
-        <b-card title="Información general" >
-          <b-card-text>Versión: 0.2.1</b-card-text>
-          <b-card-text>Codigo:102338213</b-card-text>
-          <b-card-text>Objetivo: Mix and match multiple content types to create the card you need, or throw everything in there. Shown below are image styles, blocks, text styles, and a list group—all wrapped in a fixed-width card.</b-card-text>
+        <b-card title="Información general" class="p-4" style="font-size:17px">
+          <b-card-text>Versión: {{detalles.version}}</b-card-text>
+          <b-card-text>Codigo:{{detalles.codigo_prefijo}}</b-card-text>
+          <b-card-text>Objetivo: {{detalles.objetivos}}</b-card-text>
         </b-card>
       </div> 
        </div>
-
+  
 
 
          <div class="col-12">
             <b-card title="Actividades" >
               <div class="row m-0 d-flex">
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
+                  <div class="col-6" v-for="(act, index) in actividades" :key="index">
+                    <b-card :title="act.titulo" :sub-title="act.subtitulo">
                       <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
+                       {{act.descripcion}}
                       </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
-                    </b-card>
-                  </div>
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
-                      <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
-                      </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
                     </b-card>
                   </div>
                 </div>
@@ -45,24 +32,11 @@
         <div class="col-12">
             <b-card title="Recursos" >
               <div class="row m-0 d-flex">
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
+                  <div class="col-6" v-for="(rec, index) in recursos" :key="index">
+                    <b-card :title="rec.titulo" >
                       <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
+                       {{rec.descripcion}}
                       </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
-                    </b-card>
-                  </div>
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
-                      <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
-                      </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
                     </b-card>
                   </div>
                 </div>
@@ -72,24 +46,11 @@
             <div class="col-12">
             <b-card title="Subprocesos" >
               <div class="row m-0 d-flex">
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
+                  <div class="col-6" v-for="(sub, index) in subprocesos" :key="index">
+                    <b-card :title="sub.nombre" >
                       <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
+                       {{sub.objetivos}}
                       </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
-                    </b-card>
-                  </div>
-                  <div class="col-6">
-                    <b-card title="Llevar a los niños del primer modulo">
-                      <b-card-text>
-                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                        content.
-                      </b-card-text>
-
-                      <b-card-text>A second paragraph of text in the card.</b-card-text>
                     </b-card>
                   </div>
                 </div>
@@ -160,6 +121,9 @@ export default {
       tipos:[],
       detalles:[],
       show:true,
+      actividades:[],
+      recursos:[],
+      subprocesos:[],
   form:{
       'id': 6,
       'tipo_id': '',
@@ -215,10 +179,12 @@ export default {
           await this.axios.post('api/procesos/find',data)
             .then((response) => {
               for (let i = 0; i < response.data.rows.length; i++) {
-                this.detalles = response.data.rows[i];  
-                 console.log( this.detalles)
+                this.detalles = response.data.rows[i];
+                this.actividades = JSON.parse( this.detalles.actividades)
+                this.recursos = JSON.parse( this.detalles.recursos)
+                this.subprocesos = this.detalles.subprocesos
+                console.log(  this.subprocesos )
               }
-             
             })
             .catch((e)=>{
               console.log('error' + e);
@@ -317,3 +283,9 @@ export default {
   },
 }
 </script>
+
+<style>
+  .card-title{
+    font-size: 19px;
+  }
+</style>

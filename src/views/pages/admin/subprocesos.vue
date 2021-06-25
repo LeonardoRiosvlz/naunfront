@@ -634,10 +634,10 @@ export default {
           this.$router.push({ name: 'Home' });
           }
         },
-      async  listarProceso(){
+         async  listarProceso(){
       let data = new FormData();
-      data.append('tipo_id',this.form.tipo_id);
-        await this.axios.post('api/procesos/find/tipo',data)
+      data.append('cliente_id',this.cliente.id);
+        await this.axios.post('api/procesos/listar',data)
           .then((response) => {
             this.procesos = response.data.rows;
           })
@@ -651,6 +651,7 @@ export default {
        this.listarperfil();
        this.listartipos();
         this.listarSubproceso()
+        this. listarProceso()
         this.title=this.cliente.nombre_prestador;
       },
     },
