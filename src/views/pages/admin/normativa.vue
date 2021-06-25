@@ -116,13 +116,13 @@
                  <b-row class="justify-content-center mb-3">
                   <div class="col-sm-6">
                    <div id="preview mb-2" class="row justify-content-center mb-3">
-                     <pre>{{form}}</pre>
+                 
                    </div>
                    
                     <b-form-file
                         v-model="foto"
                         :disabled="ver"
-                        placeholder="Seleccione su foto..."
+                        placeholder="Seleccione su archivos..."
                         drop-placeholder="Drop file here..."
                     ></b-form-file>
                </div>
