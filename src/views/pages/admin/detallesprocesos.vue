@@ -11,7 +11,7 @@
           <b-card-text>Objetivo: {{detalles.objetivos}}</b-card-text>
         </b-card>
       </div> 
-       </div>
+    </div>
   
 
 
