@@ -48,6 +48,9 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+                  <template v-slot:cell(nombre)="data">
+                     <a :href="'detalles-subprocesos/'+data.item.id" style="color:#000;">{{data.item.nombre}}</a>
+                </template>
                   <template v-slot:cell(tipo)="data">
                      {{data.item.proceso.tipo_proceso.nombre}}
                   </template>

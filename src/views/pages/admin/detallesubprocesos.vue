@@ -2,7 +2,7 @@
     <Layout>
     <PageHeader :title="title" :items="items" />
     <h1 class="mt-4">{{detalles.nombre}}</h1>
-    <p class="ml-3" style="font-size:18px">{{detalles.tipo_proceso.nombre}}</p>
+    <!-- <p class="ml-3" style="font-size:18px">{{detalles.tipo_proceso.nombre}}</p> -->
     <div class="">
       <div class="col-12">
         <b-card title="Información general" class="p-4" style="font-size:17px">
@@ -11,7 +11,7 @@
           <b-card-text>Objetivo: {{detalles.objetivos}}</b-card-text>
         </b-card>
       </div> 
-    </div>
+       </div>
   
 
 
@@ -43,19 +43,6 @@
             </b-card>
           </div> 
 
-            <div class="col-12">
-            <b-card title="Subprocesos" >
-              <div class="row m-0 d-flex">
-                  <div class="col-6" v-for="(sub, index) in subprocesos" :key="index">
-                    <b-card :title="sub.nombre" >
-                      <b-card-text>
-                       {{sub.objetivos}}
-                      </b-card-text>
-                    </b-card>
-                  </div>
-                </div>
-            </b-card>
-          </div>
        
     </Layout>
 </template>
@@ -89,7 +76,7 @@ export default {
            text: "Sistema integral de gestión"
         },
         {
-          text: "Procesos",
+          text: "subprocesos",
           active: true
         }
       ],
@@ -114,7 +101,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","version", "codigo_prefijo","actions"],
+      fields: ["nombre","tipo", "proceso","objetivos","actions"],
       procesos: [], 
       editMode:false,
       usuarios:[],
@@ -162,30 +149,28 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {  
-              this.agregarProceso();
+              this.agregarSubproceso();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarProceso();
+            this.editarSubproceso();
           } else {
         }});
       }
     },
 
     
-   async buscarprocesos(){
+   async buscarsubprocesos(){
         let data = new FormData();
          data.append('id',this.$route.params.id);
-          await this.axios.post('api/procesos/find',data)
+          await this.axios.post('api/subprocesos/find',data)
             .then((response) => {
               for (let i = 0; i < response.data.rows.length; i++) {
                 this.detalles = response.data.rows[i];
                 this.actividades = JSON.parse( this.detalles.actividades)
                 this.recursos = JSON.parse( this.detalles.recursos)
-                this.subprocesos = this.detalles.subprocesos
-                console.log(  this.subprocesos )
               }
             })
             .catch((e)=>{
@@ -200,8 +185,7 @@ export default {
 
         for (var key in formulario) {
             if (key=='actividades'||key=='recursos') {
-                 this.form[key]
-                 =[];
+                 this.form[key]=[];
             }else{
                 this.form[key]="";
             }
@@ -211,18 +195,20 @@ export default {
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.procesos.length; index++) {
-          if (this.procesos[index].id===id) {
-              this.form.id = this.procesos[index].id;
-              this.form.tipo_id = this.procesos[index].tipo_id;
-              this.form.version = this.procesos[index].version;
-              this.form.nombre = this.procesos[index].nombre;
-              this.form.objetivos = this.procesos[index].objetivos;
-              this.form.lider_id = this.procesos[index].lider_id;
-              this.form.tiene_sp = this.procesos[index].tiene_sp;
-              this.form.actividades = JSON.parse( this.procesos[index].actividades);
-              this.form.recursos = JSON.parse( this.procesos[index].recursos);
-              this.form.codigo_prefijo = this.procesos[index].codigo_prefijo;
+        for (let index = 0; index < this.subprocesos.length; index++) {
+          if (this.subprocesos[index].id===id) {
+              this.form.id = this.subprocesos[index].id;
+              this.form.tipo_id = this.subprocesos[index].tipo_id;
+              this.form.estado = this.subprocesos[index].estado;
+              this.form.version = this.subprocesos[index].version;
+              this.form.nombre = this.subprocesos[index].nombre;
+              this.form.objetivos = this.subprocesos[index].objetivos;
+              this.form.lider_id = this.subprocesos[index].lider_id;
+              this.form.proceso_id = this.subprocesos[index].proceso_id;
+              this.form.alcance = this.subprocesos[index].alcance;
+              this.form.actividades = JSON.parse( this.subprocesos[index].actividades);
+              this.form.recursos = JSON.parse( this.subprocesos[index].recursos);
+              this.form.codigo_prefijo = this.subprocesos[index].codigo_prefijo;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -271,7 +257,7 @@ export default {
     },
     created(){
         this.session();
-         this.buscarprocesos()
+         this.buscarsubprocesos()
        console.log(this.form)
       },
      mounted() {
@@ -281,7 +267,7 @@ export default {
      ...mapState(['usuarioDB','cliente']),
 
     rows() {
-      return this.procesos.length;
+      return this.subprocesos.length;
     },
   },
 }
