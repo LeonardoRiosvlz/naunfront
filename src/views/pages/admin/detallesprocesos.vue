@@ -1,154 +1,101 @@
 <template>
     <Layout>
-    
+    <PageHeader :title="title" :items="items" />
+    <h1 class="mt-4">Vacunacion en el barrio tocumare</h1>
+    <p class="ml-3" style="font-size:18px">Tipo de proceso de este proceso va aqui</p>
+    <div class="">
+      <div class="col-12">
+        <b-card title="Información general" >
+          <b-card-text>Versión: 0.2.1</b-card-text>
+          <b-card-text>Codigo:102338213</b-card-text>
+          <b-card-text>Objetivo: Mix and match multiple content types to create the card you need, or throw everything in there. Shown below are image styles, blocks, text styles, and a list group—all wrapped in a fixed-width card.</b-card-text>
+        </b-card>
+      </div> 
+       </div>
 
-    <ValidationObserver ref="form">
-            <b-row>
-                <b-col>
-                  <div class="form-group">
-                    <label>Nombre proceso</label>
-                    <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
-                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          
-                          <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
+
+
+         <div class="col-12">
+            <b-card title="Actividades" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
+
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
                   </div>
-                </b-col>
-            </b-row>
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Tipo de proceso</label>
-                  <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                    <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
-                         <option :value="tipo.id" v-for="(tipo,index) in tipos" :key="index">{{tipo.nombre}}</option>
-                    </select>
-                    <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-                </div>
-              </b-col>
-              <b-col>
-                <div class="form-group">
-                <label>Versión</label>
-                  <ValidationProvider name="version" rules="required" v-slot="{ errors }">
-                    <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                    <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              <b-col>
-                  <div class="form-group">
-                    <label>Objetivo del proceso</label>
-                    <ValidationProvider name="objeto" rules="required" v-slot="{ errors }">
-                        <textarea v-model="form.objetivos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
+
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
                   </div>
-                </b-col>
-              </b-row>
+                </div>
+            </b-card>
+          </div>
 
-                Actividades 
-              <b-row>
-                  
-                  <b-col>
-                     <div>
-                    <b-card-group deck>
-                        <b-card
-                        header="featured"
-                        header-tag="header"
-                        footer="Card Footer"
-                        footer-tag="footer"
-                        title="Title"
-                        >
-                        <b-card-text>Header and footers using props.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        </b-card>
+        <div class="col-12">
+            <b-card title="Recursos" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-                        <b-card title="Title" header-tag="header" footer-tag="footer">
-                        <template #header>
-                            <h6 class="mb-0">Header Slot</h6>
-                        </template>
-                        <b-card-text>Header and footers using slots.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        <template #footer>
-                            <em>Footer Slot</em>
-                        </template>
-                        </b-card>
-                    </b-card-group>
-                    </div>
-                  </b-col>
-              </b-row>
-                Recursos
-              <b-row>
-                  
-                  <b-col>
-                     <div>
-                    <b-card-group deck>
-                        <b-card
-                        header="featured"
-                        header-tag="header"
-                        footer="Card Footer"
-                        footer-tag="footer"
-                        title="Title"
-                        >
-                        <b-card-text>Header and footers using props.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        </b-card>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
-                        <b-card title="Title" header-tag="header" footer-tag="footer">
-                        <template #header>
-                            <h6 class="mb-0">Header Slot</h6>
-                        </template>
-                        <b-card-text>Header and footers using slots.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        <template #footer>
-                            <em>Footer Slot</em>
-                        </template>
-                        </b-card>
-                    </b-card-group>
-                    </div>
-                  </b-col>
-              </b-row>
-             Subprocesos
-             <b-row>
-                 
-                  <b-col>
-                     <div>
-                    <b-card-group deck>
-                        <b-card
-                        header="featured"
-                        header-tag="header"
-                        footer="Card Footer"
-                        footer-tag="footer"
-                        title="Title"
-                        >
-                        <b-card-text>Header and footers using props.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        </b-card>
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                </div>
+            </b-card>
+          </div> 
 
-                        <b-card title="Title" header-tag="header" footer-tag="footer">
-                        <template #header>
-                            <h6 class="mb-0">Header Slot</h6>
-                        </template>
-                        <b-card-text>Header and footers using slots.</b-card-text>
-                        <b-button href="#" variant="primary">Go somewhere</b-button>
-                        <template #footer>
-                            <em>Footer Slot</em>
-                        </template>
-                        </b-card>
-                    </b-card-group>
-                    </div>
-                  </b-col>
-              </b-row>
-                
-            
-   
-              
-           
-    </ValidationObserver>
+            <div class="col-12">
+            <b-card title="Subprocesos" >
+              <div class="row m-0 d-flex">
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
 
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                  <div class="col-6">
+                    <b-card title="Llevar a los niños del primer modulo">
+                      <b-card-text>
+                        Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                        content.
+                      </b-card-text>
+
+                      <b-card-text>A second paragraph of text in the card.</b-card-text>
+                    </b-card>
+                  </div>
+                </div>
+            </b-card>
+          </div>
        
-      
     </Layout>
 </template>
 <script>

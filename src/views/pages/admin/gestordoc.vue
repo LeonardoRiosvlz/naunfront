@@ -92,7 +92,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button><a :href="'gestordocs/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
+                    <b-dropdown-item-button><a :href="'documentos/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
@@ -238,7 +238,8 @@
                         <b-row>
                         <b-col>
                           <div class="form-group">
-                            <label>Elaboró</label>
+                            <label v-if="form.creado==='No creado'">Elabora</label>
+                            <label v-else>Elaboró</label>
                               <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
@@ -258,7 +259,8 @@
                       <b-row>
                         <b-col>
                           <div class="form-group">
-                            <label>Revisó</label>
+                            <label v-if="form.creado==='No creado'">Revisa</label>
+                            <label v-else>Revisó</label>
                             <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
                               <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -278,7 +280,8 @@
                       <b-row>
                         <b-col>
                           <div class="form-group">
-                            <label>Aprobó</label>
+                            <label v-if="form.creado==='No creado'">Aprueba</label>
+                            <label v-else>Aprobó</label>
                             <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
@@ -372,9 +375,9 @@
                               <label>Estado</label>
                               <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                                   <select  v-model="form.status" name="tipo" class="form-control form-control-lg" :disabled="ver">
-                                    <option value="Inaahabilitado">Inahabilitado</option>
+                                    <option value="Inahabilitado">Inahabilitado</option>
                                     <option value="En elaboración">En elaboración</option>
-                                    <option value="Elborado">Elaborado</option>
+                                    <option value="Elaborado">Elaborado</option>
                                   </select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
@@ -385,7 +388,7 @@
               </b-tabs>
 
           </ValidationObserver>
-        {{form}}
+
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
@@ -629,6 +632,9 @@ export default {
               data.append(key,formulario[key]);
           }
       }
+        if (this.logo) {
+        data.append('filename',this.logo);
+       }
       console.log(formulario)
        await this.axios.post('api/documentos', data, {
            headers: {
@@ -684,6 +690,7 @@ export default {
           }
         })
       },
+      
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
