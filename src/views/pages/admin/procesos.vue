@@ -52,16 +52,18 @@
                 <template v-slot:cell(nombre)="data">
                      <a :href="'detalles-procesos/'+data.item.id" style="color:#000;">{{data.item.nombre}}</a>
                 </template>
+
+
                 <template v-slot:cell(actions)="data">
-                <b-dropdown size="sm" class="">
-                  <template v-slot:button-content>
-                    Action
-                    <i class="mdi mdi-chevron-down"></i>
-                  </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                </b-dropdown>
+                  <b-dropdown size="sm" class="">
+                    <template v-slot:button-content>
+                      Action
+                      <i class="mdi mdi-chevron-down"></i>
+                    </template>
+                      <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                      <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
+                      <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                  </b-dropdown>
                 </template>
               </b-table>
             </div>

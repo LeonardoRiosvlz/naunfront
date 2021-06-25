@@ -161,7 +161,7 @@ export default {
     switchLoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
-            if (esValido) {
+            if (esValido) {  
               this.agregarProceso();
             } else {}
           });        
@@ -173,6 +173,8 @@ export default {
         }});
       }
     },
+
+    
    async buscarprocesos(){
         let data = new FormData();
          data.append('id',this.$route.params.id);
