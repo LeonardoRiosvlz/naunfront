@@ -483,6 +483,23 @@ export default [
         },
     },
     {
+        path: '/detalles-subprocesos/:id',
+        name: 'detallesubprocesos',
+        component: () => import('../views/pages/admin/detallesubprocesos'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () => import('../views/pages/admin/notificaciones'),
