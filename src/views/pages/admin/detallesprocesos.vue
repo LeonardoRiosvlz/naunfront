@@ -87,12 +87,15 @@ export default {
       title: "Administracion",
       items: [
         {
-           text: "Sistema integral de gestión"
+          text: "Sistema integral de gestión"
         },
         {
+          text: "Procesos"
+        },
+         {
           text: "Procesos",
           active: true
-        }
+        },
       ],
      dropzoneOptions: {
         thumbnailWidth: 150,
@@ -183,6 +186,7 @@ export default {
             .then((response) => {
               for (let i = 0; i < response.data.rows.length; i++) {
                 this.detalles = response.data.rows[i];
+                this.items[2].text = this.detalles.nombre
                 this.actividades = JSON.parse( this.detalles.actividades)
                 this.recursos = JSON.parse( this.detalles.recursos)
                 this.subprocesos = this.detalles.subprocesos
@@ -271,8 +275,10 @@ export default {
       },
     },
     created(){
+    
         this.session();
          this.buscarprocesos()
+           
        console.log(this.form)
       },
      mounted() {
