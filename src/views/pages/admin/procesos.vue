@@ -330,6 +330,7 @@ export default {
           text: "Procesos",
           active: true
         }
+        
       ],
      dropzoneOptions: {
         thumbnailWidth: 150,

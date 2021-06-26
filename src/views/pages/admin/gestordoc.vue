@@ -4,42 +4,45 @@
     <div class="clearfix mb-3">
       <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Registar documentos</b-button>
     </div>
-    <div class="row m-0 justify-content-between">
-        <div class="row m-0 col-6 pl-0">
-            <div class="col-4 pl-0">
-                <div class="form-group">
-                <label>Proceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                <label>Subproceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                <label>Tipo de documento</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-    </div>
-  
 
     <div class="row">
       <div class="col-12">
         <div class="card"  style="min-heigth:1000px">
           <div class="card-body">
             <h4 class="card-title"></h4>
+                <div class="row m-0 justify-content-between align-items-center">
+                    <div class="row m-0 col-6 pl-0">
+                        <div class="col-4 pl-0">
+                            <div class="form-group">
+                            <label>Proceso</label>
+                                <select  @change="capIdProceso()" v-model="id_proc" name="tipo" class="form-control " >
+                                    <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                            <label>Subproceso</label>
+                                <select name="tipo" class="form-control " >
+                                    <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                            <label>Tipo de documento</label>
+                                <select name="tipo" class="form-control " >
+                                    <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <b-button  class="col-2 btn-warning" left>
+                          <h5 class="mt-0 mb-0 text-white">
+                            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M28 22v8H4v-8M16 4v20M8 12l8-8l8 8"/></g></svg> EXPORTAR
+                          </h5>
+                    </b-button>
+                </div>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
                 <div id="tickets-table_length" class="dataTables_length">
@@ -52,9 +55,7 @@
               
               <!-- Search -->
               <div class="col-sm-12 col-md-6 row m-0 justify-content-end">
-                <div class="clearfix mb-3 pr-3">
-                    <b-button class="float-right btn-info" left>Exportar</b-button>
-                </div>
+                
                 <div id="tickets-table_filter" class="dataTables_filter text-md-right">
                   <label class="d-inline-flex align-items-center">
                     Search:
@@ -457,9 +458,6 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-
-
-  <pre>{{documentos}}</pre>
   </Layout>
 </template>
 
@@ -543,6 +541,7 @@ export default {
       articulo:"",
       sedes:"",
       rango:0,
+      id_proc:2,
       form:{
             'id': 6,
             'tipo_id': '',
@@ -576,6 +575,17 @@ export default {
         }
     },
   methods: {
+   async capIdProceso(){
+       let data = new FormData();
+         data.append('id',this.id_proc);
+          await this.axios.post('api/procesos/find',data)
+          .then((response) => {
+            console.log(  response.data.rows)
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+    },
     suma(){
       var regex = /(\d+)/g;
       for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
