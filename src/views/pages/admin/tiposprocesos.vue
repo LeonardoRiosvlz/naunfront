@@ -56,10 +56,10 @@
                             <b-card>
                               <ul>
                                 <li style="list-style:none;" v-for="(proceso, index) in data.item.procesos" :key="index">
-                                  <a style="color:#000;" href="" variant="link"><strong>{{proceso.nombre}}</strong></a>
+                                  <a style="color:#000;" :href="'/detalles-procesos/'+proceso.id" variant="link"><strong>{{proceso.nombre}}</strong></a>
                                   <ul>
                                     <li style="list-style:none;"  v-for="(subprocesos, index) in proceso.subprocesos" :key="index" class="my-1">
-                                      <a style="color:#000;" href="" variant="link"> {{subprocesos.nombre}}</a>
+                                      <a style="color:#000;" :href="'/detalles-subprocesos/'+subprocesos.id" variant="link"> {{subprocesos.nombre}}</a>
                                     </li>
                                   </ul>
                                 </li>
