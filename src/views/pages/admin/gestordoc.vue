@@ -9,7 +9,7 @@
             <div class="col-4 pl-0">
                 <div class="form-group">
                 <label>Proceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                    <select v-model="form.status"  name="tipo" class="form-control " >
                         <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
                     </select>
                 </div>
@@ -17,7 +17,7 @@
             <div class="col-4">
                 <div class="form-group">
                 <label>Subproceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                    <select v-model="form.status"  name="tipo" class="form-control " >
                         <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
                     </select>
                 </div>
@@ -25,7 +25,7 @@
             <div class="col-4">
                 <div class="form-group">
                 <label>Tipo de documento</label>
-                    <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                    <select v-model="form.status"  name="tipo" class="form-control " >
                         <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
                     </select>
                 </div>
@@ -37,7 +37,7 @@
 
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card"  style="min-heigth:1000px">
           <div class="card-body">
             <h4 class="card-title"></h4>
             <div class="row mt-4">
@@ -92,10 +92,12 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button><a :href="'documentos/'+data.item.id" style="color:#000"> VIsta al Documento </a></b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
+                    <b-dropdown-item-button v-if="data.item.creado==='Creado'"><a :href="'documentos/'+data.item.id" style="color:#000"> Vista al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                   
                 </b-dropdown>
                 </template>
               </b-table>
@@ -122,7 +124,7 @@
                     <div class="form-group">
                       <label>Vas a: </label>
                       <ValidationProvider name="tipo de documento" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.creado" name="tipo" class="form-control form-control-lg" :disabled="ver">
+                        <select v-model="form.creado" name="tipo" class="form-control " :disabled="ver">
                             <option value="Creado" selected>Subir documento creado</option>
                             <option value="No creado">Crear documento</option>
                         </select>
@@ -154,7 +156,7 @@
                     <div class="form-group">
                       <label>Tipo de docemento</label>
                       <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.tipo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                        <select v-model="form.tipo_id"  name="tipo" class="form-control " :disabled="ver">
                             <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
@@ -187,7 +189,7 @@
                       <div class="form-group">
                         <label>Proceso</label>
                         <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                          <select v-model="form.proceso_id"  name="tipo" class="form-control form-control-lg" :disabled="ver"  @change="capSubproceso()">
+                          <select v-model="form.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
                             <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -198,7 +200,7 @@
                       <div v-if="subproceso.length!= 0 " class="form-group">
                         <label>Subproceso</label>
                         <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                          <select v-model="form.subproceso_id"  name="tipo" class="form-control form-control-lg" :disabled="ver" >
+                          <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
                             <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -357,7 +359,7 @@
                               <div class="form-group">
                                 <label>Tiempos de alerta para emisión</label>
                                   <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control form-control-lg" :disabled="ver">
+                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
                                         <option value="1 mes">1 mes</option>
                                         <option value="2 meses">2 mes</option>
                                         <option value="4 meses">4 mes</option>
@@ -374,7 +376,7 @@
                             <div class="form-group">
                               <label>Estado</label>
                               <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                  <select  v-model="form.status" name="tipo" class="form-control form-control-lg" :disabled="ver">
+                                  <select  v-model="form.status" name="tipo" class="form-control " :disabled="ver">
                                     <option value="Inahabilitado">Inahabilitado</option>
                                     <option value="En elaboración">En elaboración</option>
                                     <option value="Elaborado">Elaborado</option>
@@ -392,7 +394,72 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-  
+
+
+        <b-modal id="modal_carga" false size="lg"  title="Gestión de normatividad" hide-footer>
+          <ValidationObserver ref="form">
+            <b-row class="mb-3">
+                  <div class="col-sm-5">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                    <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
+                    <b-form-file
+                        v-model="archivo"
+                        :disabled="ver"
+                        placeholder="Seleccione su archivos..."
+                        drop-placeholder="Drop file here..."
+                    ></b-form-file>
+                       <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                   </div>
+                   <div class="col-sm-5">
+                   <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
+                     <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
+                        <b-form-file
+                            v-model="diagrama"
+                            :disabled="ver"
+                            placeholder="Seleccione su archivos..."
+                            drop-placeholder="Drop file here..."
+                        ></b-form-file>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+               </div>
+               <div class="col-2"><button class="btn btn-success" style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
+            </b-row>
+                 
+        </ValidationObserver>
+
+       <div class="row">
+          <div class="col-lg-12" v-for="versiones in versiones" :key="versiones.id">
+            <b-card no-body>
+              <b-card-body>
+                <b-card-title>
+                  <h4 class="card-title">{{versiones.created_at|fecha}}</h4>
+                  <h4 class="text-rigth">Version-{{versiones.version}} ({{versiones.status}})</h4>
+                </b-card-title>
+                <b-card-text v-if="versiones.observaciones_documentos">
+                   <strong>Observaciones al documento: </strong> {{versiones.observaciones_documentos}}
+                </b-card-text>
+                <b-card-text v-if="versiones.observaciones_documentos">
+                   <strong>Observaciones al diagrama: </strong> {{versiones.observaciones_diagramas}}
+                </b-card-text>
+                <b-row>
+                  <b-col>
+                    <a :href="'docs/'+versiones.id" class="btn btn-primary btn-block">Ir al documento</a>
+                  </b-col>
+                  <b-col v-if="versiones.status==='Pendiente'">
+                    <a   class="btn btn-danger btn-block" @click="eliminarVersion(versiones.id)">Eliminar</a>
+                  </b-col>
+                </b-row>
+              </b-card-body>
+            </b-card>
+          </div>
+        </div>
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
+        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+     </b-modal>
+
+
+  <pre>{{documentos}}</pre>
   </Layout>
 </template>
 
@@ -438,6 +505,9 @@ export default {
       },
       url_logo:null,
       logo:null,
+      archivo:null,
+      diagrama:null,
+      logo:null,
       ver:false,
       url:"",
       url_perfil:"",
@@ -456,7 +526,8 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: ["nombre", "version", "fecha_emicion", "fecha_alerta", "actions"],
-      procesos: [], 
+      procesos: [],
+      versiones: [],  
       subprocesos:[],
       subproceso:[],
       tiposdocumentos:[],
@@ -497,7 +568,13 @@ export default {
           }
         }
   },
-
+   filters: {
+        fecha: function (value) {
+         moment.locale('es');
+        let fechafina =moment(value).format('MMMM DD YYYY HH:MM')
+           return fechafina
+        }
+    },
   methods: {
     suma(){
       var regex = /(\d+)/g;
@@ -588,6 +665,21 @@ export default {
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
             this.editarDocumento();
+          } else {
+        }});
+      }
+    },
+     cargarDoc(){
+      if (!this.editMode) {
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+              this.cargarVersion();
+            } else {}
+          });        
+        }else{
+          this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+            this.editarVersion();
           } else {
         }});
       }
@@ -690,7 +782,80 @@ export default {
           }
         })
       },
-      
+      eliminarVersion(id){
+        this.$swal({
+          title: 'Desea borrar esta version?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.eliminarVersions(id);
+          }
+        })
+      },
+      async eliminarVersions(id){
+        let data = new FormData();
+        data.append('id',id);
+        await this.axios.post('api/documentos/version/delete',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Eliminado con exito!',
+                      '',
+                      'success'
+                );
+               this.setearCarga(this.form.id);
+                }
+              }).catch(e => {
+                console.log(e.response.data.menssage);
+                this.$swal(e.response.data);
+          });
+      },
+        cargarVersion(){
+        this.$swal({
+          title: 'Desea cargar estos documento?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.cargarVersions();
+          }
+        })
+      },  
+    async cargarVersions(){
+     let data = new FormData();
+     data.append('documento_id',this.form.id);
+      if (this.archivo) {
+        data.append('filename',this.archivo);
+       }
+      if (this.diagrama) {
+        data.append('diagrama',this.diagrama);
+       }
+       await this.axios.post('api/documentos/version', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.setearCarga(this.form.id);
+              }
+            }).catch(e => {
+              this.$swal('no se pudo subir!', '','danger');
+          });
+      },  
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
@@ -702,36 +867,55 @@ export default {
         }
          this.form.cliente_id=this.cliente.id;
       },
-      setear(id) {
-        for (let index = 0; index < this.documentos.length; index++) {
-          if (this.documentos[index].id===id) {
-              this.form.id = this.documentos[index].id;
-              this.form.tipo_id = this.documentos[index].tipo_id;
-              this.form.nombre = this.documentos[index].nombre;
-              this.form.normativas = JSON.parse(this.documentos[index].normativas);
-              this.form.creado = this.documentos[index].creado;
-              this.form.consecutivo = this.documentos[index].consecutivo;
-              this.form.version = this.documentos[index].version;
-              this.form.subproceso_id = this.documentos[index].subproceso_id;
-              this.form.elaboracion = this.documentos[index].elaboracion;
-              this.form.revision = this.documentos[index].revision;
-              this.form.aprobacion = this.documentos[index].aprobacion;
-              this.form.fecha_alerta = this.documentos[index].fecha_alerta;
-              this.form.fecha_emicion = this.documentos[index].fecha_emicion;
-              this.form.intervalo = this.documentos[index].intervalo;
-              this.form.status = this.documentos[index].status;
-              this.form.proceso_id = this.documentos[index].proceso_id;
-              this.form.sedes_id = this.documentos[index].sedes_id;
-              this.form.elabora_id = this.documentos[index].elabora_id;
-              this.form.aprueba_id = this.documentos[index].aprueba_id;
-              this.form.revisa_id = this.documentos[index].revisa_id;
-              this.url_logo=this.documentos[index].archivo;
-            this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-            return;
-          }
-        }
+    async setear(id){
+      let data = new FormData();
+      data.append('id',id);
+        await this.axios.post('api/documentos/find',data)
+          .then((response) => {
+             if (response.status==200) {
+              this.form.id = response.data.id;
+              this.form.tipo_id = response.data.tipo_id;
+              this.form.nombre = response.data.nombre;
+              this.form.normativas = JSON.parse(response.data.normativas);
+              this.form.creado = response.data.creado;
+              this.form.consecutivo = response.data.consecutivo;
+              this.form.version = response.data.version;
+              this.form.subproceso_id = response.data.subproceso_id;
+              this.form.elaboracion = response.data.elaboracion;
+              this.form.revision = response.data.revision;
+              this.form.aprobacion = response.data.aprobacion;
+              this.form.fecha_alerta = response.data.fecha_alerta;
+              this.form.fecha_emicion = response.data.fecha_emicion;
+              this.form.intervalo = response.data.intervalo;
+              this.form.status = response.data.status;
+              this.form.proceso_id = response.data.proceso_id;
+              this.form.sedes_id = response.data.sedes_id;
+              this.form.elabora_id = response.data.elabora_id;
+              this.form.aprueba_id = response.data.aprueba_id;
+              this.form.revisa_id = response.data.revisa_id;
+              this.versiones = response.data.versiones;
+              this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
       },
-
+    async setearCarga(id){
+      let data = new FormData();
+      data.append('id',id);
+        await this.axios.post('api/documentos/find',data)
+          .then((response) => {
+             if (response.status==200) {
+              this.form.id = response.data.id;
+              this.versiones = response.data.versiones;
+              this.$root.$emit("bv::show::modal", "modal_carga", "#btnShow");
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      },
        async  listarSedes(){
         let data = new FormData();
           data.append("cliente_id",this.cliente.id);

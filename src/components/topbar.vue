@@ -194,7 +194,7 @@ import moment from 'moment';
 export default {
   data() {
     return {
-      socket : io('https://naunapp.herokuapp.com/'),
+      socket : io('http://localhost:4000/'),
       canal: '',
       user: '',
       message: '',
@@ -278,6 +278,7 @@ export default {
       this.current_language = i18n.locale;
     },
   async chanel(index){
+    console.log(index);
       let data = new FormData();
       data.append("canal",index);
       await this.axios.put('api/user/canal', data).then(response => {
