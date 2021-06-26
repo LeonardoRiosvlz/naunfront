@@ -841,6 +841,7 @@ export default {
       if (this.diagrama) {
         data.append('diagrama',this.diagrama);
        }
+       data.append('revisa_id',this.form.revisa_id);
        await this.axios.post('api/documentos/version', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -908,6 +909,7 @@ export default {
           .then((response) => {
              if (response.status==200) {
               this.form.id = response.data.id;
+              this.form.revisa_id = response.data.revisa_id;
               this.versiones = response.data.versiones;
               this.$root.$emit("bv::show::modal", "modal_carga", "#btnShow");
              }
