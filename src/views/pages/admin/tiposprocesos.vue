@@ -50,17 +50,21 @@
               >
 
                     <template v-slot:cell(nombre)="data">
-                      <div class="col-6">
-                        <b-button  v-b-toggle="'collapse-1'" variant="link" class="py-0 px-3" style="background:transparent; border:none; color:#000">{{data.item.nombre}}</b-button>
-                        <b-collapse id="collapse-1" v-for="(proceso, index) in data.item.procesos" :key="index" class="mt-2">
-                          <b-card class="py-1" >
-                            <b-button v-b-toggle="index+'for'" size="sm" variant="link" class="py-0 px-3" style="background:transparent; border:none; color:#000" >{{proceso.nombre}}</b-button>
-                            <b-collapse :id="index+'for'" class="mt-2">
-                              <p v-for="(subprocesos, index) in proceso.subprocesos" :key="index" class="mt-2 ml-4">
-                                {{subprocesos.nombre}}
-                              </p>
-                            </b-collapse>
-                          </b-card>
+                      <div>
+                        <b-button  v-b-toggle="'collapse-1'" variant="link" class="py-0 px-3 mb-2" style="background:transparent; border:none; color:#000">{{data.item.nombre}}</b-button>
+                        <b-collapse id="collapse-1" class="mt-2">
+                            <b-card>
+                              <ul>
+                                <li style="list-style:none;" v-for="(proceso, index) in data.item.procesos" :key="index">
+                                  <a style="color:#000;" href="" variant="link"><strong>{{proceso.nombre}}</strong></a>
+                                  <ul>
+                                    <li style="list-style:none;"  v-for="(subprocesos, index) in proceso.subprocesos" :key="index" class="my-1">
+                                      <a style="color:#000;" href="" variant="link"> {{subprocesos.nombre}}</a>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </b-card>
                         </b-collapse>
                       </div>
                   </template>
