@@ -602,6 +602,23 @@ export default [
         },
     },
     {
+        path: '/docs/:id',
+        name: 'documentos',
+        component: () => import('@/components/detallesDocs'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/llamada_ath_tablero',
         name: 'llamada_ath_tablero',
         component: () => import('../views/pages/programacion/dashboardProgramacionAth'),

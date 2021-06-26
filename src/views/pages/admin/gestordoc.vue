@@ -436,16 +436,18 @@
                   <h4 class="card-title">{{versiones.created_at|fecha}}</h4>
                   <h4 class="text-rigth">Version-{{versiones.version}} ({{versiones.status}})</h4>
                 </b-card-title>
-                <b-card-text>
-                  With supporting text below as a natural lead-in to additional
-                  content.
+                <b-card-text v-if="versiones.observaciones_documentos">
+                   <strong>Observaciones al documento: </strong> {{versiones.observaciones_documentos}}
+                </b-card-text>
+                <b-card-text v-if="versiones.observaciones_documentos">
+                   <strong>Observaciones al diagrama: </strong> {{versiones.observaciones_diagramas}}
                 </b-card-text>
                 <b-row>
                   <b-col>
                     <a :href="'docs/'+versiones.id" class="btn btn-primary btn-block">Ir al documento</a>
                   </b-col>
-                  <b-col>
-                    <a  class="btn btn-danger btn-block" @click="eliminarVersion(versiones.id)">Eliminar</a>
+                  <b-col v-if="versiones.status==='Pendiente'">
+                    <a   class="btn btn-danger btn-block" @click="eliminarVersion(versiones.id)">Eliminar</a>
                   </b-col>
                 </b-row>
               </b-card-body>
