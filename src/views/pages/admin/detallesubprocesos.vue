@@ -71,14 +71,17 @@ export default {
   data() {
     return {
       title: "Administracion",
-      items: [
+        items: [
         {
-           text: "Sistema integral de gestión"
+          text: "Sistema integral de gestión"
         },
         {
-          text: "subprocesos",
+          text: "Procesos"
+        },
+         {
+          text: "Procesos",
           active: true
-        }
+        },
       ],
      dropzoneOptions: {
         thumbnailWidth: 150,
@@ -171,6 +174,7 @@ export default {
                 this.detalles = response.data.rows[i];
                 this.actividades = JSON.parse( this.detalles.actividades)
                 this.recursos = JSON.parse( this.detalles.recursos)
+                this.items[2].text = this.detalles.nombre
               }
             })
             .catch((e)=>{

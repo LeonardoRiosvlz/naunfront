@@ -2,39 +2,9 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Registar documentos</b-button>
-    </div>
-    <div class="row m-0 justify-content-between">
-        <div class="row m-0 col-6 pl-0">
-            <div class="col-4 pl-0">
-                <div class="form-group">
-                <label>Proceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                <label>Subproceso</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                <label>Tipo de documento</label>
-                    <select v-model="form.status"  name="tipo" class="form-control " >
-                        <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear documentos</b-button>
     </div>
   
-
     <div class="row">
       <div class="col-12">
         <div class="card"  style="min-heigth:1000px">
@@ -92,7 +62,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
+                    <b-dropdown-item-button v-if="data.item.creado==='No creado'" @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
                     <b-dropdown-item-button v-if="data.item.creado==='Creado'"><a :href="'documentos/'+data.item.id" style="color:#000"> Vista al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
@@ -243,7 +213,7 @@
                             <label v-if="form.creado==='No creado'">Elabora</label>
                             <label v-else>Elaboró</label>
                               <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                           </div>
@@ -264,7 +234,7 @@
                             <label v-if="form.creado==='No creado'">Revisa</label>
                             <label v-else>Revisó</label>
                             <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                              <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                              <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                           </div>
@@ -285,7 +255,7 @@
                             <label v-if="form.creado==='No creado'">Aprueba</label>
                             <label v-else>Aprobó</label>
                             <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                           </div>
@@ -390,7 +360,6 @@
               </b-tabs>
 
           </ValidationObserver>
-
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
@@ -457,9 +426,6 @@
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
-
-
-  <pre>{{documentos}}</pre>
   </Layout>
 </template>
 
@@ -685,35 +651,30 @@ export default {
       }
     },
    async editarDocumento(){
-        let data = new FormData();
+      let data = new FormData();
       var formulario = this.form;
-         for (var key in formulario) {
-          if (key=='normativas') {
-                data.append(key,JSON.stringify(formulario[key]));
-            } else {
-                data.append(key,formulario[key]);
-            }
+      for (var key in formulario) {
+        if (key=='normativas') {
+          data.append(key,JSON.stringify(formulario[key]));
+        } else {
+          data.append(key,formulario[key]);
         }
-        await this.axios.put('api/documentos', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            if (response.status==200) {
-              console.log(response)
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.listardocscreados();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-                this.resete();
-              }
-            }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
-          });
-      },
+    }
+    await this.axios.put('api/documentos', data, {
+      headers: {
+       'Content-Type': 'multipart/form-data'
+       }}).then(response => {
+        if (response.status==200) {
+            this.$swal('Agregado exito!','','success');
+            this.listardocscreados();
+            this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+            this.resete();
+          }
+       }).catch(e => {
+         console.log(e.response.data.menssage);
+         this.$swal(e.response.data);
+     });
+    },
   async agregarDocumento(){
      let data = new FormData();
       var formulario = this.form;
@@ -841,6 +802,7 @@ export default {
       if (this.diagrama) {
         data.append('diagrama',this.diagrama);
        }
+       data.append('revisa_id',this.form.revisa_id);
        await this.axios.post('api/documentos/version', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -908,6 +870,7 @@ export default {
           .then((response) => {
              if (response.status==200) {
               this.form.id = response.data.id;
+              this.form.revisa_id = response.data.revisa_id;
               this.versiones = response.data.versiones;
               this.$root.$emit("bv::show::modal", "modal_carga", "#btnShow");
              }
@@ -944,7 +907,7 @@ export default {
                 console.log('error' + e);
             })
         },
-        async  listarProceso(){
+       async  listarProceso(){
         let data = new FormData();
         data.append('cliente_id',this.cliente.id);
             await this.axios.post('api/procesos/listar',data)
@@ -954,7 +917,7 @@ export default {
             .catch((e)=>{
                 console.log('error' + e);
             })
-      },
+         },
         async  listarSubproceso(){
         let data = new FormData();
         data.append('cliente_id',this.cliente.id);
