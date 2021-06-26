@@ -122,7 +122,6 @@ export default {
     },
   methods:{
     switchLoc(){
-
             this.$refs.form.validate().then(esValido => {
             if (esValido) {
                 this.$swal({

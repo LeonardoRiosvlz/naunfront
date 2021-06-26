@@ -246,7 +246,7 @@
                               <div class="col-10">
                                 <div class="form-group">
                                   <label>Cargo</label>
-                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 </div>
                               </div>
                                <div class="col-2">
@@ -282,7 +282,7 @@
                               <div class="col-10">
                                 <div class="form-group">
                                   <label>Cargo</label>
-                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 </div>
                               </div>
                                <div class="col-2">
