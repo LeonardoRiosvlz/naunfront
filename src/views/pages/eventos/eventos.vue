@@ -4,13 +4,16 @@
     <div class="clearfix mb-3">
       <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear</b-button>
     </div>
-    
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"></h4>
-              <b-row> 
+    <b-button class="mb-3" v-b-toggle.sidebar-right>Filtrar enventos</b-button>
+    <b-sidebar id="sidebar-right" title="Filtros" right shadow>
+      <div class="px-3 py-2">
+        <div class="accordion" role="tablist">
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button block v-b-toggle.accordion-1 variant="info">Rango</b-button>
+            </b-card-header>
+            <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
                   <b-col>
                     <div class="form-group">
                       <label >Desde </label>
@@ -23,33 +26,51 @@
                         <b-form-input id="date-time" v-model="buscador.hasta"  type="datetime-local" @change="filtro()" :disabled="!buscador.desde"></b-form-input>
                     </div>
                   </b-col>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button block v-b-toggle.accordion-2 variant="info">Caracteristicas</b-button>
+            </b-card-header>
+            <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
                   <b-col>
                     <label>Clasificacion del evento</label>
                       <select class="custom-select" id="date-time" v-model="buscador.clasificacion_id" @change="filtro()">
                           <option :value="clasificacion.id" v-for="clasificacion in clasificacion" :key="clasificacion.id">{{clasificacion.nombre}}</option>
-                        </select>
-                </b-col>
-                <b-col>
-                    <label>Estado</label>
-                      <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
-                          <option value="Creada">Creada</option>
-                          <option value="Programada">Programada</option>
-                          <option value="Cumplida">Cumplida</option>
-                          <option value="No realizada">No realizada</option>
                       </select>
-                </b-col>
-                <b-col>
-                    <label>Periodo</label>
-                      <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
-                          <option value="2021">2021</option>
-                          <option value="2022">2022</option>
-                          <option value="2023">2023</option>
-                          <option value="2024">2024</option>
-                      </select>
-                </b-col>
-              </b-row>
-
-            <div class="row">
+                    </b-col>
+                    <b-col>
+                        <label>Estado</label>
+                          <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
+                              <option value="Creada">Creada</option>
+                              <option value="Programada">Programada</option>
+                              <option value="Cumplida">Cumplida</option>
+                              <option value="No realizada">No realizada</option>
+                          </select>
+                    </b-col>
+                    <b-col>
+                        <label>Periodo</label>
+                          <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
+                              <option value="2021">2021</option>
+                              <option value="2022">2022</option>
+                              <option value="2023">2023</option>
+                              <option value="2024">2024</option>
+                          </select>
+                  </b-col>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+        </div>
+      </div>
+    </b-sidebar>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title"></h4>
+            <div class="row mt-4">
               <div class="col-md-4">
                 <b-card bg-variant="warning" class="text-white-15">
                   <h5 class="mt-0 mb-0 text-white">
