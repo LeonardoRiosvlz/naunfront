@@ -186,6 +186,39 @@
               </b-row>    
               <b-row>
             </b-row> 
+            <h5 class="mt-3">Normatividad asociada</h5> 
+                <b-row class="align-items-center mb-3">
+                  <b-col>
+                    <div class="form-group m-0">
+                      <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+                        <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                  <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                </b-row>
+                <div class="card mt-3">
+                  <div class="row m-0 justify-content-end">
+                    <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                    <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                  </div>
+                  <div v-if="show" class="mb-3">
+                    <b-row v-for="(norma, index) in form.normativas" :key="index" class="px-3 ">
+                      <b-col class="form-group w-100">
+                        <div class="row m-0 justify-content-between">
+                            <label>{{norma.nombre}}</label>
+                            <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
+                        </div>
+                        
+                        <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                          <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                          <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
+                    </b-row>
+                  </div>
+                </div> 
               <b-row>
                 <div class="col-12">
                   <b-button class="btn btn-info btn-block" id="show-btn" @click="$bvModal.show('actividades')">Actividades del subproceso</b-button>
@@ -372,6 +405,8 @@ export default {
       subprocesos:[],
       editMode:false,
       usuarios:[],
+       normativa:[],
+      normativas:[],
       tipos:[],
       show:true,
     form:{
@@ -386,11 +421,38 @@ export default {
       'estado':'',
       'tipo_id':'',
       'actividades':[],
-      'recursos':[]
+      'recursos':[],
+      'normativas':[]
       }
   }
 },
   methods: {
+      eliminarNormativa(index){
+      var indice = this.form.normativas.indexOf(index);
+      console.log(indice,index )
+      if (indice != -1){
+        this.form.normativas.splice(indice, 1);
+      }
+        
+    },
+     cargarNorma(){
+      this.form.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        texto : ''
+      })
+    },
+       async listarNormatividad(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+          await this.axios.post('api/normatividad/listar',data)
+            .then((response) => {
+              this.normativas = response.data.rows;
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
     cargar(index){
       this.form.actividades.push({
         titulo:"",
@@ -456,7 +518,7 @@ export default {
         let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-            if (key=='actividades'||key=='recursos') {
+            if (key=='actividades'||key=='recursos'  || key == 'normativas') {
                 data.append(key,JSON.stringify(formulario[key]));
             }else{
                 data.append(key,formulario[key]);
@@ -486,7 +548,7 @@ export default {
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-            if (key=='actividades'||key=='recursos') {
+            if (key=='actividades'||key=='recursos' || key == 'normativas') {
                 data.append(key,JSON.stringify(formulario[key]));
             }else{
                 data.append(key,formulario[key]);
@@ -551,7 +613,7 @@ export default {
         var formulario = this.form;
 
         for (var key in formulario) {
-            if (key=='actividades'||key=='recursos') {
+            if (key=='actividades'||key=='recursos'  || key == 'normativas') {
                  this.form[key]=[];
             }else{
                 this.form[key]="";
@@ -654,7 +716,8 @@ export default {
        this.listarperfil();
        this.listartipos();
         this.listarSubproceso()
-        this. listarProceso()
+        this.listarProceso()
+         this.listarNormatividad()
         this.title=this.cliente.nombre_prestador;
       },
     },
