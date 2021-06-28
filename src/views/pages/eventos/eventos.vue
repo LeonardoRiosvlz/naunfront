@@ -99,32 +99,33 @@
             </div>
             <!-- Table -->
             <div class="table-responsive mb-0">
-              <b-table
-                :items="eventos"
-                :fields="fields"
-                responsive="sm"
-                :per-page="perPage"
-                :current-page="currentPage"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                @filtered="onFiltered"
-              >
-                <template v-slot:cell(actions)="data">
+            <b-table
+                      :items="eventos"
+                      :fields="fields"
+                      responsive="sm"
+                      :per-page="perPage"
+                      :current-page="currentPage"
+                      :sort-by.sync="sortBy"
+                      :sort-desc.sync="sortDesc"
+                      :filter="filter"
+                      :filter-included-fields="filterOn"
+                      @filtered="onFiltered"
+                    >
+                      <template v-slot:cell(actions)="data">
 
-                <b-dropdown size="sm" class="">
-                  <template v-slot:button-content>
-                    Action
-                    <i class="mdi mdi-chevron-down"></i>
-                  </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;buscarEvento(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarEvento(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                </b-dropdown>
-                </template>
-              </b-table>
-            </div>
+                      <b-dropdown size="sm" class="">
+                        <template v-slot:button-content>
+                          Action
+                          <i class="mdi mdi-chevron-down"></i>
+                        </template>
+                          <b-dropdown-item-button @click="editMode=true;ver=false;buscarEvento(data.item.id)"> Editar </b-dropdown-item-button>
+                          <b-dropdown-item-button @click="eliminarEvento(data.item.id)"> Eliminar </b-dropdown-item-button>
+                          <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                      </b-dropdown>
+                      </template>
+                    </b-table>
+                </div>
+                
             <div class="row">
               <div class="col">
                 <div class="dataTables_paginate paging_simple_numbers float-right">
