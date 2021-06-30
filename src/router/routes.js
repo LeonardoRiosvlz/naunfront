@@ -500,9 +500,9 @@ export default [
         },
     },
     {
-        path: '/maestro-documento',
-        name: 'maestro-documento',
-        component: () => import('../views/pages/admin/maestrodocumento'),
+        path: '/gestion-versiones',
+        name: 'gestion-versiones',
+        component: () => import('../components/chat/index'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
