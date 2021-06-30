@@ -105,6 +105,45 @@
                     </b-col>
                   </b-row>
                   <b-row>
+                    <b-col>
+                      <template>
+                        <div class="form-group">
+                                <label>Grupos de Estandares</label>
+                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                        <option value="1 mes">Grupo de estandares del proceso de atencion al cliente asistencial</option>
+                                        <option value="2 meses">Grupo de estandares de direccionamiento</option>
+                                        <option value="4 meses">Grupo de estandares de gerencia</option>
+                                        <option value="6 meses">Grupo de estandares de gerencia de talento humano</option>
+                                        <option value="12 meses">Grupo de estandares de gerencia del ambiente fisico</option>
+                                        <option value="12 meses">Grupo de estandares de gestion de tecnologia</option>
+                                        <option value="12 meses">Grupo de estandares de gestion de tecnologia</option>
+                                        <option value="12 meses">Grupo de estandares de mejoramiento de la calidad</option>
+                                      </select>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                      </template>
+                    </b-col>
+                    <b-col>
+                      <template>
+                        <div class="form-group">
+                                <label>Subgrupos de estandares</label>
+                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                        <option value="1 mes">1 mes</option>
+                                        <option value="2 meses">2 mes</option>
+                                        <option value="4 meses">4 mes</option>
+                                        <option value="6 meses">6 mes</option>
+                                        <option value="12 meses">12 mes</option>
+                                      </select>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                      </template>
+                    </b-col>
+                  </b-row>
+                  <b-row>
                     <b-col class="form-group">
                         <label>Descripcion</label>
                         <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
