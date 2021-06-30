@@ -436,11 +436,12 @@ export default {
         
     },
      cargarNorma(){
-      this.form.normativas.push({
-        id : this.titulo.id,
-        nombre : this.titulo.nombre,
-        texto : ''
-      })
+      this.form.actividades.push({
+        titulo:"",
+        subtitulo:"",
+        descripcion:"",
+        show:true,
+      });
     },
        async listarNormatividad(){
         let data = new FormData();

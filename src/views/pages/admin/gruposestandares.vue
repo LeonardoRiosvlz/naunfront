@@ -105,43 +105,49 @@
                     </b-col>
                   </b-row>
                   <b-row>
-                    <b-col>
+                    <div class="col-sm-6">
                       <template>
                         <div class="form-group">
                                 <label>Grupos de Estandares</label>
                                   <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
-                                        <option value="1 mes">Grupo de estandares del proceso de atencion al cliente asistencial</option>
-                                        <option value="2 meses">Grupo de estandares de direccionamiento</option>
-                                        <option value="4 meses">Grupo de estandares de gerencia</option>
-                                        <option value="6 meses">Grupo de estandares de gerencia de talento humano</option>
-                                        <option value="12 meses">Grupo de estandares de gerencia del ambiente fisico</option>
-                                        <option value="12 meses">Grupo de estandares de gestion de tecnologia</option>
-                                        <option value="12 meses">Grupo de estandares de gestion de tecnologia</option>
-                                        <option value="12 meses">Grupo de estandares de mejoramiento de la calidad</option>
+                                      <select @change="suma" v-model="form.gruposestandares" name="tipo" class="form-control " :disabled="ver">
+                                        <option value="1">Grupo de estandares del proceso de atencion al cliente asistencial</option>
+                                        <option value="2">Grupo de estandares de direccionamiento</option>
+                                        <option value="3">Grupo de estandares de gerencia</option>
+                                        <option value="4">Grupo de estandares de gerencia de talento humano</option>
+                                        <option value="5">Grupo de estandares de gerencia del ambiente fisico</option>
+                                        <option value="6">Grupo de estandares de gestion de tecnologia</option>
+                                        <option value="7">Grupo de estandares de gestion de tecnologia</option>
+                                        <option value="8">Grupo de estandares de mejoramiento de la calidad</option>
                                       </select>
                                       <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                       </template>
-                    </b-col>
-                    <b-col>
+                    </div>
+                    <div class="col-sm-6" v-if="form.gruposestandares == 1">
                       <template>
                         <div class="form-group">
                                 <label>Subgrupos de estandares</label>
                                   <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
-                                        <option value="1 mes">1 mes</option>
-                                        <option value="2 meses">2 mes</option>
-                                        <option value="4 meses">4 mes</option>
-                                        <option value="6 meses">6 mes</option>
-                                        <option value="12 meses">12 mes</option>
+                                      <select @change="suma" v-model="form.subgruposestandares" name="tipo" class="form-control " :disabled="ver">
+                                        <option value="1 mes">Derechos de los paciente</option>
+                                        <option value="2 meses">Seguridad del paciente </option>
+                                        <option value="4 meses">Acceso</option>
+                                        <option value="6 meses">Registro e ingreso </option>
+                                        <option value="12 meses">Evaluación de necesidades al ingreso</option>
+                                        <option value="12 meses">Planeación de la atención</option>
+                                        <option value="12 meses">Ejecución del tratamiento</option>
+                                        <option value="12 meses">Evaluación de la atención</option>
+                                        <option value="12 meses">Salida y seguimiento</option>
+                                        <option value="12 meses">Referencia y contrarreferencia</option>
+                                        <option value="12 meses">Redes integradas en salud</option>
                                       </select>
                                       <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                       </template>
-                    </b-col>
+                    </div>
                   </b-row>
                   <b-row>
                     <b-col class="form-group">
@@ -238,12 +244,15 @@ export default {
       sedes:"",
       fecha_suma:'',
       grupos: [],
+      
       form:{
             'id': 6,
             'nombre':'',
             'descripcion':'',
             'codigo':'',
-            'cliente_id':''     
+            'cliente_id':'',
+            'gruposestandares':0,
+            'subgruposestandares':0     
           }
         }
   },
