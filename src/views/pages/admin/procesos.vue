@@ -52,7 +52,10 @@
                 <template v-slot:cell(nombre)="data">
                      <a :href="'detalles-procesos/'+data.item.id" style="color:#000;">{{data.item.nombre}}</a>
                 </template>
-
+                <template v-slot:cell(estado)="data">
+                     <span class="badge badge-secondary" style="font-size:14px" v-if="data.item.estado==='Borrador'">Borrador</span>
+                     <span class="badge badge-success" style="font-size:14px" v-else>Habilitado</span>
+                </template>
 
                 <template v-slot:cell(actions)="data">
                   <b-dropdown size="sm" class="">
@@ -112,7 +115,7 @@
                  <template>
                       <div>
                         <label for="example-datepicker">Fecha de Emision</label>
-                        <b-form-datepicker id="example-datepicker" v-model="value" class="mb-2"></b-form-datepicker>
+                        <b-form-datepicker id="example-datepicker" v-model="form.fecha_emicion" class="mb-2"></b-form-datepicker>
                       </div>
                     </template> 
                 </b-col>
@@ -198,10 +201,9 @@
                 <b-row class="align-items-center mb-3">
                   <b-col>
                     <div class="form-group m-0">
-                      <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+
                         <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
+
                     </div>
                   </b-col>
                   <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -408,7 +410,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","version", "codigo_prefijo","actions"],
+      fields: ["nombre","version", "codigo_prefijo","estado","actions"],
       procesos: [], 
       editMode:false,
       usuarios:[],
@@ -425,7 +427,9 @@ export default {
           'objetivos': '',
           'estado': 'Borrador',
           'lider_id': '',
+          'fecha_emicion': '',
           'tiene_sp': '',
+          'alcance': '',
           'habilitado': 'No',
           'actividades':[],
           'recursos':[],
@@ -646,11 +650,13 @@ export default {
               this.form.objetivos = this.procesos[index].objetivos;
               this.form.lider_id = this.procesos[index].lider_id;
               this.form.tiene_sp = this.procesos[index].tiene_sp;
-              this.form.normativas = JSON.parse(response.data.normativas);
+              this.form.normativas = JSON.parse(this.procesos[index].normativas);
               this.form.actividades = JSON.parse( this.procesos[index].actividades);
               this.form.recursos = JSON.parse( this.procesos[index].recursos);
               this.form.codigo_prefijo = this.procesos[index].codigo_prefijo;
               this.form.estado = this.procesos[index].estado;
+              this.form.fecha_emicion = this.procesos[index].fecha_emicion;
+              this.form.alcance = this.procesos[index].alcance;
               this.form.habilitado = this.procesos[index].habilitado;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
