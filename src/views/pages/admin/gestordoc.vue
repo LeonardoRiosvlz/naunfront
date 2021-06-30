@@ -599,6 +599,7 @@ export default {
       this.form.normativas.push({
         id : this.titulo.id,
         nombre : this.titulo.nombre,
+        archivo:this.titulo.archivo,
         texto : ''
       });
     },
@@ -981,6 +982,7 @@ export default {
           await this.axios.post('api/normatividad/listar',data)
             .then((response) => {
               this.normativas = response.data.rows;
+              console.log(this.normativas)
             })
             .catch((e)=>{
               console.log('error' + e);
