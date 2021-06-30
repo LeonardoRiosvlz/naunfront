@@ -89,14 +89,16 @@
         <b-modal id="modal" false size="lg"  title="Gestión de subprocesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
-              <div class="col-8">
+              <div class="col-12 mb-2">
                 <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
                   <label>Lider de proceso</label>
                     <v-select v-model="form.lider_id" :options="usuarios" :disabled="ver" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
                     <span style="color:red">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
-               <b-col>
+            </b-row>
+            <b-row>
+               <div class="col-8">
                 <div class="form-group">
                   <label>Estado</label>
                   <ValidationProvider name="habilitar caracterizacion" rules="required" v-slot="{ errors }">
@@ -107,7 +109,15 @@
                     <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
-              </b-col>
+              </div>
+               <b-col>
+                 <template>
+                      <div>
+                        <label for="example-datepicker">Fecha de Emision</label>
+                        <b-form-datepicker id="example-datepicker" v-model="form.fecha_emicion" class="mb-2"></b-form-datepicker>
+                      </div>
+                    </template> 
+                </b-col>
             </b-row>
             <b-row>
               <div class="col-4">
@@ -409,6 +419,7 @@ export default {
       normativas:[],
       tipos:[],
       show:true,
+      titulo:null,
     form:{
       'id': 6,
       'proceso_id':'',
@@ -422,7 +433,8 @@ export default {
       'tipo_id':'',
       'actividades':[],
       'recursos':[],
-      'normativas':[]
+      'normativas':[],
+      'fecha_emicion':''
       }
   }
 },
@@ -436,12 +448,11 @@ export default {
         
     },
      cargarNorma(){
-      this.form.actividades.push({
-        titulo:"",
-        subtitulo:"",
-        descripcion:"",
-        show:true,
-      });
+      this.form.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        texto : ''
+      })
     },
        async listarNormatividad(){
         let data = new FormData();
@@ -532,7 +543,7 @@ export default {
             if (response.status==200) {
               console.log(response)
                this.$swal(
-                   'Agregado exito!',
+                   'Editado con exito!',
                     '',
                     'success');
                this.listarSubproceso();
@@ -639,6 +650,8 @@ export default {
               this.form.actividades = JSON.parse( this.subprocesos[index].actividades);
               this.form.recursos = JSON.parse( this.subprocesos[index].recursos);
               this.form.codigo_prefijo = this.subprocesos[index].codigo_prefijo;
+              this.form.normativas = JSON.parse(this.subprocesos[index].normativas);
+              this.form.fecha_emicion = this.subprocesos[index].fecha_emicion;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }

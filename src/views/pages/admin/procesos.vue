@@ -99,7 +99,7 @@
                
               </b-row> 
               <b-row>
-                <b-col>                 
+                <div class="col-8">                 
                 <div class="form-group">
                   <label>Estado</label>
                   <ValidationProvider name="habilitar caracterizacion" rules="required" v-slot="{ errors }">
@@ -110,7 +110,7 @@
                     <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
-               </b-col>
+               </div>
                 <b-col>
                  <template>
                       <div>
@@ -548,7 +548,7 @@ export default {
             if (response.status==200) {
               console.log(response)
                this.$swal(
-                   'Agregado exito!',
+                   'Editado con!',
                     '',
                     'success');
                this.listarProceso();
