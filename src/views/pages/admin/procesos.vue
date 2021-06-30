@@ -85,14 +85,18 @@
         <b-modal id="modal" false size="lg"  title="Gestión de procesos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
-                <div class="col-8">
+                <b-col>
                   <ValidationProvider name="lider" rules="required" v-slot="{ errors }">
                     <label>Lider de proceso</label>
                       <v-select v-model="form.lider_id" :options="usuarios" :disabled="ver" :reduce="usuarios => usuarios.user.id"  :getOptionLabel="option => option.nombre+' '+option.user.status" ></v-select>
                       <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
-                </div>
-               <b-col>
+                </b-col>
+
+               
+              </b-row> 
+              <b-row>
+                <b-col>                 
                 <div class="form-group">
                   <label>Estado</label>
                   <ValidationProvider name="habilitar caracterizacion" rules="required" v-slot="{ errors }">
@@ -103,8 +107,16 @@
                     <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
-              </b-col>
-              </b-row>   
+               </b-col>
+                <b-col>
+                 <template>
+                      <div>
+                        <label for="example-datepicker">Fecha de Emision</label>
+                        <b-form-datepicker id="example-datepicker" v-model="value" class="mb-2"></b-form-datepicker>
+                      </div>
+                    </template> 
+                </b-col>
+              </b-row>
             <b-row>
               <div class="col-8">
                 <div class="form-group">
@@ -166,6 +178,17 @@
                     <label>Objetivo del proceso</label>
                     <ValidationProvider name="objeto" rules="required" v-slot="{ errors }">
                         <textarea v-model="form.objetivos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <div class="form-group">
+                    <label>Alcance</label>
+                    <ValidationProvider name="alcance" rules="required" v-slot="{ errors }">
+                        <textarea v-model="form.alcance"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
