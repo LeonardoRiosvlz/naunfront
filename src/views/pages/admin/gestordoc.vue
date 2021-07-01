@@ -69,6 +69,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                    <b-dropdown-item-button><a href="/gestion-versiones" style="color:#000;">Gestion de versiones</a></b-dropdown-item-button>
                     <b-dropdown-item-button v-if="data.item.creado==='No creado'" @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
                     <b-dropdown-item-button v-if="data.item.creado==='Creado'"><a :href="'documentos/'+data.item.id" style="color:#000"> Vista al Documento </a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
