@@ -500,9 +500,9 @@ export default [
         },
     },
     {
-        path: '/gestion-versiones',
+        path: '/gestion-versiones/:id',
         name: 'gestion-versiones',
-        component: () => import('../components/chat/index'),
+        component: () => import('../views/pages/admin/dashboardDocs'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {

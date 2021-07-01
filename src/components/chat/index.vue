@@ -115,8 +115,6 @@ export default {
 </script>
 
 <template>
-  <Layout>
-    <PageHeader :title="title" :items="items" />
     <div class="d-lg-flex mb-4">
       <div class="chat-leftsidebar">
         <div class="p-3 border-bottom">
@@ -232,5 +230,10 @@ export default {
     </div>
 
     <!-- end row -->
-  </Layout>
+
+
+
+
+
+    
 </template>

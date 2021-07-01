@@ -1,98 +1,122 @@
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-    <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear documentos</b-button>
-    </div>
-  
-     <div class="row">
-      <div class="col-12">
-        <div class="card"  style="min-heigth:1000px">
-          <div class="card-body">
-            <h4 class="card-title"></h4>
-                <div class="row m-0 justify-content-between align-items-center">
-                    <div class="row m-0 col-6 pl-0">
-                        <div class="col-4 pl-0">
-                            <div class="form-group">
-                            <label>Proceso</label>
-                                <select  @change="capIdProceso()" v-model="id_proc" name="tipo" class="form-control " >
-                                    <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                            <label>Subproceso</label>
-                                <select name="tipo" class="form-control " >
-                                    <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                            <label>Tipo de documento</label>
-                                <select name="tipo" class="form-control " >
-                                    <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <b-button  class="col-2 btn-warning" left>
-                          <h5 class="mt-0 mb-0 text-white">
-                            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M28 22v8H4v-8M16 4v20M8 12l8-8l8 8"/></g></svg> EXPORTAR
-                          </h5>
-                    </b-button>
+
+    <div class="d-lg-flex mb-4">
+        <div class="chat-leftsidebar">
+            <div class="p-3 border-bottom">
+            <div class="media">
+
+                <div class="media-body">
+                <h5 class="font-size-15 mt-0 mb-1">{{doc.nombre}}</h5>
+                <p class="text-muted mb-0">
+                    <i class="mdi mdi-circle text-success align-middle mr-1"></i>
+                    Version actual:{{doc.version}}
+                </p>
                 </div>
-  
-              <!-- End search -->
-            </div>
-            <!-- Table -->
-            <div class="table-responsive mb-0">
-              <b-table
-                :items="documentos"
-                :fields="fields"
-                responsive="sm"
-                :per-page="perPage"
-                :current-page="currentPage"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                @filtered="onFiltered"
-              >
-
-      
-
-                <template v-slot:cell(actions)="data">
-                <b-dropdown size="sm" class="">
-                  <template v-slot:button-content>
-                    Action
-                    <i class="mdi mdi-chevron-down"></i>
-                  </template>
-                    <b-dropdown-item-button><a :href="'/gestion-versiones/'+data.item.id" style="color:#000;">Gestion de versiones</a></b-dropdown-item-button>
-                    <b-dropdown-item-button v-if="data.item.creado==='No creado'" @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
-                    <b-dropdown-item-button v-if="data.item.creado==='Creado'"><a :href="'documentos/'+data.item.id" style="color:#000"> Vista al Documento </a></b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                   
+                <div>
+                <b-dropdown class="chat-noti-dropdown" right variant="white">
+                    <template v-slot:button-content>
+                    <i class="mdi mdi-dots-horizontal font-size-20"></i>
+                    </template>
+                    <b-dropdown-item>Action</b-dropdown-item>
+                    <b-dropdown-item>Another action</b-dropdown-item>
+                    <b-dropdown-item>Something else here</b-dropdown-item>
                 </b-dropdown>
-                </template>
-              </b-table>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="dataTables_paginate paging_simple_numbers float-right">
-                  <ul class="pagination pagination-rounded mb-0">
-                    <!-- pagination -->
-                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
-                  </ul>
                 </div>
-              </div>
             </div>
-          </div>
+            </div>
+
+            <div class="card-body border-bottom py-2">
+            <div class="search-box chat-search-box">
+                <div class="position-relative">
+                <input type="text" class="form-control" placeholder="Search..." />
+                <i class="ri-search-line search-icon"></i>
+                </div>
+            </div>
+            </div>
+
+            <div class="chat-leftsidebar-nav">
+            <b-card-text>
+                    <div>
+                    <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
+                    <simplebar style="max-height: 345px" id="scrollElement">
+                        <ul class="list-unstyled chat-list">
+                        <li
+                            class
+                            v-for="data of chatData"
+                            :key="data.id"
+                            @click="chatUsername(data.name, data.image)"
+                            :class="{ active: username == data.name }"
+                        >
+                            <a href="javascript: void(0);">
+                            <div class="media">
+                                <div
+                                class="user-img align-self-center mr-3"
+                                v-if="data.image"
+                                :class="{
+                                    online: `${data.status}` === 'online',
+                                    away: `${data.status}` === 'away',
+                                }"
+                                >
+                                
+                                </div>
+                                <div
+                                class="user-img mr-3"
+                                v-if="!data.image"
+                                :class="{
+                                    online: `${data.status}` === 'online',
+                                    away: `${data.status}` === 'away',
+                                }"
+                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="3em" height="3em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M7 12.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.75 2.25a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5zM7 18.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3.75-6.75a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zM10 15.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm.75 2.25a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zm8.664-9.086l-5.829-5.828a.493.493 0 0 0-.049-.04a.626.626 0 0 1-.036-.03a2.072 2.072 0 0 0-.219-.18a.652.652 0 0 0-.08-.044l-.048-.024l-.05-.029c-.054-.031-.109-.063-.166-.087a1.977 1.977 0 0 0-.624-.138c-.02-.001-.04-.004-.059-.007A.605.605 0 0 0 12.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.828a2 2 0 0 0-.586-1.414zM18.5 20a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5h6V8a2 2 0 0 0 2 2h4.5v10zm-5-15.379L17.378 8.5H14a.5.5 0 0 1-.5-.5V4.621z" fill="#626262"/></g></svg>
+                                <span class="user-status"></span>
+                                </div>
+                                <div class="media-body overflow-hidden">
+                                <h5 class="text-truncate font-size-14 mb-1">
+                                    {{ data.name }}
+                                </h5>
+                                <p class="text-truncate mb-0">
+                                    {{ data.message }}
+                                </p>
+                                </div>
+                                <div class="font-size-11">{{ data.time }}</div>
+                            </div>
+                            </a>
+                        </li>
+                        </ul>
+                    </simplebar>
+                    </div>
+                </b-card-text>
+            </div>
         </div>
-      </div>
+        <div class="w-100 user-chat mt-4 mt-sm-0">
+            <div class="p-3 px-lg-4 user-chat-border">
+            <div class="row">
+                <div class="col-md-4 col-6">
+                <h5 class="font-size-15 mb-1 text-truncate">{{ doc.nombre }}</h5>
+                <p class="text-muted text-truncate mb-0">
+                    <i class="mdi mdi-circle text-success align-middle mr-1"></i>
+                   Version: v-{{doc.version}}
+                </p>
+                </div>
+                <div class="col-md-8 col-3">
+                
+                </div>
+            </div>
+            </div>
+
+            <div class="px-lg-2 chat-users">
+            <div class="chat-conversation p-3">
+                <VueDocPreview value="" type="office" />
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- end row -->
+
+
 
         <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
@@ -462,7 +486,7 @@ import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-import summernote from '@/components/summer'
+import Chat from '@/components/chat'
 import moment from 'moment'
 
 /**
@@ -475,7 +499,8 @@ export default {
     PageHeader,
     ValidationProvider,
     ValidationObserver,
-    vSelect
+    vSelect,
+    Chat
   },
   data() {
     return {
@@ -537,6 +562,29 @@ export default {
       sedes:"",
       rango:0,
       form:{
+            'id': 6,
+            'tipo_id': '',
+            'subproceso_id':'',
+            'proceso_id':'',
+            'creado':'',
+            'nombre': null,
+            'archivo': '',
+            'normativas':[],
+            'consecutivo':'',
+            'version':'',
+            'elaboracion':'',
+            'revision':'',
+            'aprobacion':'',
+            'fecha_alerta':'',
+            'fecha_emicion':'',
+            'intervalo':'',
+            'status':'',
+            'sedes_id':'',
+            'elabora_id':'',
+            'aprueba_id':'',
+            'revisa_id':''
+          },
+        doc:{
             'id': 6,
             'tipo_id': '',
             'subproceso_id':'',
@@ -867,7 +915,7 @@ export default {
       },
     async setear(id){
       let data = new FormData();
-      data.append('id',id);
+      data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
           .then((response) => {
              if (response.status==200) {
@@ -899,6 +947,39 @@ export default {
             console.log('error' + e);
           })
       },
+    async listarDocumento(id){
+      let data = new FormData();
+      data.append('id',this.$route.params.id);
+        await this.axios.post('api/documentos/find',data)
+          .then((response) => {
+             if (response.status==200) {
+              this.doc.id = response.data.id;
+              this.doc.tipo_id = response.data.tipo_id;
+              this.doc.nombre = response.data.nombre;
+              this.doc.normativas = JSON.parse(response.data.normativas);
+              this.doc.creado = response.data.creado;
+              this.doc.consecutivo = response.data.consecutivo;
+              this.doc.version = response.data.version;
+              this.doc.subproceso_id = response.data.subproceso_id;
+              this.doc.elaboracion = response.data.elaboracion;
+              this.doc.revision = response.data.revision;
+              this.doc.aprobacion = response.data.aprobacion;
+              this.doc.fecha_alerta = response.data.fecha_alerta;
+              this.doc.fecha_emicion = response.data.fecha_emicion;
+              this.doc.intervalo = response.data.intervalo;
+              this.doc.status = response.data.status;
+              this.doc.proceso_id = response.data.proceso_id;
+              this.doc.sedes_id = response.data.sedes_id;
+              this.doc.elabora_id = response.data.elabora_id;
+              this.doc.aprueba_id = response.data.aprueba_id;
+              this.doc.revisa_id = response.data.revisa_id;
+              this.versiones = response.data.versiones;
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      }, 
     async setearCarga(id){
       let data = new FormData();
       data.append('id',id);
@@ -1035,6 +1116,7 @@ export default {
         this.listardocscreados();
         this.listarCargos();
         this.listarSedes();
+        this.listarDocumento();
         this.title=this.cliente.nombre_prestador;
       },
     },
