@@ -19,8 +19,8 @@
                     <template v-slot:button-content>
                     <i class="mdi mdi-dots-horizontal font-size-20"></i>
                     </template>
-                    <b-dropdown-item>Action</b-dropdown-item>
-                    <b-dropdown-item>Another action</b-dropdown-item>
+                    <b-dropdown-item @click="setear">Editar</b-dropdown-item>
+                    <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
                     <b-dropdown-item>Something else here</b-dropdown-item>
                 </b-dropdown>
                 </div>

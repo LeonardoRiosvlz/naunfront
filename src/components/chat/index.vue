@@ -134,7 +134,7 @@ export default {
                 <template v-slot:button-content>
                   <i class="mdi mdi-dots-horizontal font-size-20"></i>
                 </template>
-                <b-dropdown-item>Action</b-dropdown-item>
+                <b-dropdown-item>Editar</b-dropdown-item>
                 <b-dropdown-item>Another action</b-dropdown-item>
                 <b-dropdown-item>Something else here</b-dropdown-item>
               </b-dropdown>
