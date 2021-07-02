@@ -19,9 +19,10 @@
                     <template v-slot:button-content>
                     <i class="mdi mdi-dots-horizontal font-size-20"></i>
                     </template>
-                    <b-dropdown-item @click="setear">Editar</b-dropdown-item>
+                    
+                    <b-dropdown-item @click="editMode=true;ver=false;setear(id)">Editar</b-dropdown-item>
                     <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
-                    <b-dropdown-item>Elaborar documento pendiente</b-dropdown-item>
+                    <b-dropdown-item @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Elaborar documento pendiente</b-dropdown-item>
                     <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
                     <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
                     <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
@@ -123,20 +124,6 @@
 
         <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
-              <b-row class="mb-3">
-                <div class="col-md-5">
-                    <div class="form-group">
-                      <label>Vas a: </label>
-                      <ValidationProvider name="tipo de documento" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.creado" name="tipo" class="form-control " :disabled="ver">
-                            <option value="Creado" selected>Subir documento creado</option>
-                            <option value="No creado">Crear documento</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </div>
-              </b-row>
 
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
@@ -905,6 +892,17 @@ export default {
               this.$swal('no se pudo subir!', '','danger');
           });
       },  
+      async buscarVersiones(){
+        let data = new FormData();
+         data.append('id',this.$route.params.id);
+          await this.axios.post('api/documentos/versiones/find',data)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch((e)=>{
+              console.log('error' + e);
+            })
+      },
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
@@ -1125,6 +1123,7 @@ export default {
     },
     created(){
       this.session();
+      this.buscarVersiones()
       console.log(this.form)
       },
      mounted() {
