@@ -21,7 +21,10 @@
                     </template>
                     <b-dropdown-item @click="setear">Editar</b-dropdown-item>
                     <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
-                    <b-dropdown-item>Something else here</b-dropdown-item>
+                    <b-dropdown-item>Elaborar documento pendiente</b-dropdown-item>
+                    <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
+                    <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
+                    <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
                 </b-dropdown>
                 </div>
             </div>
