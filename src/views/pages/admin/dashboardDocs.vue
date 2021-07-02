@@ -15,18 +15,18 @@
                 </p>
                 </div>
                 <div>
-                <b-dropdown class="chat-noti-dropdown" right variant="white">
-                    <template v-slot:button-content>
-                    <i class="mdi mdi-dots-horizontal font-size-20"></i>
-                    </template>
-                    
-                    <b-dropdown-item @click="editMode=true;ver=false;setear(id)">Editar</b-dropdown-item>
-                    <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
-                    <b-dropdown-item @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Elaborar documento pendiente</b-dropdown-item>
-                    <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
-                    <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
-                    <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
-                </b-dropdown>
+                  <b-dropdown class="chat-noti-dropdown" right variant="white">
+                      <template v-slot:button-content>
+                      <i class="mdi mdi-dots-horizontal font-size-20"></i>
+                      </template>
+                      
+                      <b-dropdown-item @click="setear">Editar</b-dropdown-item>
+                      <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
+                      <b-dropdown-item @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Elaborar documento pendiente</b-dropdown-item>
+                      <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
+                      <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
+                      <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
+                  </b-dropdown>
                 </div>
             </div>
             </div>
@@ -41,62 +41,127 @@
             </div>
 
             <div class="chat-leftsidebar-nav">
-            <b-card-text>
-                    <div>
-                    <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
-                    <simplebar style="max-height: 345px" id="scrollElement">
-                        <ul class="list-unstyled chat-list">
-                        <li
-                            class
-                            v-for="data of chatData"
-                            :key="data.id"
-                            @click="chatUsername(data.name, data.image)"
-                            :class="{ active: username == data.name }"
-                        >
-                            <a href="javascript: void(0);">
-                            <div class="media">
-                                <div
-                                class="user-img align-self-center mr-3"
-                                v-if="data.image"
-                                :class="{
-                                    online: `${data.status}` === 'online',
-                                    away: `${data.status}` === 'away',
-                                }"
-                                >
-                                
-                                </div>
-                                <div
-                                class="user-img mr-3"
-                                v-if="!data.image"
-                                :class="{
-                                    online: `${data.status}` === 'online',
-                                    away: `${data.status}` === 'away',
-                                }"
-                                >
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="3em" height="3em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M7 12.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.75 2.25a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5zM7 18.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3.75-6.75a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zM10 15.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm.75 2.25a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zm8.664-9.086l-5.829-5.828a.493.493 0 0 0-.049-.04a.626.626 0 0 1-.036-.03a2.072 2.072 0 0 0-.219-.18a.652.652 0 0 0-.08-.044l-.048-.024l-.05-.029c-.054-.031-.109-.063-.166-.087a1.977 1.977 0 0 0-.624-.138c-.02-.001-.04-.004-.059-.007A.605.605 0 0 0 12.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.828a2 2 0 0 0-.586-1.414zM18.5 20a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5h6V8a2 2 0 0 0 2 2h4.5v10zm-5-15.379L17.378 8.5H14a.5.5 0 0 1-.5-.5V4.621z" fill="#626262"/></g></svg>
-                                <span class="user-status"></span>
-                                </div>
-                                <div class="media-body overflow-hidden">
-                                <h5 class="text-truncate font-size-14 mb-1">
-                                    {{ data.name }}
-                                </h5>
-                                <p class="text-truncate mb-0">
-                                    {{ data.message }}
-                                </p>
-                                </div>
-                                <div class="font-size-11">{{ data.time }}</div>
-                            </div>
-                            </a>
-                        </li>
-                        </ul>
-                    </simplebar>
-                    </div>
-                </b-card-text>
+              <b-tabs pills fill content-class="py-4" justified>
+                <b-tab title="Tab 1" active>
+                  <template v-slot:title>
+                    <i class="ri-message-2-line font-size-20"></i>
+                    <span class="mt-2 d-none d-sm-block">Habilitados</span>
+                  </template>
+                  <b-card-text>
+                          <div>
+                          <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
+                          <simplebar style="max-height: 345px" id="scrollElement">
+                              <ul class="list-unstyled chat-list">
+                              <li
+                                  class
+                                  v-for="data of chatData"
+                                  :key="data.id"
+                                  @click="chatUsername(data.name, data.image)"
+                                  :class="{ active: username == data.name }"
+                              >
+                                  <a href="javascript: void(0);">
+                                  <div class="media">
+                                      <div
+                                      class="user-img align-self-center mr-3"
+                                      v-if="data.image"
+                                      :class="{
+                                          online: `${data.status}` === 'online',
+                                          away: `${data.status}` === 'away',
+                                      }"
+                                      >
+                                      
+                                      </div>
+                                      <div
+                                      class="user-img mr-3"
+                                      v-if="!data.image"
+                                      :class="{
+                                          online: `${data.status}` === 'online',
+                                          away: `${data.status}` === 'away',
+                                      }"
+                                      >
+                                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="3em" height="3em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M7 12.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.75 2.25a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5zM7 18.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3.75-6.75a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zM10 15.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm.75 2.25a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zm8.664-9.086l-5.829-5.828a.493.493 0 0 0-.049-.04a.626.626 0 0 1-.036-.03a2.072 2.072 0 0 0-.219-.18a.652.652 0 0 0-.08-.044l-.048-.024l-.05-.029c-.054-.031-.109-.063-.166-.087a1.977 1.977 0 0 0-.624-.138c-.02-.001-.04-.004-.059-.007A.605.605 0 0 0 12.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.828a2 2 0 0 0-.586-1.414zM18.5 20a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5h6V8a2 2 0 0 0 2 2h4.5v10zm-5-15.379L17.378 8.5H14a.5.5 0 0 1-.5-.5V4.621z" fill="#626262"/></g></svg>
+                                      <span class="user-status"></span>
+                                      </div>
+                                      <div class="media-body overflow-hidden">
+                                      <h5 class="text-truncate font-size-14 mb-1">
+                                          {{ data.name }}
+                                      </h5>
+                                      <p class="text-truncate mb-0">
+                                          {{ data.message }}
+                                      </p>
+                                      </div>
+                                      <div class="font-size-11">{{ data.time }}</div>
+                                  </div>
+                                  </a>
+                              </li>
+                              </ul>
+                          </simplebar>
+                          </div>
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="Tab 1" active>
+                  <template v-slot:title>
+                    <i class="ri-group-line font-size-20"></i>
+                    <span class="mt-2 d-none d-sm-block">En revisión</span>
+                  </template>
+                  <b-card-text>
+                          <div>
+                          <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
+                          <simplebar style="max-height: 345px" id="scrollElement">
+                              <ul class="list-unstyled chat-list">
+                              <li
+                                  class
+                                  v-for="data of chatData"
+                                  :key="data.id"
+                                  @click="chatUsername(data.name, data.image)"
+                                  :class="{ active: username == data.name }"
+                              >
+                                  <a href="javascript: void(0);">
+                                  <div class="media">
+                                      <div
+                                      class="user-img align-self-center mr-3"
+                                      v-if="data.image"
+                                      :class="{
+                                          online: `${data.status}` === 'online',
+                                          away: `${data.status}` === 'away',
+                                      }"
+                                      >
+                                      
+                                      </div>
+                                      <div
+                                      class="user-img mr-3"
+                                      v-if="!data.image"
+                                      :class="{
+                                          online: `${data.status}` === 'online',
+                                          away: `${data.status}` === 'away',
+                                      }"
+                                      >
+                                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="3em" height="3em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M7 12.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm.75 2.25a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5zM7 18.25a.75.75 0 1 1 1.5 0a.75.75 0 0 1-1.5 0zm3.75-6.75a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zM10 15.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75zm.75 2.25a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5h-5.5zm8.664-9.086l-5.829-5.828a.493.493 0 0 0-.049-.04a.626.626 0 0 1-.036-.03a2.072 2.072 0 0 0-.219-.18a.652.652 0 0 0-.08-.044l-.048-.024l-.05-.029c-.054-.031-.109-.063-.166-.087a1.977 1.977 0 0 0-.624-.138c-.02-.001-.04-.004-.059-.007A.605.605 0 0 0 12.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.828a2 2 0 0 0-.586-1.414zM18.5 20a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5h6V8a2 2 0 0 0 2 2h4.5v10zm-5-15.379L17.378 8.5H14a.5.5 0 0 1-.5-.5V4.621z" fill="#626262"/></g></svg>
+                                      <span class="user-status"></span>
+                                      </div>
+                                      <div class="media-body overflow-hidden">
+                                      <h5 class="text-truncate font-size-14 mb-1">
+                                          {{ data.name }}
+                                      </h5>
+                                      <p class="text-truncate mb-0">
+                                          {{ data.message }}
+                                      </p>
+                                      </div>
+                                      <div class="font-size-11">{{ data.time }}</div>
+                                  </div>
+                                  </a>
+                              </li>
+                              </ul>
+                          </simplebar>
+                          </div>
+                  </b-card-text>
+                </b-tab>
+              </b-tabs>
             </div>
         </div>
         <div class="w-100 user-chat mt-4 mt-sm-0">
             <div class="p-3 px-lg-4 user-chat-border">
-            <div class="row">
+            <div class="row justify-content-between">
                 <div class="col-md-4 col-6">
                 <h5 class="font-size-15 mb-1 text-truncate">{{ doc.nombre }}</h5>
                 <p class="text-muted text-truncate mb-0">
@@ -104,8 +169,17 @@
                    Version: v-{{doc.version}}
                 </p>
                 </div>
-                <div class="col-md-8 col-3">
-                
+                <div class="col-md-1 col-3">
+                  <div>
+                    <b-dropdown class="chat-noti-dropdown" right variant="white">
+                        <template v-slot:button-content>
+                        <i class="mdi mdi-dots-horizontal font-size-20"></i>
+                        </template>
+                        <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
+                    </b-dropdown>
+                  </div>
                 </div>
             </div>
             </div>
@@ -894,7 +968,7 @@ export default {
       },  
       async buscarVersiones(){
         let data = new FormData();
-         data.append('id',this.$route.params.id);
+         data.append('documento_id',this.$route.params.id);
           await this.axios.post('api/documentos/versiones/find',data)
             .then((response) => {
               console.log(response)
@@ -914,16 +988,17 @@ export default {
         }
          this.form.cliente_id=this.cliente.id;
       },
-    async setear(id){
+    async setear(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
           .then((response) => {
+            console.log(response.data)
              if (response.status==200) {
               this.form.id = response.data.id;
               this.form.tipo_id = response.data.tipo_id;
-              this.form.nombre = response.data.nombre;
               this.form.normativas = JSON.parse(response.data.normativas);
+              this.form.nombre = response.data.nombre;
               this.form.creado = response.data.creado;
               this.form.consecutivo = response.data.consecutivo;
               this.form.version = response.data.version;
@@ -954,6 +1029,7 @@ export default {
         await this.axios.post('api/documentos/find',data)
           .then((response) => {
              if (response.status==200) {
+              console.log(response) 
               this.doc.id = response.data.id;
               this.doc.tipo_id = response.data.tipo_id;
               this.doc.nombre = response.data.nombre;

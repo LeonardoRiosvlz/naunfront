@@ -25,7 +25,7 @@
                   <i class="mdi mdi-dots-horizontal font-size-20"></i>
                 </template>
                 <b-dropdown-item>Action</b-dropdown-item>
-                <b-dropdown-item>Another actions</b-dropdown-item>
+                <b-dropdown-item>Another action</b-dropdown-item>
                 <b-dropdown-item>Something else here</b-dropdown-item>
               </b-dropdown>
             </div>
@@ -41,62 +41,64 @@
           </div>
         </div>
 
-
-    <b-modal id="modal" false size=""  title="Crear Sala" hide-footer>
-          <ValidationObserver ref="form">
-            <b-row>
-              <b-col>
-                <div class="form-group">
-                  <label>Nombre</label>
-                  <ValidationProvider name="cargo" rules="required|alpha_spaces" v-slot="{ errors }">
-                        <input v-model="titulo"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                        <span style="color:red">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </div>
-              </b-col>
-              </b-row>         
-        </ValidationObserver>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Crear</button>
-        <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
-     </b-modal>
-
-
-
-
         <div class="chat-leftsidebar-nav">
           <b-tabs pills fill content-class="py-4" justified>
             <b-tab title="Tab 1" active>
               <template v-slot:title>
                 <i class="ri-message-2-line font-size-20"></i>
-                <span class="mt-2 d-none d-sm-block">Mis Chats</span>
+                <span class="mt-2 d-none d-sm-block">Chat</span>
               </template>
-               <b-card-text>
+              <b-card-text>
                 <div>
-                  <b-button class="btn-sm ml-2 mb-3" @click="setSala()" pill variant="success" ><i class="  ri-mail-add-line align-middle mr-2"></i> Nueva sala</b-button>
-                 
-
-
+                  <h5 class="font-size-14 px-3 mb-3">Recent</h5>
                   <simplebar style="max-height: 345px" id="scrollElement">
                     <ul class="list-unstyled chat-list">
                       <li
                         class
-                        v-for="data of sala"
+                        v-for="data of chatData"
                         :key="data.id"
-                        @click="chatUsername(data.titulo, data.id)"
-                        :class="{ active: username == data.titulo }"
+                        @click="chatUsername(data.name, data.image)"
+                        :class="{ active: username == data.name }"
                       >
                         <a href="javascript: void(0);">
                           <div class="media">
                             <div
+                              class="user-img align-self-center mr-3"
+                              v-if="data.image"
+                              :class="{
+                                online: `${data.status}` === 'online',
+                                away: `${data.status}` === 'away',
+                              }"
                             >
-                             
+                              <img
+                                :src="`${data.image}`"
+                                class="rounded-circle avatar-xs"
+                                alt
+                              />
+                              <span class="user-status"></span>
+                            </div>
+                            <div
+                              class="user-img mr-3"
+                              v-if="!data.image"
+                              :class="{
+                                online: `${data.status}` === 'online',
+                                away: `${data.status}` === 'away',
+                              }"
+                            >
+                              <div class="avatar-xs align-self-center">
+                                <span
+                                  class="avatar-title rounded-circle bg-light text-body"
+                                  >{{ data.name.charAt(0) }}</span
+                                >
+                              </div>
+                              <span class="user-status"></span>
                             </div>
                             <div class="media-body overflow-hidden">
                               <h5 class="text-truncate font-size-14 mb-1">
-                                {{ data.titulo }}
+                                {{ data.name }}
                               </h5>
                               <p class="text-truncate mb-0">
-                                {{ data.createdAt }}
+                                {{ data.message }}
                               </p>
                             </div>
                             <div class="font-size-11">{{ data.time }}</div>
@@ -111,41 +113,96 @@
             <b-tab>
               <template v-slot:title>
                 <i class="ri-group-line font-size-20"></i>
-                <span class="mt-2 d-none d-sm-block">Relacionadas</span>
-       
+                <span class="mt-2 d-none d-sm-block">Group</span>
               </template>
               <b-card-text>
-                <div>
-                  <simplebar style="max-height: 345px" id="scrollElement">
-                     <ul class="list-unstyled chat-list">
-                      <li
-                        class
-                        v-for="data of invitaciones"
-                        :key="data.id"
-                        @click="chatUsername(data.conversacion.titulo, data.conversacion.id)"
-                        :class="{ active: username == data.titulo }"
-                      >
-                        <a href="javascript: void(0);">
-                          <div class="media">
-                            <div
-                            >
-                             
-                            </div>
-                            <div class="media-body overflow-hidden">
-                              <h5 class="text-truncate font-size-14 mb-1">
-                                {{ data.conversacion.titulo }}
-                              </h5>
-                              <p class="text-truncate mb-0">
-                                {{ data.createdAt }}
-                              </p>
-                            </div>
-                            <div class="font-size-11">{{ data.time }}</div>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                  </simplebar>
-                </div>
+                <h5 class="font-size-14 px-3 mb-3">Group</h5>
+                <ul class="list-unstyled chat-list">
+                  <li>
+                    <a href="#">
+                      <div class="media align-items-center">
+                        <div class="avatar-xs mr-3">
+                          <span
+                            class="avatar-title rounded-circle bg-light text-body"
+                            >G</span
+                          >
+                        </div>
+
+                        <div class="media-body">
+                          <h5 class="font-size-14 mb-0">General</h5>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <div class="media align-items-center">
+                        <div class="avatar-xs mr-3">
+                          <span
+                            class="avatar-title rounded-circle bg-light text-body"
+                            >R</span
+                          >
+                        </div>
+
+                        <div class="media-body">
+                          <h5 class="font-size-14 mb-0">Reporting</h5>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <div class="media align-items-center">
+                        <div class="avatar-xs mr-3">
+                          <span
+                            class="avatar-title rounded-circle bg-light text-body"
+                            >M</span
+                          >
+                        </div>
+
+                        <div class="media-body">
+                          <h5 class="font-size-14 mb-0">Meeting</h5>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <div class="media align-items-center">
+                        <div class="avatar-xs mr-3">
+                          <span
+                            class="avatar-title rounded-circle bg-light text-body"
+                            >A</span
+                          >
+                        </div>
+
+                        <div class="media-body">
+                          <h5 class="font-size-14 mb-0">Project A</h5>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <div class="media align-items-center">
+                        <div class="avatar-xs mr-3">
+                          <span
+                            class="avatar-title rounded-circle bg-light text-body"
+                            >B</span
+                          >
+                        </div>
+
+                        <div class="media-body">
+                          <h5 class="font-size-14 mb-0">Project B</h5>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
               </b-card-text>
             </b-tab>
             <b-tab>
@@ -154,18 +211,68 @@
                 <span class="mt-2 d-none d-sm-block">Contacts</span>
               </template>
               <b-card-text>
-                <h5 class="font-size-14 px-3 mb-3">Contactos </h5>
-                  <div class="mt-4">
+                <h5 class="font-size-14 px-3 mb-3">Contact</h5>
+                <simplebar style="height: 345px">
+                  <div>
+                    <div class="p-3">A</div>
+
                     <ul class="list-unstyled chat-list">
-                      <li v-for="contactos in contactos"  :key="contactos.id" >
-                        <a    href="#" @click="agregarSubs(contactos.id)">
-                          <h5 class="font-size-14 mb-0">{{contactos.nombre}} {{contactos.apellido}}</h5>
-                          <p class="text-muted m-0">{{contactos.cargo}}</p>
+                      <li>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Adam Miller</h5>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Alfonso Fisher</h5>
                         </a>
                       </li>
                     </ul>
                   </div>
-      
+
+                  <div class="mt-4">
+                    <div class="p-3">B</div>
+
+                    <ul class="list-unstyled chat-list">
+                      <li>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Bonnie Harney</h5>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="mt-4">
+                    <div class="p-3">C</div>
+
+                    <ul class="list-unstyled chat-list">
+                      <li>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Charles Brown</h5>
+                        </a>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Carmella Jones</h5>
+                        </a>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Carrie Williams</h5>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="mt-4">
+                    <div class="p-3">D</div>
+
+                    <ul class="list-unstyled chat-list">
+                      <li>
+                        <a href="#">
+                          <h5 class="font-size-14 mb-0">Dolores Minter</h5>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </simplebar>
               </b-card-text>
             </b-tab>
           </b-tabs>
@@ -176,9 +283,10 @@
           <div class="row">
             <div class="col-md-4 col-6">
               <h5 class="font-size-15 mb-1 text-truncate">{{ username }}</h5>
-              <p  class="text-muted text-truncate mb-0">
+              <p class="text-muted text-truncate mb-0">
+                <i class="mdi mdi-circle text-success align-middle mr-1"></i>
+                Active now
               </p>
-              <p v-for="subs in subs" :key="subs.id" style="display:inline;">({{subs.user.nombre}} {{subs.user.apellido}})</p>
             </div>
             <div class="col-md-8 col-3">
               <ul class="list-inline user-chat-nav text-right mb-0">
@@ -228,8 +336,10 @@
                     <template v-slot:button-content>
                       <i class="mdi mdi-cog"></i>
                     </template>
-                    <b-dropdown-item @click="limpiarSala()">Limpiar Chat</b-dropdown-item>
-                    <b-dropdown-item @click="eliminarSala()">Borrar Chat</b-dropdown-item>
+                    <b-dropdown-item>View Profile</b-dropdown-item>
+                    <b-dropdown-item>Clear chat</b-dropdown-item>
+                    <b-dropdown-item>Muted</b-dropdown-item>
+                    <b-dropdown-item>Delete</b-dropdown-item>
                   </b-dropdown>
                 </li>
 
@@ -238,7 +348,9 @@
                     <template v-slot:button-content>
                       <i class="mdi mdi-dots-horizontal"></i>
                     </template>
-                    <b-dropdown-item v-for="subs in subs" :key="subs.id" @click="eliminarSuscripcion(subs.id)"><i class="far far fa-times-circle"></i> {{subs.user.nombre}} {{subs.user.apellido}} - {{subs.user.cargo}}</b-dropdown-item>
+                    <b-dropdown-item>Action</b-dropdown-item>
+                    <b-dropdown-item>Another action</b-dropdown-item>
+                    <b-dropdown-item>Something else</b-dropdown-item>
                   </b-dropdown>
                 </li>
               </ul>
@@ -254,25 +366,30 @@
               ref="current"
             >
               <ul class="list-unstyled mb-0 pr-3">
+                <li>
+                  <div class="chat-day-title">
+                    <span class="title">Today</span>
+                  </div>
+                </li>
                 <li
-                  v-for="data of mensajes"
-                  :key="data.id"
-                  :class="{ right: `${data.user.id}` == usuarioDB.id }"
+                  v-for="data of chatMessagesData"
+                  :key="data.message"
+                  :class="{ right: `${data.align}` === 'right' }"
                 >
                   <div class="conversation-list">
-                    <div class="chat-avatar" v-if="data.user.imagen">
-                      <img :src="`${data.user.imagen}`" alt />
+                    <div class="chat-avatar" v-if="data.image">
+                      <img :src="`${data.image}`" alt />
                     </div>
 
                     <div class="ctext-wrap">
-                      <div class="conversation-name">{{ data.user.nombre }} {{ data.user.apellido }} ({{ data.user.cargo }})</div>
+                      <div class="conversation-name">{{ data.name }}</div>
                       <div class="ctext-wrap-content">
-                        <p class="mb-0">{{ data.texto }}</p>
+                        <p class="mb-0">{{ data.message }}</p>
                       </div>
 
                       <p class="chat-time mb-0">
                         <i class="bx bx-time-five align-middle mr-1"></i>
-                        {{ data.created_at }}
+                        {{ data.time }}
                       </p>
                     </div>
                   </div>
@@ -308,9 +425,8 @@
                   <button
                     type="submit"
                     class="btn btn-primary chat-send w-md waves-effect waves-light"
-                    :disabled="!id_sala"
                   >
-                    <span class="d-none d-sm-inline-block mr-2" >Enviar</span>
+                    <span class="d-none d-sm-inline-block mr-2">Send</span>
                     <i class="mdi mdi-send"></i>
                   </button>
                 </div>
@@ -320,11 +436,10 @@
         </div>
       </div>
     </div>
+
     <!-- end row -->
-    <notifications group="foo" />
   </Layout>
 </template>
-
 
 
 
