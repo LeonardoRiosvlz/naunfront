@@ -1,6 +1,67 @@
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
+        <b-button class="mb-3" v-b-toggle.sidebar-right>Filtrar enventos</b-button>
+    <b-sidebar id="sidebar-right" title="Filtros" right shadow>
+      <div class="px-3 py-2">
+        <div class="accordion" role="tablist">
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button block v-b-toggle.accordion-1 variant="info">Rango</b-button>
+            </b-card-header>
+            <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
+                  <b-col>
+                    <div class="form-group">
+                      <label >Desde </label>
+                        <b-form-input id="date-time" v-model="buscador.desde"  type="datetime-local"></b-form-input>
+                    </div>
+                  </b-col>
+                   <b-col>
+                    <div class="form-group">
+                      <label >Hasta </label>
+                        <b-form-input id="date-time" v-model="buscador.hasta"  type="datetime-local" @change="filtro()" :disabled="!buscador.desde"></b-form-input>
+                    </div>
+                  </b-col>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button block v-b-toggle.accordion-2 variant="info">Caracteristicas</b-button>
+            </b-card-header>
+            <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
+                  <b-col>
+                    <label>Clasificacion del evento</label>
+                      <select class="custom-select" id="date-time" v-model="buscador.clasificacion_id" @change="filtro()">
+                          <option :value="clasificacion.id" v-for="clasificacion in clasificacion" :key="clasificacion.id">{{clasificacion.nombre}}</option>
+                      </select>
+                    </b-col>
+                    <b-col>
+                        <label>Estado</label>
+                          <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
+                              <option value="Creada">Creada</option>
+                              <option value="Programada">Programada</option>
+                              <option value="Cumplida">Cumplida</option>
+                              <option value="No realizada">No realizada</option>
+                          </select>
+                    </b-col>
+                    <b-col>
+                        <label>Periodo</label>
+                          <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
+                              <option value="2021">2021</option>
+                              <option value="2022">2022</option>
+                              <option value="2023">2023</option>
+                              <option value="2024">2024</option>
+                          </select>
+                  </b-col>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+        </div>
+      </div>
+    </b-sidebar>
     <div class="clearfix mb-3">
       <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Crear documentos</b-button>
     </div>
@@ -10,39 +71,6 @@
         <div class="card"  style="min-heigth:1000px">
           <div class="card-body">
             <h4 class="card-title"></h4>
-                <div class="row m-0 justify-content-between align-items-center">
-                    <div class="row m-0 col-6 pl-0">
-                        <div class="col-4 pl-0">
-                            <div class="form-group">
-                            <label>Proceso</label>
-                                <select  @change="capIdProceso()" v-model="id_proc" name="tipo" class="form-control " >
-                                    <option v-for="(pros, index) in procesos" :key="index" :value="pros.id">{{pros.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                            <label>Subproceso</label>
-                                <select name="tipo" class="form-control " >
-                                    <option v-for="(subpros, index) in subprocesos" :key="index" :value="subpros.id">{{subpros.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                            <label>Tipo de documento</label>
-                                <select name="tipo" class="form-control " >
-                                    <option v-for="(docs, index) in tiposdocumentos" :key="index" :value="docs.id">{{docs.nombre}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <b-button  class="col-2 btn-warning" left>
-                          <h5 class="mt-0 mb-0 text-white">
-                            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M28 22v8H4v-8M16 4v20M8 12l8-8l8 8"/></g></svg> EXPORTAR
-                          </h5>
-                    </b-button>
-                </div>
   
               <!-- End search -->
             </div>
@@ -178,6 +206,7 @@
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                             <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                               <option value="NA">NA</option>
                               <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -536,6 +565,9 @@ export default {
       articulo:"",
       sedes:"",
       rango:0,
+      buscador:{
+        
+      },
       form:{
             'id': 6,
             'tipo_id': '',
@@ -878,7 +910,11 @@ export default {
               this.form.creado = response.data.creado;
               this.form.consecutivo = response.data.consecutivo;
               this.form.version = response.data.version;
-              this.form.subproceso_id = response.data.subproceso_id;
+              if (response.data.subproceso_id==null) {
+                this.form.subproceso_id="NA";
+              }else{
+                this.form.subproceso_id = response.data.subproceso_id;
+              }
               this.form.elaboracion = response.data.elaboracion;
               this.form.revision = response.data.revision;
               this.form.aprobacion = response.data.aprobacion;
