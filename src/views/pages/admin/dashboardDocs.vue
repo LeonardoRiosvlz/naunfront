@@ -802,9 +802,9 @@
                   </div>
                <div class="col-2 row justify-content-end pr-0"><button class="btn btn-success w-100 " style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
             </b-row>
-                 
+                 <pre>{{index}}</pre>
         </ValidationObserver>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
+            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
 
      </b-modal>
   </Layout>
@@ -1077,6 +1077,26 @@ export default {
         }});
       }
     },
+    elaborar(){
+      this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+          this.$swal({
+            title: 'Desea subir los documentos version?',
+            icon: 'question',
+            iconHtml: '',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            showCancelButton: true,
+            showCloseButton: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.elaborarDocumento();
+            }
+        })
+          } 
+        });        
+    
+    },
      cargarDoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
@@ -1235,24 +1255,9 @@ export default {
                 this.$swal(e.response.data);
           });
       },
-        cargarVersion(){
-        this.$swal({
-          title: 'Desea cargar estos documento?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.cargarVersions();
-          }
-        })
-      },  
-    async cargarVersions(){
+    async elaborarDocumento(){
      let data = new FormData();
-     data.append('documento_id',this.form.id);
+     data.append('documento_id',this.edit.id);
       if (this.archivo) {
         data.append('filename',this.archivo);
        }
