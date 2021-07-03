@@ -315,7 +315,7 @@
                             <div class="form-group">
                               <label >Elabora</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="edit.elabora_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="edit.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -335,7 +335,7 @@
                             <div class="form-group">
                               <label >Revisa</label>      
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="edit.revisa_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="edit.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
@@ -355,7 +355,7 @@
                             <div class="form-group">
                               <label>Aprueba</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="edit.aprueba_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="edit.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[2])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -474,7 +474,6 @@
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
               </div>
-              
             </div>
           </div>
      </b-modal>
@@ -592,7 +591,7 @@
                               <label v-if="form.creado==='No creado'">Elabora</label>
                               <label v-else>Elaboró</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.elabora_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -613,7 +612,7 @@
                               <label v-if="form.creado==='No creado'">Revisa</label>
                               <label v-else>Revisó</label>
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.revisa_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
@@ -634,7 +633,7 @@
                               <label v-if="form.creado==='No creado'">Aprueba</label>
                               <label v-else>Aprobó</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select v-model="form.aprueba_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -853,6 +852,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      responsabilidadesSelect:[1,2,3],
       estado:1,
       tabIndex: 0,
       id_proc:4,
@@ -939,9 +939,9 @@ export default {
             'intervalo':'',
             'status':'',
             'sedes_id':'',
-            'elabora_id':'',
-            'aprueba_id':'',
-            'revisa_id':'',
+            'elabora_v_id':'',
+            'aprueba_v_id':'',
+            'revisa_v_id':'',
           },
         doc:{
             'id': 6,
@@ -976,6 +976,44 @@ export default {
         }
     },
   methods: {
+    validacionRespon(index){
+       console.log(index)
+        if (index === 1) {
+              if (this.edit.elabora_v_id != '' && this.edit.elabora_v_id == this.edit.aprueba_v_id || this.edit.elabora_v_id != '' && this.edit.elabora_v_id == this.edit.revisa_v_id) {
+                this.$swal('Cargo en uso');
+                this.edit.elabora_v_id = ''
+          }
+        }  else if (index === 2) {
+              if (this.edit.revisa_v_id != '' && this.edit.revisa_v_id == this.edit.elabora_v_id || this.edit.revisa_v_id != '' && this.edit.revisa_v_id == this.edit.aprueba_v_id){
+                this.$swal('Cargo en uso')
+                this.edit.revisa_v_id = ''
+          }
+        } else if (index === 3 ) {
+              if (this.edit.aprueba_v_id != '' && this.edit.aprueba_v_id == this.edit.elabora_v_id || this.edit.aprueba_v_id != '' && this.edit.aprueba_v_id == this.edit.revisa_v_id) {
+                  this.$swal('Cargo en uso');
+                  this.edit.aprueba_v_id = ''
+          }
+        }
+    },
+    validacionResponD(index){
+       console.log(index)
+        if (index === 1) {
+              if (this.form.elabora_v_id != '' && this.form.elabora_v_id == this.form.aprueba_v_id || this.form.elabora_v_id != '' && this.form.elabora_v_id == this.form.revisa_v_id) {
+                this.$swal('Cargo en uso');
+                this.form.elabora_v_id = ''
+          }
+        }  else if (index === 2) {
+              if (this.form.revisa_v_id != '' && this.form.revisa_v_id == this.form.elabora_v_id || this.form.revisa_v_id != '' && this.form.revisa_v_id == this.form.aprueba_v_id){
+                this.$swal('Cargo en uso')
+                this.edit.revisa_v_id = ''
+          }
+        } else if (index === 3 ) {
+              if (this.form.aprueba_v_id != '' && this.form.aprueba_v_id == this.form.elabora_v_id || this.form.aprueba_v_id != '' && this.form.aprueba_v_id == this.form.revisa_v_id) {
+                  this.$swal('Cargo en uso');
+                  this.form.aprueba_v_id = ''
+          }
+        }
+    },
     eliminarNormativa(index){
       var indice = this.form.normativas.indexOf(index);
       console.log(indice,index )
