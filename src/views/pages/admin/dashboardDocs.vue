@@ -141,13 +141,13 @@
                                       </div>
                                       <div class="media-body overflow-hidden">
                                       <h5 class="text-truncate font-size-14 mb-1">
-                                          {{ data.nombre }}
+                                          {{ data.nombre }} <p class="text-truncate mb-0"></p>
                                       </h5>
                                       <p class="text-truncate mb-0">
                                          Version: v-{{ data.version }}
                                       </p>
                                       </div>
-                                      <div class="font-size-11">{{ data.time }}</div>
+                                      <div class="font-size-11">{{ data.status }}</div>
                                   </div>
                                   </a>
                               </li>
@@ -180,8 +180,8 @@
                         <template v-slot:button-content>
                         <i class="mdi mdi-dots-horizontal font-size-20"></i>
                         </template>
-                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar documento pendiente</b-dropdown-item>
-                        <b-dropdown-item>Elaborar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar</b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_elaborar')">Elaborar </b-dropdown-item>
                         <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
@@ -313,15 +313,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Elabora</label>
-                              <label v-else>Elaboró</label>
+                              <label >Elabora</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
                                   <v-select  v-model="edit.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">  
+                          <b-col >  
                             <div class="form-group">
                               <label>Fecha de elaboración</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -334,15 +333,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Revisa</label>
-                              <label v-else>Revisó</label>
+                              <label >Revisa</label>      
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="edit.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">
+                          <b-col>
                             <div class="form-group">
                               <label>Fecha de revisión</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -355,15 +353,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Aprueba</label>
-                              <label v-else>Aprobó</label>
+                              <label>Aprueba</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
                                   <v-select  v-model="edit.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">
+                          <b-col>
                             <div class="form-group">
                               <label>Fecha de aprobación</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -386,10 +383,7 @@
                       <b-row class="align-items-center mb-3">
                         <b-col>
                           <div class="form-group m-0">
-                            <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
                               <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                              <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
                           </div>
                         </b-col>
                         <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -770,10 +764,10 @@
 
 
 
-      <b-modal id="modal_carga" false size="lg"  title="Gestión de normatividad" hide-footer>
+      <b-modal id="modal_elaborar" false size="lg"  title="Elaborar documento" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="mb-3">
-                  <div class="col-sm-5">
+                  <div class="col-sm-12">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                     <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
                     <b-form-file
@@ -785,7 +779,7 @@
                        <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                    </div>
-                   <div class="col-sm-5">
+                   <div class="col-sm-12">
                    <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
                      <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
                         <b-form-file
@@ -797,40 +791,21 @@
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                </div>
+                <div class="col-sm-12">
+                      <div class="form-group ">
+                        <label>Observaciones</label>
+                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                          <textarea v-model="edit.observaciones_elaboracion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      </div>
+                  </div>
                <div class="col-2 row justify-content-end pr-0"><button class="btn btn-success w-100 " style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
             </b-row>
                  
         </ValidationObserver>
-
-          <div class="row">
-              <div class="col-lg-12" v-for="versiones in versiones" :key="versiones.id">
-                <b-card no-body>
-                  <b-card-body>
-                    <b-card-title>
-                      <h4 class="card-title">{{versiones.created_at|fecha}}</h4>
-                      <h4 class="text-rigth">Version-{{versiones.version}} ({{versiones.status}})</h4>
-                    </b-card-title>
-                    <b-card-text v-if="versiones.observaciones_documentos">
-                      <strong>Observaciones al documento: </strong> {{versiones.observaciones_documentos}}
-                    </b-card-text>
-                    <b-card-text v-if="versiones.observaciones_documentos">
-                      <strong>Observaciones al diagrama: </strong> {{versiones.observaciones_diagramas}}
-                    </b-card-text>
-                    <b-row>
-                      <b-col>
-                        <a :href="'docs/'+versiones.id" class="btn btn-primary btn-block">Ir al documento</a>
-                      </b-col>
-                      <b-col v-if="versiones.status==='Pendiente'">
-                        <a   class="btn btn-danger btn-block" @click="eliminarVersion(versiones.id)">Eliminar</a>
-                      </b-col>
-                    </b-row>
-                  </b-card-body>
-                </b-card>
-              </div>
-            </div>
-            <pre>{{form}}</pre>
             <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+
      </b-modal>
   </Layout>
 </template>
@@ -1008,16 +983,16 @@ export default {
       }
         
     },
-    // suma(){
-    //   var regex = /(\d+)/g;
-    //   for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
-    //       var valor = this.form.intervalo.match(regex)
-    //       this.rango = valor[index]
-    //   }
-    //   let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
-    //   this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
-    //   console.log(this.form.fecha_alerta)
-    // },
+     suma(){
+       var regex = /(\d+)/g;
+       for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
+           var valor = this.form.intervalo.match(regex)
+           this.rango = valor[index]
+       }
+       let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
+       this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
+       console.log(this.form.fecha_alerta)
+     },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
        if(this.procesos[index].id == this.form.proceso_id){
@@ -1366,7 +1341,7 @@ export default {
                   this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                 }
             }).catch(e => {
-              console.log(e.response.data.menssage);
+              console.log(e);
               this.$swal('No se pudo editar!');
           });
           },
