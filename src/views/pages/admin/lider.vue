@@ -49,10 +49,11 @@
                 @filtered="onFiltered"
               >
 
-                <template v-slot:cell(cargo)="data">
-                  {{data.item.user.cargo.nombre}}
-               </template>
-
+              <template v-slot:cell(status)="data">
+               
+                <b-badge variant="success" v-if="data.item.user.status==='activo'"> Activo</b-badge>
+                <b-badge variant="danger" v-else> Inactivo</b-badge>
+              </template>
                 <template v-slot:cell(actions)="data">
                 
                 <b-dropdown size="sm" class="">
@@ -83,7 +84,6 @@
     </div>
 
 
-<pre>{{perfil}}</pre>
 
 
     <b-modal id="modal" false size="lg"  title="Gestion de lideres de proceso" hide-footer>
@@ -255,8 +255,9 @@ export default {
       fields: [
           "nombre",
           "cedula",
-          "cargo",
           "telefono",
+          "email",
+          "status",
           "actions"],
       perfil: [], 
       editMode:false,
