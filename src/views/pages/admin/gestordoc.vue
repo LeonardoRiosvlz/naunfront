@@ -285,7 +285,7 @@
                               <label v-if="form.creado==='No creado'">Elabora</label>
                               <label v-else>Elaboró</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="form.elabora_id" @input="validacionRespon()"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -306,7 +306,7 @@
                               <label v-if="form.creado==='No creado'">Revisa</label>
                               <label v-else>Revisó</label>
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select  v-model="form.revisa_id" @input="validacionRespon()" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
@@ -327,7 +327,7 @@
                               <label v-if="form.creado==='No creado'">Aprueba</label>
                               <label v-else>Aprobó</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="form.aprueba_id" @input="validacionRespon()" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -638,6 +638,19 @@ export default {
         }
     },
   methods: {
+    validacionRespon(){
+        console.log('Hooolas')
+      if (this.form.elabora_id != '' && this.form.elabora_id == this.form.aprueba_id || this.form.elabora_id != '' && this.form.elabora_id == this.form.revisa_id) {
+           this.$swal('Cargo en uso');
+           console.log('1')
+      } else if (this.form.aprueba_id != '' && this.form.aprueba_id == this.form.elabora_id || this.form.aprueba_id != '' && this.form.aprueba_id == this.form.revisa_id) {
+          this.$swal('Cargo en uso');
+          console.log('2')
+      } else if (this.form.revisa_id != '' && this.form.revisa_id == this.form.elabora_id || this.form.revisa_id != '' && this.form.elabora_id == this.form.aprueba_id){
+          this.$swal('Cargo en uso')
+          console.log('2')
+      }
+    },
     eliminarNormativa(index){
       var indice = this.form.normativas.indexOf(index);
       console.log(indice,index )
