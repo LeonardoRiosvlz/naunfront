@@ -2,10 +2,8 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;ver=false;resete();">Agregar</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear bases</b-button>
     </div>
-  
-
     <div class="row">
       <div class="col-12">
         <div class="card">
@@ -20,12 +18,8 @@
                   </label>
                 </div>
               </div>
-              
               <!-- Search -->
-              <div class="col-sm-12 col-md-6 row m-0 justify-content-end">
-                <div class="clearfix mb-3 pr-3">
-                    <b-button class="float-right btn-info" left>Exportar</b-button>
-                </div>
+              <div class="col-sm-12 col-md-6">
                 <div id="tickets-table_filter" class="dataTables_filter text-md-right">
                   <label class="d-inline-flex align-items-center">
                     Search:
@@ -43,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="basesautoevaluativas"
+                :items="bases"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -54,18 +48,16 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-
-      
-
                 <template v-slot:cell(actions)="data">
+
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarGrupoestandar(data.item.id)"> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -85,48 +77,48 @@
       </div>
     </div>
 
-        <b-modal id="modal" false size="lg"  title="Historial bases de autoevaluacion" hide-footer>
-          <ValidationObserver  ref="form">
-                <b-row>
-                    <b-col>
-                        <div class="form-group">
-                            <label>Nombre Base de autoevaluacion</label>
-                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                        </div>
-                    </b-col>
-                  </b-row>
-                  <b-row>
-                    <b-col class="form-group">
-                        <label>Descripcion</label>
-                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                              <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                      </b-col>
-                  </b-row>
-                
-               
-          </ValidationObserver>
-        
+
+
+
+    <b-modal id="modal" false size="lg"  title="Gestión de bases de actividades" hide-footer>
+          <ValidationObserver ref="form">
+            <b-row>
+              <b-col>
+                <div class="form-group">
+                  <label>Nombre</label>
+                  <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
+                        <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                        <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+              </b-row>
+              <b-row>
+              <b-col>
+                <div class="form-group">
+                  <label>Descripción</label>
+                  <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                        <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </b-col>
+              </b-row>         
+        </ValidationObserver>
+   
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+       
      </b-modal>
-  
   </Layout>
 </template>
 
 <script>
-import "vue-select/dist/vue-select.css";
-import vSelect from "vue-select";
 import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-import summernote from '@/components/summer'
 
 
 /**
@@ -138,18 +130,17 @@ export default {
     Layout,
     PageHeader,
     ValidationProvider,
-    ValidationObserver,
-    vSelect
+    ValidationObserver
   },
   data() {
     return {
       title: "Administracion",
       items: [
         {
-          text: "Sistema de gestion de calidad"
+          text: "Gestión de clientes"
         },
         {
-          text: "Historial bases de autoevaluacion",
+          text: "bases",
           active: true
         }
       ],
@@ -160,11 +151,10 @@ export default {
       },
       ver:false,
       url:"",
-      url_perfil:"",
+      url_firma:"",
       modal: true,
-      foto:null,
       file:null,
-      perfil:null,
+      firma:null,
       email: "",
       password: "",
       totalRows: 1,
@@ -175,99 +165,25 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion", "actions" ],
-      procesos: [], 
-      subprocesos:[],
-      subproceso:[],
-      tiposdocumentos:[],
-      cargos:[],
-      tipos:[],
+      fields: ["nombre","descripcion","color","actions"],
+      bases: [], 
       editMode:false,
-      usuarios:[],
-      normativa:[],
-      show:true,
-      normativas:[],
-      titulo:'',
-      documentos:[],
-      articulo:"",
-      sedes:"",
-      fecha_suma:'',
-      grupos: [],
       form:{
-            'id': 6,
-            'nombre':'',
-            'descripcion':'',
-            'codigo':'',
-            'cliente_id':''     
-          }
-        }
+        'id': '',
+        'nombre':'',
+        'color':'',
+        'descripcion':'',
+        'cliente_id':'',
+        'created_at':'',
+        'updated_at':'',
+      }
+    }
   },
 
+  created(){
+    this.listarUsers();
+  },
   methods: {
-    suma(){
-    },
-    capSubproceso(proceso){
-      for (let index = 0; index < this.procesos.length; index++) {
-       if(this.procesos[index].id == this.form.proceso){
-         this.subproceso = this.procesos[index].subprocesos
-         console.log(this.subproceso)
-       }
-        
-      }
-    },
-    cargarNorma(){
-      this.form.normativas.push({
-        id : this.titulo.id,
-        nombre : this.titulo.nombre,
-        texto : ''
-      });
-    },
-   async listarperfil(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/perfil/lista',data)
-        .then((response) => {
-          this.usuarios = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
-      async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/normatividad/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
-        async listarCargos(){
-      let data = new FormData();
-      data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/cargos/listar',data)
-          .then((response) => {
-            this.cargos = response.data;
-            this.listarperfil();
-          })
-          .catch((e)=>{
-            console.log('error' + e);
-          })
-      },
-      async listardocscreados(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/documentos/listar',data)
-            .then((response) => {
-              this.documentos = response.data;
-              console.log(response)
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -278,76 +194,64 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarGrupoestandar();
+              this.agregarbases();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarGrupoestandar();
+            this.editarbases();
           } else {
         }});
       }
     },
-   async editarGrupoestandar(){
-        let data = new FormData();
-      
+   async agregarbases(){
+     let data = new FormData();
       var formulario = this.form;
-        
         for (var key in formulario) {
           data.append(key,formulario[key]);
-      }
-      console.log(formulario);
-        await this.axios.put('api/estandares/grupos', data, {
+        }
+       await this.axios.post('api/basesau', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
             if (response.status==200) {
-              console.log(response)
                this.$swal(
                    'Agregado exito!',
                     '',
                     'success');
-               this.listargruposestandares();
+               this.listarbases();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
-                this.resete();
+              this.resete();
               }
             }).catch(e => {
               console.log(e.response.data.menssage);
               this.$swal(e.response.data);
           });
       },
-  async agregarGrupoestandar(){
+    async editarbases(){
      let data = new FormData();
-      var formulario = this.form;
+       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-      console.log(formulario)
-       await this.axios.post('api/estandares/grupos', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
+        await this.axios.put('api/basesau', data).then(response => {
             if (response.status==200) {
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.listargruposestandares();
+               this.$swal('Editado con exito','','success');
+               this.listarbases();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario   
-               this.resete();
+               ///limpiar el formulario
+              this.resete();
               }
             }).catch(e => {
-              console.log(e.response.data.menssag);
-              this.$swal(e.response.data);
-          });
-      },
-     async eliminarGrupoestandares(id){
+                this.$swal('ocurrio un problema','','warning');
+            });
+     },
+     async eliminarbasess(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/estandares/grupos/delete',data, {
+        await this.axios.post('api/basesau/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -357,16 +261,16 @@ export default {
                       '',
                       'success'
                 );
-                this.listargruposestandares();
+                this.listarbases();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarGrupoestandar(id){
+      eliminarbases(id){
         this.$swal({
-          title: 'Desea borrar este grupo?',
+          title: 'Desea borrar este registro?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -375,101 +279,39 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarGrupoestandares(id);
+            this.eliminarbasess(id);
           }
         })
       },
       resete(){
-          var formulario = this.form;
-          for (var key in formulario) {
-            this.form[key]="";
-        }
-        this.form.cliente_id=this.cliente.id;
+        var formulario = this.form;
+        for (var key in formulario) {
+             this.form[key]="";
+       }
+       this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.grupos.length; index++) {
-          if (this.grupos[index].id===id) {
-              this.form.id = this.grupos[index].id;
-              this.form.nombre = this.grupos[index].nombre;
-              this.form.descripcion = this.grupos[index].descripcion;
-              this.form.codigo = this.grupos[index].codigo;
+        for (let index = 0; index < this.bases.length; index++) {
+          if (this.bases[index].id===id) {
+            this.form.id=this.bases[index].id;
+            this.form.nombre=this.bases[index].nombre;
+            this.form.descripcion=this.bases[index].descripcion;
+            this.form.color=this.bases[index].color;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-
-       async  listarSedes(){
-        let data = new FormData();
-          data.append("cliente_id",this.cliente.id);
-          await this.axios.post('api/sedes/listar',data, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }}).then(response => {
-                if (response.status==200) {
-                    this.sedes = response.data.rows
-                  }
-                }).catch(e => {
-                  console.log(e.response.data.menssage);
-                  this.$swal(e.response.data);
-            });
-      },
-        async  listargruposestandares(){
-            let data = new FormData();
-            data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/estandares/grupos/listar',data)
-            .then((response) => {
-                console.log(response.data)
-                this.grupos = response.data;
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-        },
-        async  listarProceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/procesos/listar',data)
-            .then((response) => {
-                this.procesos = response.data.rows;
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-      },
-        async  listarSubproceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/subprocesos/listar',data)
-            .then((response) => {
-                this.subprocesos = response.data.rows;
-                console.log(response.data)
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-      },
-        async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/tipo_procesos/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
-      async listarNormatividad(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/normatividad/listar',data)
-            .then((response) => {
-              this.normativas = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
+    async listarbases(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/basesau/listar',data)
+        .then((response) => {
+          this.bases = response.data;
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
       },
       setEmail(){
         this.form.username=this.form.email;
@@ -493,10 +335,6 @@ export default {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
       },
-      onFileChangePerfil(e) {
-        const foto = e.target.files[0];
-        this.url_perfil = URL.createObjectURL(foto);
-      },
       toggleModal () {
         this.modal = !this.modal
       },
@@ -509,61 +347,22 @@ export default {
           }
         }
   },
-    watch: {
-      cliente: function () {
-        this.listarperfil();
-        this.listartipos();
-        this.listarProceso();
-        this.listarSubproceso();
-        this.listargruposestandares();
-        this.listarNormatividad();
-        this.listardocscreados();
-        this.listarCargos();
-        this.listarSedes();
-        this.title=this.cliente.nombre_prestador;
-      },
-    },
     created(){
-      this.session();
-      console.log(this.form)
+        this.session();
+        this.listarbases();
       },
-     mounted() {
-        const $ = require('jquery')
-        window.$ = $
-          $(document).ready(function() {
-          $('.summernote').summernote({
-            placeholder: 'Escribe aquí',
-            tabsize: 2,
-            height: 100,
-            toolbar: [
-              ['style', ['style']],
-              ['font', ['bold', 'underline', 'clear']],
-              ['color', ['color']],
-              ['para', ['ul', 'ol', 'paragraph']],
-              ['table', ['table']],
-              ['insert', ['link', 'picture', 'video']],
-              ['view', ['fullscreen', 'codeview', 'help']]
-            ],
-            callbacks: {
-              onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                  self.lastFile = files[i]
-                  self.sendFile()
-                }
-              },
-              onChange: function(content, e) {
-                  let len = content.length
-                  self.validateLimit(len)
-              }
-            }
-          });
-        });
+   watch: {
+      cliente: function () {
+       this.listarbases();
+       this.form.cliente_id=this.cliente.id;
+        this.title=this.cliente.nombre_prestador;
+        this.form.cliente_id=this.usuarioDB.c
+      },
     },
     computed: {
-     ...mapState(['usuarioDB','cliente']),
-
+      ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.grupos.length;
+      return this.bases.length;
     },
   },
 }

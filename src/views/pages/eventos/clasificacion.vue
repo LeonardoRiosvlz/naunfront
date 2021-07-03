@@ -108,7 +108,7 @@
               <b-col>
                 <div class="form-group">
                   <label>Descripción</label>
-                  <ValidationProvider name="descripcion" rules="required|alpha_spaces" v-slot="{ errors }">
+                  <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
                         <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
