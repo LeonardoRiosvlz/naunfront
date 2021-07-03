@@ -115,7 +115,10 @@
                  <template>
                       <div>
                         <label for="example-datepicker">Fecha de Emision</label>
+                      <ValidationProvider name="Fecha" rules="required" v-slot="{ errors }">
                         <b-form-datepicker id="example-datepicker" v-model="form.fecha_emicion" class="mb-2"></b-form-datepicker>
+                         <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
                       </div>
                     </template> 
                 </b-col>
@@ -488,12 +491,13 @@ export default {
         texto : ''
       })
     },
-   async listarperfil(){
+    async listarperfil(){
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/perfil/lista',data)
+     data.append('tipo',"Lider");
+       await this.axios.post('api/perfil/listar',data)
         .then((response) => {
-          this.usuarios = response.data;
+          this.usuarios = response.data.rows;
         })
         .catch((e)=>{
           console.log('error' + e);
