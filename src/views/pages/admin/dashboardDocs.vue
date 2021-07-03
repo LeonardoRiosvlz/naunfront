@@ -21,7 +21,7 @@
                       </template>
                       
                       <b-dropdown-item>Actualizar version (solo para estado habilitado)</b-dropdown-item>
-                      <b-dropdown-item @click="setearD();">Programar nueva versión</b-dropdown-item>
+                      <b-dropdown-item @click="setearD();editMode=false;ver=false;">Programar nueva versión</b-dropdown-item>
                   </b-dropdown>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                                   class
                                   v-for="data of versiones"
                                   :key="data.id"
-                                  @click="setear(data)"
+                                  @click="editMode=false;setear(data.id)"
                                   
                               >
                                   <a href="javascript: void(0);">
@@ -141,13 +141,13 @@
                                       </div>
                                       <div class="media-body overflow-hidden">
                                       <h5 class="text-truncate font-size-14 mb-1">
-                                          {{ data.nombre }}
+                                          {{ data.nombre }} <p class="text-truncate mb-0"></p>
                                       </h5>
                                       <p class="text-truncate mb-0">
                                          Version: v-{{ data.version }}
                                       </p>
                                       </div>
-                                      <div class="font-size-11">{{ data.time }}</div>
+                                      <div class="font-size-11">{{ data.status }}</div>
                                   </div>
                                   </a>
                               </li>
@@ -180,8 +180,8 @@
                         <template v-slot:button-content>
                         <i class="mdi mdi-dots-horizontal font-size-20"></i>
                         </template>
-                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar documento pendiente</b-dropdown-item>
-                        <b-dropdown-item>Elaborar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar</b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_elaborar')">Elaborar </b-dropdown-item>
                         <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
@@ -313,15 +313,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Elabora</label>
-                              <label v-else>Elaboró</label>
+                              <label >Elabora</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="edit.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="edit.elabora_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">  
+                          <b-col >  
                             <div class="form-group">
                               <label>Fecha de elaboración</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -334,15 +333,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Revisa</label>
-                              <label v-else>Revisó</label>
+                              <label >Revisa</label>      
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="edit.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select  v-model="edit.revisa_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">
+                          <b-col>
                             <div class="form-group">
                               <label>Fecha de revisión</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -355,15 +353,14 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="edit.creado==='No creado'">Aprueba</label>
-                              <label v-else>Aprobó</label>
+                              <label>Aprueba</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="edit.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="edit.aprueba_v_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="edit.creado==='No creado'">
+                          <b-col>
                             <div class="form-group">
                               <label>Fecha de aprobación</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -386,10 +383,7 @@
                       <b-row class="align-items-center mb-3">
                         <b-col>
                           <div class="form-group m-0">
-                            <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
                               <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                              <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
                           </div>
                         </b-col>
                         <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -480,6 +474,7 @@
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
               </div>
+              
             </div>
           </div>
      </b-modal>
@@ -770,10 +765,10 @@
 
 
 
-      <b-modal id="modal_carga" false size="lg"  title="Gestión de normatividad" hide-footer>
+      <b-modal id="modal_elaborar" false size="lg"  title="Elaborar documento" hide-footer>
           <ValidationObserver ref="form">
             <b-row class="mb-3">
-                  <div class="col-sm-5">
+                  <div class="col-sm-12">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                     <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
                     <b-form-file
@@ -785,7 +780,7 @@
                        <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                    </div>
-                   <div class="col-sm-5">
+                   <div class="col-sm-12">
                    <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
                      <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
                         <b-form-file
@@ -797,40 +792,20 @@
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                </div>
-               <div class="col-2 row justify-content-end pr-0"><button class="btn btn-success w-100 " style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
+                <div class="col-sm-12">
+                      <div class="form-group ">
+                        <label>Observaciones</label>
+                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                          <textarea v-model="edit.observaciones_elaboracion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                          <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      </div>
+                  </div>
             </b-row>
-                 
+             
         </ValidationObserver>
+            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
 
-          <div class="row">
-              <div class="col-lg-12" v-for="versiones in versiones" :key="versiones.id">
-                <b-card no-body>
-                  <b-card-body>
-                    <b-card-title>
-                      <h4 class="card-title">{{versiones.created_at|fecha}}</h4>
-                      <h4 class="text-rigth">Version-{{versiones.version}} ({{versiones.status}})</h4>
-                    </b-card-title>
-                    <b-card-text v-if="versiones.observaciones_documentos">
-                      <strong>Observaciones al documento: </strong> {{versiones.observaciones_documentos}}
-                    </b-card-text>
-                    <b-card-text v-if="versiones.observaciones_documentos">
-                      <strong>Observaciones al diagrama: </strong> {{versiones.observaciones_diagramas}}
-                    </b-card-text>
-                    <b-row>
-                      <b-col>
-                        <a :href="'docs/'+versiones.id" class="btn btn-primary btn-block">Ir al documento</a>
-                      </b-col>
-                      <b-col v-if="versiones.status==='Pendiente'">
-                        <a   class="btn btn-danger btn-block" @click="eliminarVersion(versiones.id)">Eliminar</a>
-                      </b-col>
-                    </b-row>
-                  </b-card-body>
-                </b-card>
-              </div>
-            </div>
-            <pre>{{form}}</pre>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
   </Layout>
 </template>
@@ -960,6 +935,7 @@ export default {
             'revision':'',
             'aprobacion':'',
             'fecha_emicion':'',
+            'observaciones_elaboracion':'',
             'intervalo':'',
             'status':'',
             'sedes_id':'',
@@ -1008,16 +984,16 @@ export default {
       }
         
     },
-    // suma(){
-    //   var regex = /(\d+)/g;
-    //   for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
-    //       var valor = this.form.intervalo.match(regex)
-    //       this.rango = valor[index]
-    //   }
-    //   let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
-    //   this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
-    //   console.log(this.form.fecha_alerta)
-    // },
+     suma(){
+       var regex = /(\d+)/g;
+       for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
+           var valor = this.form.intervalo.match(regex)
+           this.rango = valor[index]
+       }
+       let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
+       this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
+       console.log(this.form.fecha_alerta)
+     },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
        if(this.procesos[index].id == this.form.proceso_id){
@@ -1091,7 +1067,7 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarversion()();
+              this.agregarversion();
             } else {}
           });        
         }else{
@@ -1102,6 +1078,58 @@ export default {
         }});
       }
     },
+    elaborar(){
+      this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+          this.$swal({
+            title: 'Desea subir los documentos version?',
+            icon: 'question',
+            iconHtml: '',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            showCancelButton: true,
+            showCloseButton: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.elaborarDocumento();
+            }
+        })
+          } 
+        });        
+      },
+     async elaborarDocumento(){
+     let data = new FormData();
+     var formulario = this.edit;
+      for (var key in formulario) {
+        if (key=='normativas') {
+            data.append(key,JSON.stringify(formulario[key]));
+        } else {
+            data.append(key,formulario[key]);
+        }
+      }
+      if (this.archivo) {
+        data.append('filename',this.archivo);
+       }
+      if (this.diagrama) {
+        data.append('diagrama',this.diagrama);
+       }
+       await this.axios.post('api/documentos/versiones/elaborar', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+              this.$root.$emit("bv::hide::modal", "modal_elaborar", "#btnShow");
+               this.buscarVersiones();
+              }
+            }).catch(e => {
+              this.$swal('no se pudo subir!', '','danger');
+          });
+      },  
      cargarDoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
@@ -1260,48 +1288,7 @@ export default {
                 this.$swal(e.response.data);
           });
       },
-        cargarVersion(){
-        this.$swal({
-          title: 'Desea cargar estos documento?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.cargarVersions();
-          }
-        })
-      },  
-    async cargarVersions(){
-     let data = new FormData();
-     data.append('documento_id',this.form.id);
-      if (this.archivo) {
-        data.append('filename',this.archivo);
-       }
-      if (this.diagrama) {
-        data.append('diagrama',this.diagrama);
-       }
-       data.append('revisa_id',this.form.revisa_id);
-        console.log(this.archivo, this.diagrama)
-       await this.axios.post('api/documentos/version', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            
-            if (response.status==200) {
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.setearCarga(this.form.id);
-              }
-            }).catch(e => {
-              this.$swal('no se pudo subir!', '','danger');
-          });
-      },  
+
       async buscarVersiones(){
         let data = new FormData();
          data.append('documento_id',this.$route.params.id);
@@ -1316,16 +1303,13 @@ export default {
       },
         async agregarversion(){
           let data = new FormData();
-            var formulario = this.form;
+            var formulario = this.edit;
               for (var key in formulario) {
                 if (key=='normativas') {
                     data.append(key,JSON.stringify(formulario[key]));
                 } else {
                     data.append(key,formulario[key]);
                 }
-            }
-            if (this.logo) {
-              data.append('filename',this.logo);
             }
             data.append('documento_id',this.$route.params.id);
              console.log(this.$route.params.id)
@@ -1339,6 +1323,7 @@ export default {
                           '',
                           'success');
                     this.listardocscreados();
+                    this.buscarVersiones();
                     this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                     }
                   }).catch(e => {
@@ -1366,30 +1351,9 @@ export default {
                   this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                 }
             }).catch(e => {
-              console.log(e.response.data.menssage);
+              console.log(e);
               this.$swal('No se pudo editar!');
           });
-          },
-          setear(index) {
-            this.edit.id = index.id;
-            this.edit.tipo_id = index.tipo_id;
-            this.edit.normativas = JSON.parse(index.normativas);
-            this.edit.nombre = index.nombre;
-            this.edit.creado = index.creado;
-            this.edit.consecutivo = index.consecutivo;
-            this.edit.version = index.version;
-            this.edit.subproceso_id = index.subproceso_id;
-            this.edit.elaboracion = index.elaboracion;
-            this.edit.revision = index.revision;
-            this.edit.aprobacion = index.aprobacion;
-            this.edit.fecha_emicion = index.fecha_emicion;
-            this.edit.intervalo = index.intervalo;
-            this.edit.status = index.status;
-            this.edit.proceso_id = index.proceso_id;
-            this.edit.sedes_id = index.sedes_id;
-            this.edit.elabora_id = index.elabora_v_id;
-            this.edit.aprueba_id = index.aprueba_v_id;
-            this.edit.revisa_id = index.revisa_v_id;
           },
         resete(){
           var formulario = this.form;
@@ -1402,70 +1366,74 @@ export default {
         }
          this.form.cliente_id=this.cliente.id;
       },
-    // async setear(){
-    //   let data = new FormData();
-    //   data.append('id',this.$route.params.id);
-    //     await this.axios.post('api/documentos/versiones/find',data)
-    //       .then((response) => {
-    //         console.log(response.data)
-    //          if (response.status==200) {
-    //           this.form.id = response.data.id;
-    //           this.form.tipo_id = response.data.tipo_id;
-    //           this.form.normativas = JSON.parse(response.data.normativas);
-    //           this.form.nombre = response.data.nombre;
-    //           this.form.creado = response.data.creado;
-    //           this.form.consecutivo = response.data.consecutivo;
-    //           this.form.version = response.data.version;
-    //           this.form.subproceso_id = response.data.subproceso_id;
-    //           this.form.elaboracion = response.data.elaboracion;
-    //           this.form.revision = response.data.revision;
-    //           this.form.aprobacion = response.data.aprobacion;
-    //           this.form.fecha_alerta = response.data.fecha_alerta;
-    //           this.form.fecha_emicion = response.data.fecha_emicion;
-    //           this.form.intervalo = response.data.intervalo;
-    //           this.form.status = response.data.status;
-    //           this.form.proceso_id = response.data.proceso_id;
-    //           this.form.sedes_id = response.data.sedes_id;
-    //           this.form.elabora_v_id = response.data.elabora_v_id;
-    //           this.form.aprueba_v_id = response.data.aprueba_v_id;
-    //           this.form.revisa_v_id = response.data.revisa_v_id;
-    //           this.versiones = response.data.versiones;
-    //           this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-    //          }
-    //       })
-    //       .catch((e)=>{
-    //         console.log('error' + e);
-    //       })
-    //   },
-          async setearD(){
+     async setear(index){
+       let data = new FormData();
+       data.append('id',index);
+         await this.axios.post('api/documentos/versiones/find',data)
+           .then((response) => {
+             console.log(response.data)
+              if (response.status==200) {
+               this.edit.id = response.data.id;
+               this.edit.tipo_id = response.data.tipo_id;
+               this.edit.normativas = JSON.parse(response.data.normativas);
+               this.edit.nombre = response.data.nombre;
+               this.edit.creado = response.data.creado;
+               this.edit.archivo = response.data.archivo;
+               this.edit.diagramas = response.data.diagramas;
+               this.edit.consecutivo = response.data.consecutivo;
+               this.edit.version = response.data.version;
+               this.edit.observaciones_elaboracion = response.data.observaciones_elaboracion;
+               this.edit.subproceso_id = response.data.subproceso_id;
+               this.edit.elaboracion = response.data.elaboracion;
+               this.edit.revision = response.data.revision;
+               this.edit.aprobacion = response.data.aprobacion;
+               this.edit.fecha_alerta = response.data.fecha_alerta;
+               this.edit.fecha_emicion = response.data.fecha_emicion;
+               this.edit.intervalo = response.data.intervalo;
+               this.edit.status = response.data.status;
+               this.edit.proceso_id = response.data.proceso_id;
+               this.edit.sedes_id = response.data.sedes_id;
+               this.edit.elabora_v_id = response.data.elabora_v_id;
+               this.edit.aprueba_v_id = response.data.aprueba_v_id;
+               this.edit.revisa_v_id = response.data.revisa_v_id;
+               if (this.editMode) {
+                 this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+               }
+               
+              }
+           })
+           .catch((e)=>{
+             console.log('error' + e);
+           })
+       },
+    async setearD(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
           .then((response) => {
             console.log(response.data)
              if (response.status==200) {
-              this.form.id = response.data.id;
-              this.form.tipo_id = response.data.tipo_id;
-              this.form.normativas = JSON.parse(response.data.normativas);
-              this.form.nombre = response.data.nombre;
-              this.form.creado = response.data.creado;
-              this.form.consecutivo = response.data.consecutivo;
-              this.form.version = response.data.version;
-              this.form.subproceso_id = response.data.subproceso_id;
-              this.form.elaboracion = response.data.elaboracion;
-              this.form.revision = response.data.revision;
-              this.form.aprobacion = response.data.aprobacion;
-              this.form.fecha_alerta = response.data.fecha_alerta;
-              this.form.fecha_emicion = response.data.fecha_emicion;
-              this.form.intervalo = response.data.intervalo;
-              this.form.status = response.data.status;
-              this.form.proceso_id = response.data.proceso_id;
-              this.form.sedes_id = response.data.sedes_id;
-              this.form.elabora_id = response.data.elabora_id;
-              this.form.aprueba_id = response.data.aprueba_id;
-              this.form.revisa_id = response.data.revisa_id;
-              this.versiones = response.data.versiones;
-              this.$root.$emit("bv::show::modal", "modal-crea", "#btnShow");
+              this.edit.id = response.data.id;
+              this.edit.tipo_id = response.data.tipo_id;
+              this.edit.normativas = JSON.parse(response.data.normativas);
+              this.edit.nombre = response.data.nombre;
+              this.edit.creado = response.data.creado;
+              this.edit.consecutivo = response.data.consecutivo;
+              this.edit.version = response.data.version;
+              this.edit.subproceso_id = response.data.subproceso_id;
+              this.edit.elaboracion = response.data.elaboracion;
+              this.edit.revision = response.data.revision;
+              this.edit.aprobacion = response.data.aprobacion;
+              this.edit.fecha_alerta = response.data.fecha_alerta;
+              this.edit.fecha_emicion = response.data.fecha_emicion;
+              this.edit.intervalo = response.data.intervalo;
+              this.edit.status = response.data.status;
+              this.edit.proceso_id = response.data.proceso_id;
+              this.edit.sedes_id = response.data.sedes_id;
+              this.edit.elabora_v_id = response.data.elabora_id;
+              this.edit.aprueba_v_id = response.data.aprueba_id;
+              this.edit.revisa_v_id = response.data.revisa_id;
+              this.$root.$emit("bv::show::modal", "modal", "#btnShow");
              }
           })
           .catch((e)=>{
