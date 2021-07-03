@@ -7,55 +7,90 @@
         <div class="accordion" role="tablist">
           <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-button block v-b-toggle.accordion-1 variant="info">Rango</b-button>
+              <b-button block v-b-toggle.accordion-1 variant="info"  @click="reseteBuscador()">POR PROCESOS</b-button>
             </b-card-header>
             <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
-                  <b-col>
-                    <div class="form-group">
-                      <label >Desde </label>
-                        <b-form-input id="date-time" v-model="buscador.desde"  type="datetime-local"></b-form-input>
-                    </div>
-                  </b-col>
-                   <b-col>
-                    <div class="form-group">
-                      <label >Hasta </label>
-                        <b-form-input id="date-time" v-model="buscador.hasta"  type="datetime-local" @change="filtro()" :disabled="!buscador.desde"></b-form-input>
-                    </div>
-                  </b-col>
+                  <b-row>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Proceso</label>
+                        <select v-model="buscador.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                            <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                          </select>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col class="p-2" >
+                      <div class="form-group" style="margin-top:20px">
+                        <button class="btn btn-info btn-block" @click="filtro()"> Buscar</button>
+                      </div>
+                    </b-col>
+                  </b-row>
               </b-card-body>
             </b-collapse>
           </b-card>
           <b-card no-body class="mb-1">
             <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-button block v-b-toggle.accordion-2 variant="info">Caracteristicas</b-button>
+              <b-button block v-b-toggle.accordion-2 variant="info"  @click="reseteBuscador()">POR SUBPROCESOS</b-button>
             </b-card-header>
             <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
-                  <b-col>
-                    <label>Clasificacion del evento</label>
-                      <select class="custom-select" id="date-time" v-model="buscador.clasificacion_id" @change="filtro()">
-                          <option :value="clasificacion.id" v-for="clasificacion in clasificacion" :key="clasificacion.id">{{clasificacion.nombre}}</option>
-                      </select>
-                    </b-col>
+                  <b-row>
                     <b-col>
-                        <label>Estado</label>
-                          <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
-                              <option value="Creada">Creada</option>
-                              <option value="Programada">Programada</option>
-                              <option value="Cumplida">Cumplida</option>
-                              <option value="No realizada">No realizada</option>
+                      <div class="form-group">
+                        <label>Proceso</label>
+                        <select v-model="buscador.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                            <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
                           </select>
+                      </div>
                     </b-col>
+                  </b-row>
+                  <b-row>
                     <b-col>
-                        <label>Periodo</label>
-                          <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
-                              <option value="2021">2021</option>
-                              <option value="2022">2022</option>
-                              <option value="2023">2023</option>
-                              <option value="2024">2024</option>
+                      <div v-if="subproceso.length!= 0 " class="form-group">
+                        <label>Subproceso</label>
+                          <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                             <option value="NA">NA</option>
+                            <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                           </select>
-                  </b-col>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col class="p-2" >
+                      <div class="form-group" style="margin-top:20px">
+                        <button class="btn btn-info btn-block" @click="filtro()"> Buscar</button>
+                      </div>
+                    </b-col>
+                  </b-row>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button block v-b-toggle.accordion-3 variant="info"  @click="reseteBuscador()">POR TIPO DE PROCESOS</b-button>
+            </b-card-header>
+            <b-collapse id="accordion-3" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
+                  <b-row>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Tipo de docemento</label>
+                          <select v-model="buscador.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                              <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                          </select>
+                      </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col class="p-2" >
+                      <div class="form-group" style="margin-top:20px">
+                        <button class="btn btn-info btn-block" @click="filtro()"> Buscar</button>
+                      </div>
+                    </b-col>
+                  </b-row>
               </b-card-body>
             </b-collapse>
           </b-card>
@@ -566,7 +601,9 @@ export default {
       sedes:"",
       rango:0,
       buscador:{
-        
+        'tipo_id': '',
+        'subproceso_id':'',
+        'proceso_id':'',
       },
       form:{
             'id': 6,
@@ -609,6 +646,33 @@ export default {
       }
         
     },
+    async filtro(){
+     let data = new FormData();
+     var formulario = this.buscador;
+        for (var key in formulario) {
+          if (key=='invitados_externos') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+    await this.axios.post('api/documentos/filtro',data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }}).then(response => {
+          if (response.status==200) {
+                this.documentos=response.data;
+                if (this.documentos.length>0) {
+                   this.$swal('Se han encontrado '+this.documentos.length+' coincidencias','', 'success');
+                }else{
+                    this.$swal('No se han encontrado registros bajo estos parametros','', 'warning');
+                }
+                }
+          }).catch(e => {
+            console.log(e.response.data.menssage);
+            this.$swal(e.response.data);
+      });
+     },
     suma(){
       var regex = /(\d+)/g;
       for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
@@ -625,7 +689,10 @@ export default {
          this.subproceso = this.procesos[index].subprocesos
          console.log(this.subproceso)
        }
-        
+      if(this.procesos[index].id == this.buscador.proceso_id){
+         this.subproceso = this.procesos[index].subprocesos
+         console.log(this.subproceso)
+       }
       }
     },
     cargarNorma(){
@@ -886,7 +953,13 @@ export default {
               this.$swal('no se pudo subir!', '','danger');
           });
       },  
-        resete(){
+      reseteBuscador(){
+        var formulario = this.buscador;
+          for (var key in formulario) {
+              this.buscador[key]=""
+          }
+      },
+      resete(){
           var formulario = this.form;
           for (var key in formulario) {
             if (key=='normativas') {
