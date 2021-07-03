@@ -11,7 +11,7 @@
                 <h5 class="font-size-15 mt-0 mb-1">{{doc.nombre}}</h5>
                 <p class="text-muted mb-0">
                     <i class="mdi mdi-circle text-success align-middle mr-1"></i>
-                    Version actual:{{doc.version}}
+                    Version actual: {{doc.version}}
                 </p>
                 </div>
                 <div>
@@ -20,12 +20,8 @@
                       <i class="mdi mdi-dots-horizontal font-size-20"></i>
                       </template>
                       
-                      <b-dropdown-item @click="setear">Editar</b-dropdown-item>
-                      <b-dropdown-item>Actualizar version (soloo para estado habilitado)</b-dropdown-item>
-                      <b-dropdown-item @click="$bvModal.show('modal-crea');editMode=false;ver=false;resete();">Elaborar documento pendiente</b-dropdown-item>
-                      <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
-                      <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
-                      <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
+                      <b-dropdown-item>Actualizar version (solo para estado habilitado)</b-dropdown-item>
+                      <b-dropdown-item @click="setearD();">Programar nueva versión</b-dropdown-item>
                   </b-dropdown>
                 </div>
             </div>
@@ -44,7 +40,7 @@
               <b-tabs pills fill content-class="py-4" justified>
                 <b-tab title="Tab 1" active>
                   <template v-slot:title>
-                    <div class="row align-items-center justify-content-center ">
+                    <div @click="estado = 1" class="row align-items-center justify-content-center ">
                       <i class="ri-calendar-line font-size-20"></i>
                       <span class="mt-2 d-none d-sm-block mx-2 mb-2">Habilitados</span>
                     </div>
@@ -56,10 +52,10 @@
                               <ul class="list-unstyled chat-list">
                               <li
                                   class
-                                  v-for="data of chatData"
+                                  v-for="data in versiones"
                                   :key="data.id"
-                                  @click="chatUsername(data.name, data.image)"
-                                  :class="{ active: username == data.name }"
+                                  @click="chatUsername(data)"
+                                  
                               >
                                   <a href="javascript: void(0);">
                                   <div class="media">
@@ -101,9 +97,9 @@
                           </div>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="Tab 1" active>
+                <b-tab title="Tab 2">
                   <template v-slot:title>
-                    <div class="row align-items-center justify-content-center ">
+                    <div @click="estado = 2" class="row align-items-center justify-content-center ">
                       <i class="ri-time-line font-size-20"></i>
                       <span class="mt-2 d-none d-sm-block mx-2 mb-2">En revisión</span>
                     </div>
@@ -115,10 +111,10 @@
                               <ul class="list-unstyled chat-list">
                               <li
                                   class
-                                  v-for="data of chatData"
+                                  v-for="data of versiones"
                                   :key="data.id"
-                                  @click="chatUsername(data.name, data.image)"
-                                  :class="{ active: username == data.name }"
+                                  @click="setear(data)"
+                                  
                               >
                                   <a href="javascript: void(0);">
                                   <div class="media">
@@ -145,10 +141,10 @@
                                       </div>
                                       <div class="media-body overflow-hidden">
                                       <h5 class="text-truncate font-size-14 mb-1">
-                                          {{ data.name }}
+                                          {{ data.nombre }}
                                       </h5>
                                       <p class="text-truncate mb-0">
-                                          {{ data.message }}
+                                         Version: v-{{ data.version }}
                                       </p>
                                       </div>
                                       <div class="font-size-11">{{ data.time }}</div>
@@ -166,19 +162,26 @@
         <div class="w-100 user-chat mt-4 mt-sm-0">
             <div class="p-3 px-lg-4 user-chat-border">
             <div class="row justify-content-between">
-                <div class="col-md-4 col-6">
-                <h5 class="font-size-15 mb-1 text-truncate">{{ doc.nombre }}</h5>
-                <p class="text-muted text-truncate mb-0">
-                    <i class="mdi mdi-circle text-success align-middle mr-1"></i>
-                   Version: v-{{doc.version}}
-                </p>
+                <div v-if="edit.nombre != null" class="col-md-4 col-6">
+                  <h5 class="font-size-15 mb-1 text-truncate">{{ edit.nombre }}</h5>
+                  <p class="text-muted text-truncate mb-0">
+                      <i class="mdi mdi-circle text-success align-middle mr-1"></i>
+                    Version: v-{{edit.version}} 
+                  </p>
+                  <span v-if="estado == 1" class="text-success">Habilitado</span>
+                  <span v-else class="text-warning">En revisión</span>
                 </div>
-                <div class="col-md-1 col-3">
+                <div v-else class="col-md-4 col-6">
+                  <h5 class="font-size-15 mb-1 text-truncate">Versiones</h5>
+                </div>
+                <div v-if="estado == 2" class="col-md-1 col-3">
                   <div>
                     <b-dropdown class="chat-noti-dropdown" right variant="white">
                         <template v-slot:button-content>
                         <i class="mdi mdi-dots-horizontal font-size-20"></i>
                         </template>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item>Elaborar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
@@ -216,7 +219,7 @@
                       <div class="form-group ">
                         <label>Nombre del documento</label>
                         <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="edit.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                           <span style="color:red">{{ errors[0] }}</span>
                       </ValidationProvider>
                       </div>
@@ -225,7 +228,7 @@
                       <div class="form-group">
                         <label>Tipo de docemento</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                          <select v-model="form.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                          <select v-model="edit.tipo_id"  name="tipo" class="form-control " :disabled="ver">
                               <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -238,7 +241,7 @@
                         <div class="form-group">
                           <label>Consecutivo</label>
                           <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
-                                <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="edit.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
                                 <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                         </div>
@@ -247,7 +250,7 @@
                         <div class="form-group">
                           <label>Versión</label>
                           <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="edit.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
                                 <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                         </div>
@@ -258,7 +261,7 @@
                         <div class="form-group">
                           <label>Proceso</label>
                           <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                            <select v-model="edit.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
                               <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -269,7 +272,7 @@
                         <div v-if="subproceso.length!= 0 " class="form-group">
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                            <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
                               <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -282,12 +285,12 @@
                         <div class="form-group">
                           <label>Sede</label>
                             <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="edit.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
                       </b-col>
-                      <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                      <div v-if="edit.creado==='Creado'" class="col-sm-6 mt-4">
                       <b-form-file
                           v-model="logo"
                           placeholder="Seleccione una imagen..."
@@ -310,19 +313,19 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Elabora</label>
+                              <label v-if="edit.creado==='No creado'">Elabora</label>
                               <label v-else>Elaboró</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="edit.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="form.creado==='No creado'">  
+                          <b-col v-if="edit.creado==='No creado'">  
                             <div class="form-group">
                               <label>Fecha de elaboración</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="edit.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -331,19 +334,19 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Revisa</label>
+                              <label v-if="edit.creado==='No creado'">Revisa</label>
                               <label v-else>Revisó</label>
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select  v-model="edit.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="form.creado==='No creado'">
+                          <b-col v-if="edit.creado==='No creado'">
                             <div class="form-group">
                               <label>Fecha de revisión</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.revision"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="edit.revision"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -352,19 +355,19 @@
                         <b-row>
                           <b-col>
                             <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Aprueba</label>
+                              <label v-if="edit.creado==='No creado'">Aprueba</label>
                               <label v-else>Aprobó</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="edit.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
                           </b-col>
-                          <b-col v-if="form.creado==='No creado'">
+                          <b-col v-if="edit.creado==='No creado'">
                             <div class="form-group">
                               <label>Fecha de aprobación</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="edit.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -397,7 +400,7 @@
                           <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
                         </div>
                         <div v-if="show" class="mb-3">
-                          <b-row v-for="(norma, index) in form.normativas" :key="index" class="px-3 ">
+                          <b-row v-for="(norma, index) in edit.normativas" :key="index" class="px-3 ">
                             <b-col class="form-group w-100">
                               <div class="row m-0 justify-content-between">
                                   <label>{{norma.nombre}}</label>
@@ -427,7 +430,7 @@
                               <div class="form-group">
                                 <label>Fecha de emisión</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="form.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <input v-model="edit.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                               </div>
@@ -436,7 +439,7 @@
                               <div class="form-group">
                                 <label>Tiempos de alerta para emisión</label>
                                   <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                      <select @change="suma" v-model="edit.intervalo" name="tipo" class="form-control " :disabled="ver">
                                         <option value="1 mes">1 mes</option>
                                         <option value="2 meses">2 mes</option>
                                         <option value="4 meses">4 mes</option>
@@ -453,7 +456,7 @@
                             <div class="form-group">
                               <label>Estado</label>
                               <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                                  <select  v-model="form.status" name="tipo" class="form-control " :disabled="ver">
+                                  <select  v-model="edit.status" name="tipo" class="form-control " :disabled="ver">
                                     <option value="Inahabilitado">Inahabilitado</option>
                                     <option value="En elaboración">En elaboración</option>
                                     <option value="Elaborado">Elaborado</option>
@@ -473,7 +476,7 @@
             </div>
             <div class="col-2">
               <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
-              <div>
+              <div v-else>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
               </div>
@@ -497,7 +500,7 @@
                       <div class="form-group ">
                         <label>Nombre del documento</label>
                         <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " disabled>
                           <span style="color:red">{{ errors[0] }}</span>
                       </ValidationProvider>
                       </div>
@@ -506,7 +509,7 @@
                       <div class="form-group">
                         <label>Tipo de docemento</label>
                         <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                          <select v-model="form.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                          <select v-model="form.tipo_id"  name="tipo" class="form-control " disabled>
                               <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                           </select>
                           <span style="color:red">{{ errors[0] }}</span>
@@ -519,7 +522,7 @@
                         <div class="form-group">
                           <label>Consecutivo</label>
                           <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
-                                <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " disabled/>
                                 <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                         </div>
@@ -528,7 +531,7 @@
                         <div class="form-group">
                           <label>Versión</label>
                           <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " disabled/>
                                 <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                         </div>
@@ -539,7 +542,7 @@
                         <div class="form-group">
                           <label>Proceso</label>
                           <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                            <select v-model="form.proceso_id"  name="tipo" class="form-control " disabled  @change="capSubproceso()">
                               <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -550,7 +553,7 @@
                         <div v-if="subproceso.length!= 0 " class="form-group">
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                            <select v-model="form.subproceso_id"  name="tipo" class="form-control " disabled>
                               <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -563,7 +566,7 @@
                         <div class="form-group">
                           <label>Sede</label>
                             <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="form.sedes_id"  :options="sedes" disabled :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -594,7 +597,7 @@
                               <label v-if="form.creado==='No creado'">Elabora</label>
                               <label v-else>Elaboró</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.elabora_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select  v-model="form.elabora_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -603,7 +606,7 @@
                             <div class="form-group">
                               <label>Fecha de elaboración</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " disabled/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -615,7 +618,7 @@
                               <label v-if="form.creado==='No creado'">Revisa</label>
                               <label v-else>Revisó</label>
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.revisa_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select  v-model="form.revisa_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
@@ -624,7 +627,7 @@
                             <div class="form-group">
                               <label>Fecha de revisión</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.revision"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="form.revision"  type="date" class="form-control" placeholder=" " disabled/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -636,7 +639,7 @@
                               <label v-if="form.creado==='No creado'">Aprueba</label>
                               <label v-else>Aprobó</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select  v-model="form.aprueba_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select v-model="form.aprueba_v_id"  :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -645,7 +648,7 @@
                             <div class="form-group">
                               <label>Fecha de aprobación</label>
                               <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " disabled/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </div>
@@ -665,7 +668,7 @@
                         <b-col>
                           <div class="form-group m-0">
                             <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
-                              <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                              <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                           </div>
@@ -686,7 +689,7 @@
                               </div>
                              
                               <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" " disabled/>
                                 <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                             </b-col>
@@ -708,7 +711,7 @@
                               <div class="form-group">
                                 <label>Fecha de emisión</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="form.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <input v-model="form.fecha_emicion"  type="date" class="form-control" placeholder=" " disabled/>
                                       <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                               </div>
@@ -717,7 +720,7 @@
                               <div class="form-group">
                                 <label>Tiempos de alerta para emisión</label>
                                   <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " disabled>
                                         <option value="1 mes">1 mes</option>
                                         <option value="2 meses">2 mes</option>
                                         <option value="4 meses">4 mes</option>
@@ -734,7 +737,7 @@
                             <div class="form-group">
                               <label>Estado</label>
                               <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                                  <select  v-model="form.status" name="tipo" class="form-control " :disabled="ver">
+                                  <select  v-model="form.status" name="tipo" class="form-control " disabled>
                                     <option value="Inahabilitado">Inahabilitado</option>
                                     <option value="En elaboración">En elaboración</option>
                                     <option value="Elaborado">Elaborado</option>
@@ -754,8 +757,9 @@
             </div>
             <div class="col-2">
               <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
-              <div>
-                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
+              <div v-else>
+                <button @click="switchLocD" v-if="!ver && !editMode">Guatdar</button>
+                <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
               </div>
             </div>
@@ -793,7 +797,7 @@
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                </div>
-               <div class="col-2"><button class="btn btn-success" style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
+               <div class="col-2 row justify-content-end pr-0"><button class="btn btn-success w-100 " style="margin-top:22px" @click="cargarDoc()">Cargar</button></div>
             </b-row>
                  
         </ValidationObserver>
@@ -824,8 +828,9 @@
                 </b-card>
               </div>
             </div>
-            <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
-            <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+            <pre>{{form}}</pre>
+            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
+            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="switchLoc" v-if="!ver && editMode">Editar</button>
      </b-modal>
   </Layout>
 </template>
@@ -837,6 +842,7 @@ import vue2Dropzone from "vue2-dropzone";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
+import simplebar from "simplebar-vue";
 import PageHeader from "@/components/page-header";
 import Chat from '@/components/chat'
 import moment from 'moment'
@@ -852,7 +858,8 @@ export default {
     ValidationProvider,
     ValidationObserver,
     vSelect,
-    Chat
+    Chat,
+    simplebar
   },
   data() {
     return {
@@ -871,6 +878,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      estado:1,
       tabIndex: 0,
       id_proc:4,
       url_logo:null,
@@ -913,6 +921,7 @@ export default {
       articulo:"",
       sedes:"",
       rango:0,
+      versionobj:null,
       form:{
             'id': 6,
             'tipo_id': '',
@@ -932,9 +941,31 @@ export default {
             'intervalo':'',
             'status':'',
             'sedes_id':'',
+            'elabora_v_id':'',
+            'aprueba_v_id':'',
+            'revisa_v_id':'',
+          },
+          edit:{
+            'id': 6,
+            'tipo_id': '',
+            'subproceso_id':'',
+            'proceso_id':'',
+            'creado':'',
+            'nombre': null,
+            'archivo': '',
+            'normativas':[],
+            'consecutivo':'',
+            'version':'',
+            'elaboracion':'',
+            'revision':'',
+            'aprobacion':'',
+            'fecha_emicion':'',
+            'intervalo':'',
+            'status':'',
+            'sedes_id':'',
             'elabora_id':'',
             'aprueba_id':'',
-            'revisa_id':''
+            'revisa_id':'',
           },
         doc:{
             'id': 6,
@@ -957,7 +988,7 @@ export default {
             'sedes_id':'',
             'elabora_id':'',
             'aprueba_id':'',
-            'revisa_id':''
+            'revisa_id':'',
           }
         }
   },
@@ -977,16 +1008,16 @@ export default {
       }
         
     },
-    suma(){
-      var regex = /(\d+)/g;
-      for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
-          var valor = this.form.intervalo.match(regex)
-          this.rango = valor[index]
-      }
-      let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
-      this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
-      console.log(this.form.fecha_alerta)
-    },
+    // suma(){
+    //   var regex = /(\d+)/g;
+    //   for (let index = 0; index <  this.form.intervalo.match(regex).length; index++) {
+    //       var valor = this.form.intervalo.match(regex)
+    //       this.rango = valor[index]
+    //   }
+    //   let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
+    //   this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
+    //   console.log(this.form.fecha_alerta)
+    // },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
        if(this.procesos[index].id == this.form.proceso_id){
@@ -1060,13 +1091,13 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarDocumento();
+              this.agregarversion()();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarDocumento();
+            this.editarVersion();
           } else {
         }});
       }
@@ -1076,6 +1107,21 @@ export default {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
               this.cargarVersion();
+            } else {}
+          });        
+        }else{
+          this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+            this.editarVersion();
+          } else {
+        }});
+      }
+    },
+    switchLocD(){
+      if (!this.editMode) {
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+              this.agregarversion()();
             } else {}
           });        
         }else{
@@ -1239,10 +1285,12 @@ export default {
         data.append('diagrama',this.diagrama);
        }
        data.append('revisa_id',this.form.revisa_id);
+        console.log(this.archivo, this.diagrama)
        await this.axios.post('api/documentos/version', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
+            
             if (response.status==200) {
                this.$swal(
                    'Agregado exito!',
@@ -1257,9 +1305,10 @@ export default {
       async buscarVersiones(){
         let data = new FormData();
          data.append('documento_id',this.$route.params.id);
-          await this.axios.post('api/documentos/versiones/find',data)
+          await this.axios.post('api/documentos/versiones/listar',data)
             .then((response) => {
-              console.log(response)
+              this.versiones = response.data
+              console.log(this.versiones)
             })
             .catch((e)=>{
               console.log('error' + e);
@@ -1278,8 +1327,9 @@ export default {
             if (this.logo) {
               data.append('filename',this.logo);
             }
-            console.log(formulario)
-            await this.axios.post('api/documentos', data, {
+            data.append('documento_id',this.$route.params.id);
+             console.log(this.$route.params.id)
+            await this.axios.post('api/documentos/versiones', data, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }}).then(response => {
@@ -1290,14 +1340,57 @@ export default {
                           'success');
                     this.listardocscreados();
                     this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-                    ///limpiar el formulario   
-                    this.resete();
                     }
                   }).catch(e => {
                     console.log(e.response.data.menssag);
                     this.$swal(e.response.data);
                 });
             },
+           async editarVersion(){
+            let data = new FormData();
+            var formulario = this.edit;
+            for (var key in formulario) {
+              if (key=='normativas') {
+                data.append(key,JSON.stringify(formulario[key]));
+              } else {
+                data.append(key,formulario[key]);
+              }
+          }
+          await this.axios.put('api/documentos/versiones', data, {
+            headers: {
+            'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                  this.$swal('Editado con exito!','','success');
+                  this.buscarVersiones();
+                  this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+                }
+            }).catch(e => {
+              console.log(e.response.data.menssage);
+              this.$swal('No se pudo editar!');
+          });
+          },
+          setear(index) {
+            this.edit.id = index.id;
+            this.edit.tipo_id = index.tipo_id;
+            this.edit.normativas = JSON.parse(index.normativas);
+            this.edit.nombre = index.nombre;
+            this.edit.creado = index.creado;
+            this.edit.consecutivo = index.consecutivo;
+            this.edit.version = index.version;
+            this.edit.subproceso_id = index.subproceso_id;
+            this.edit.elaboracion = index.elaboracion;
+            this.edit.revision = index.revision;
+            this.edit.aprobacion = index.aprobacion;
+            this.edit.fecha_emicion = index.fecha_emicion;
+            this.edit.intervalo = index.intervalo;
+            this.edit.status = index.status;
+            this.edit.proceso_id = index.proceso_id;
+            this.edit.sedes_id = index.sedes_id;
+            this.edit.elabora_id = index.elabora_v_id;
+            this.edit.aprueba_id = index.aprueba_v_id;
+            this.edit.revisa_id = index.revisa_v_id;
+          },
         resete(){
           var formulario = this.form;
           for (var key in formulario) {
@@ -1309,7 +1402,42 @@ export default {
         }
          this.form.cliente_id=this.cliente.id;
       },
-    async setear(){
+    // async setear(){
+    //   let data = new FormData();
+    //   data.append('id',this.$route.params.id);
+    //     await this.axios.post('api/documentos/versiones/find',data)
+    //       .then((response) => {
+    //         console.log(response.data)
+    //          if (response.status==200) {
+    //           this.form.id = response.data.id;
+    //           this.form.tipo_id = response.data.tipo_id;
+    //           this.form.normativas = JSON.parse(response.data.normativas);
+    //           this.form.nombre = response.data.nombre;
+    //           this.form.creado = response.data.creado;
+    //           this.form.consecutivo = response.data.consecutivo;
+    //           this.form.version = response.data.version;
+    //           this.form.subproceso_id = response.data.subproceso_id;
+    //           this.form.elaboracion = response.data.elaboracion;
+    //           this.form.revision = response.data.revision;
+    //           this.form.aprobacion = response.data.aprobacion;
+    //           this.form.fecha_alerta = response.data.fecha_alerta;
+    //           this.form.fecha_emicion = response.data.fecha_emicion;
+    //           this.form.intervalo = response.data.intervalo;
+    //           this.form.status = response.data.status;
+    //           this.form.proceso_id = response.data.proceso_id;
+    //           this.form.sedes_id = response.data.sedes_id;
+    //           this.form.elabora_v_id = response.data.elabora_v_id;
+    //           this.form.aprueba_v_id = response.data.aprueba_v_id;
+    //           this.form.revisa_v_id = response.data.revisa_v_id;
+    //           this.versiones = response.data.versiones;
+    //           this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+    //          }
+    //       })
+    //       .catch((e)=>{
+    //         console.log('error' + e);
+    //       })
+    //   },
+          async setearD(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
@@ -1337,7 +1465,7 @@ export default {
               this.form.aprueba_id = response.data.aprueba_id;
               this.form.revisa_id = response.data.revisa_id;
               this.versiones = response.data.versiones;
-              this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+              this.$root.$emit("bv::show::modal", "modal-crea", "#btnShow");
              }
           })
           .catch((e)=>{
@@ -1515,12 +1643,13 @@ export default {
         this.listarCargos();
         this.listarSedes();
         this.listarDocumento();
+        this.buscarVersiones()
         this.title=this.cliente.nombre_prestador;
       },
     },
     created(){
       this.session();
-      this.buscarVersiones()
+      
       console.log(this.form)
       },
      mounted() {
