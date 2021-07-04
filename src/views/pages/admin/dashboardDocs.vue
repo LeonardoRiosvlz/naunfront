@@ -105,7 +105,7 @@
                     </div>
                   </template>
                   <b-card-text>
-                          <div>
+                        <div>
                           <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
                           <simplebar style="max-height: 345px" id="scrollElement">
                               <ul class="list-unstyled chat-list">
@@ -148,11 +148,12 @@
                                       </p>
                                       </div>
                                       <div>
-                                        <div class="font-size-11">{{ data.status }}</div>
-                                        <div class="row">
-                                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="#626262"/></svg>
-                                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M11 24h10v2H11z" fill="#626262"/><path d="M13 28h6v2h-6z" fill="#626262"/><path d="M10.815 18.14A7.185 7.185 0 0 1 8 12a8.01 8.01 0 0 1 8-8V2A10.011 10.011 0 0 0 6 12a9.18 9.18 0 0 0 3.46 7.616C10.472 20.551 11 21.081 11 22h2c0-1.84-1.11-2.866-2.185-3.86z" fill="#626262"/><path d="M23.04 16a9.486 9.486 0 0 1-1.862 2.143C20.107 19.135 19 20.16 19 22h2c0-.92.526-1.45 1.535-2.386A9.984 9.984 0 0 0 25.275 16z" fill="#626262"/><path d="M30 8a6 6 0 1 0-6 6a6.007 6.007 0 0 0 6-6zm-2 0a3.952 3.952 0 0 1-.567 2.019l-5.452-5.452A3.953 3.953 0 0 1 24 4a4.005 4.005 0 0 1 4 4zm-8 0a3.952 3.952 0 0 1 .567-2.019l5.452 5.452A3.953 3.953 0 0 1 24 12a4.005 4.005 0 0 1-4-4z" fill="#626262"/></svg>
-                                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="#626262"/><path d="M6 12h10v2H6z" fill="#626262"/><path d="M6 8h10v2H6z" fill="#626262"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="#626262"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="#626262"/></svg>
+                                        <div class="font-size-11 mr-1">{{ data.status }}</div>
+                                        <div class="row justify-content-between flex-column mx-0 mt-2 mr-1 align-items-end">
+                                          
+                                          <svg v-if="data.status_revision == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
+                                          <svg v-else-if="data.status_revision == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M11 24h10v2H11z" fill="red"/><path d="M13 28h6v2h-6z" fill="red"/><path d="M10.815 18.14A7.185 7.185 0 0 1 8 12a8.01 8.01 0 0 1 8-8V2A10.011 10.011 0 0 0 6 12a9.18 9.18 0 0 0 3.46 7.616C10.472 20.551 11 21.081 11 22h2c0-1.84-1.11-2.866-2.185-3.86z" fill="red"/><path d="M23.04 16a9.486 9.486 0 0 1-1.862 2.143C20.107 19.135 19 20.16 19 22h2c0-.92.526-1.45 1.535-2.386A9.984 9.984 0 0 0 25.275 16z" fill="#626262"/><path d="M30 8a6 6 0 1 0-6 6a6.007 6.007 0 0 0 6-6zm-2 0a3.952 3.952 0 0 1-.567 2.019l-5.452-5.452A3.953 3.953 0 0 1 24 4a4.005 4.005 0 0 1 4 4zm-8 0a3.952 3.952 0 0 1 .567-2.019l5.452 5.452A3.953 3.953 0 0 1 24 12a4.005 4.005 0 0 1-4-4z" fill="red"/></svg>
+                                          <svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
                                         </div>
                                       </div>
                                       
@@ -169,15 +170,32 @@
         </div>
         <div class="w-100 user-chat mt-4 mt-sm-0">
             <div class="p-3 px-lg-4 user-chat-border">
+              
             <div class="row justify-content-between">
-                <div v-if="edit.nombre != null" class="col-md-4 col-6">
-                  <h5 class="font-size-15 mb-1 text-truncate">{{ edit.nombre }}</h5>
-                  <p class="text-muted text-truncate mb-0">
-                      <i class="mdi mdi-circle text-success align-middle mr-1"></i>
-                    Version: v-{{edit.version}} 
-                  </p>
-                  <span v-if="estado == 1" class="text-success">Habilitado</span>
-                  <span v-else class="text-warning">En revisión</span>
+                <div v-if="edit.nombre != null" class="col-md-4 col-6 row">
+                  <div>
+                    <h5 class="font-size-15 mb-1 text-truncate">{{ edit.nombre }}</h5>
+                    <p class="text-muted text-truncate mb-0">
+                        <i class="mdi mdi-circle text-success align-middle mr-1"></i>
+                      Version: v-{{edit.version}} 
+                    </p>
+                    <span v-if="estado == 1" class="text-success">Habilitado</span>
+                    <span v-else class="text-warning">
+                      En revisión 
+                        <svg v-if="edit.status_revision == 'Pendiente'"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
+                        <svg v-else-if="edit.status_revision == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M11 24h10v2H11z" fill="red"/><path d="M13 28h6v2h-6z" fill="red"/><path d="M10.815 18.14A7.185 7.185 0 0 1 8 12a8.01 8.01 0 0 1 8-8V2A10.011 10.011 0 0 0 6 12a9.18 9.18 0 0 0 3.46 7.616C10.472 20.551 11 21.081 11 22h2c0-1.84-1.11-2.866-2.185-3.86z" fill="red"/><path d="M23.04 16a9.486 9.486 0 0 1-1.862 2.143C20.107 19.135 19 20.16 19 22h2c0-.92.526-1.45 1.535-2.386A9.984 9.984 0 0 0 25.275 16z" fill="#626262"/><path d="M30 8a6 6 0 1 0-6 6a6.007 6.007 0 0 0 6-6zm-2 0a3.952 3.952 0 0 1-.567 2.019l-5.452-5.452A3.953 3.953 0 0 1 24 4a4.005 4.005 0 0 1 4 4zm-8 0a3.952 3.952 0 0 1 .567-2.019l5.452 5.452A3.953 3.953 0 0 1 24 12a4.005 4.005 0 0 1-4-4z" fill="red"/></svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
+                    </span>
+                  </div>
+                  <b-dropdown v-if="edit.diagramas != null && edit.archivo != null" class="chat-noti-dropdown ml-4" right variant="white">
+                    <template v-slot:button-content>
+                      <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="2em" height="2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M16 28l-7-7l1.4-1.4l5.6 5.6l5.6-5.6L23 21z" fill="#626262"/></svg>
+                      </div>
+                    </template>
+                    <b-dropdown-item v-if="edit.diagramas != null" @click="obtener(edit.diagramas)">Ver diagrama</b-dropdown-item>
+                    <b-dropdown-item v-if="edit.archivo != null" @click="obtener(edit.archivo)">Ver archivo </b-dropdown-item>
+                </b-dropdown>
                 </div>
                 <div v-else class="col-md-4 col-6">
                   <h5 class="font-size-15 mb-1 text-truncate">Versiones</h5>
@@ -198,10 +216,10 @@
                 </div>
             </div>
             </div>
-
+            
             <div class="px-lg-2 chat-users">
             <div class="chat-conversation p-3">
-                <VueDocPreview value="" type="office" />
+                <VueDocPreview :value="valorDoc" type="office" />
             </div>
             </div>
         </div>
@@ -828,7 +846,7 @@ import simplebar from "simplebar-vue";
 import PageHeader from "@/components/page-header";
 import Chat from '@/components/chat'
 import moment from 'moment'
-
+import VueDocPreview from 'vue-doc-preview'
 /**
  * Dashboard component
  */
@@ -841,7 +859,8 @@ export default {
     ValidationObserver,
     vSelect,
     Chat,
-    simplebar
+    simplebar,
+    VueDocPreview
   },
   data() {
     return {
@@ -860,6 +879,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      valorDoc:'',
       responsabilidadesSelect:[1,2,3],
       estado:1,
       tabIndex: 0,
@@ -984,6 +1004,10 @@ export default {
         }
     },
   methods: {
+    obtener(doc){
+      this.valorDoc = doc
+      console.log(this.valorDoc)
+    },
     validacionRespon(index){
        console.log(index)
         if (index === 1) {
@@ -1419,33 +1443,33 @@ export default {
            .then((response) => {
              console.log(response.data)
               if (response.status==200) {
-               this.edit.id = response.data.id;
-               this.edit.tipo_id = response.data.tipo_id;
-               this.edit.normativas = JSON.parse(response.data.normativas);
-               this.edit.nombre = response.data.nombre;
-               this.edit.creado = response.data.creado;
-               this.edit.archivo = response.data.archivo;
-               this.edit.diagramas = response.data.diagramas;
-               this.edit.consecutivo = response.data.consecutivo;
-               this.edit.version = response.data.version;
-               this.edit.observaciones_elaboracion = response.data.observaciones_elaboracion;
-               this.edit.subproceso_id = response.data.subproceso_id;
-               this.edit.elaboracion = response.data.elaboracion;
-               this.edit.revision = response.data.revision;
-               this.edit.aprobacion = response.data.aprobacion;
-               this.edit.fecha_alerta = response.data.fecha_alerta;
-               this.edit.fecha_emicion = response.data.fecha_emicion;
-               this.edit.intervalo = response.data.intervalo;
-               this.edit.status = response.data.status;
-               this.edit.proceso_id = response.data.proceso_id;
-               this.edit.sedes_id = response.data.sedes_id;
-               this.edit.elabora_v_id = response.data.elabora_v_id;
-               this.edit.aprueba_v_id = response.data.aprueba_v_id;
-               this.edit.revisa_v_id = response.data.revisa_v_id;
-               if (this.editMode) {
-                 this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-               }
-               
+                this.edit.id = response.data.id;
+                this.edit.tipo_id = response.data.tipo_id;
+                this.edit.normativas = JSON.parse(response.data.normativas);
+                this.edit.nombre = response.data.nombre;
+                this.edit.creado = response.data.creado;
+                this.edit.archivo = response.data.archivo;
+                this.edit.diagramas = response.data.diagramas;
+                this.edit.consecutivo = response.data.consecutivo;
+                this.edit.version = response.data.version;
+                this.edit.observaciones_elaboracion = response.data.observaciones_elaboracion;
+                this.edit.subproceso_id = response.data.subproceso_id;
+                this.edit.elaboracion = response.data.elaboracion;
+                this.edit.revision = response.data.revision;
+                this.edit.aprobacion = response.data.aprobacion;
+                this.edit.fecha_alerta = response.data.fecha_alerta;
+                this.edit.fecha_emicion = response.data.fecha_emicion;
+                this.edit.intervalo = response.data.intervalo;
+                this.edit.status_revision = response.data.status_revision
+                this.edit.status = response.data.status;
+                this.edit.proceso_id = response.data.proceso_id;
+                this.edit.sedes_id = response.data.sedes_id;
+                this.edit.elabora_v_id = response.data.elabora_v_id;
+                this.edit.aprueba_v_id = response.data.aprueba_v_id;
+                this.edit.revisa_v_id = response.data.revisa_v_id;
+                if (this.editMode) {
+                  this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+                }
               }
            })
            .catch((e)=>{
