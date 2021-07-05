@@ -147,13 +147,25 @@
                                          Version: v-{{ data.version }}
                                       </p>
                                       </div>
+                                      
                                       <div>
                                         <div class="font-size-11 mr-1">{{ data.status }}</div>
-                                        <div class="row justify-content-between flex-column mx-0 mt-2 mr-1 align-items-end">
-                                          <!-- data.status_revision -->
-                                          <svg v-if="data.status_revision == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
-                                          <svg v-else-if="data.status_revision == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M11 24h10v2H11z" fill="red"/><path d="M13 28h6v2h-6z" fill="red"/><path d="M10.815 18.14A7.185 7.185 0 0 1 8 12a8.01 8.01 0 0 1 8-8V2A10.011 10.011 0 0 0 6 12a9.18 9.18 0 0 0 3.46 7.616C10.472 20.551 11 21.081 11 22h2c0-1.84-1.11-2.866-2.185-3.86z" fill="red"/><path d="M23.04 16a9.486 9.486 0 0 1-1.862 2.143C20.107 19.135 19 20.16 19 22h2c0-.92.526-1.45 1.535-2.386A9.984 9.984 0 0 0 25.275 16z" fill="#626262"/><path d="M30 8a6 6 0 1 0-6 6a6.007 6.007 0 0 0 6-6zm-2 0a3.952 3.952 0 0 1-.567 2.019l-5.452-5.452A3.953 3.953 0 0 1 24 4a4.005 4.005 0 0 1 4 4zm-8 0a3.952 3.952 0 0 1 .567-2.019l5.452 5.452A3.953 3.953 0 0 1 24 12a4.005 4.005 0 0 1-4-4z" fill="red"/></svg>
-                                          <svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
+                                        <div class="row justify-content-end  mx-0 mt-2 mr-1 align-items-end">
+                                          <div>
+                                            <svg class="mx-2" v-if="data.status_elaboracion == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="red"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="red"/></svg>
+                                            <svg class="mx-2" v-else-if="data.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
+                                            <svg class="mx-2" v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
+                                          </div>
+                                          <div>
+                                            <svg v-if="data.status_revision == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="red"/></svg>
+                                            <svg v-else-if="data.status_revision == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
+                                            <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="green"/></svg>
+                                          </div>
+                                          <div>
+                                            <svg v-if="data.status_aprobacion == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="red"/><path d="M6 12h10v2H6z" fill="red"/><path d="M6 8h10v2H6z" fill="red"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="red"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="red"/></svg>
+                                            <svg v-else-if="data.status_aprobacion == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="orange"/><path d="M6 12h10v2H6z" fill="orange"/><path d="M6 8h10v2H6z" fill="orange"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="orange"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="orange"/></svg>
+                                            <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
+                                          </div>
                                         </div>
                                       </div>
                                       
@@ -179,13 +191,28 @@
                         <i class="mdi mdi-circle text-success align-middle mr-1"></i>
                       Version: v-{{edit.version}} 
                     </p>
+                  
                     <span v-if="estado == 1" class="text-success">Habilitado</span>
-                    <span v-else class="text-warning">
-                      En revisión 
-                        <svg v-if="edit.status_revision == 'Pendiente'"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
-                        <svg v-else-if="edit.status_revision == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M11 24h10v2H11z" fill="red"/><path d="M13 28h6v2h-6z" fill="red"/><path d="M10.815 18.14A7.185 7.185 0 0 1 8 12a8.01 8.01 0 0 1 8-8V2A10.011 10.011 0 0 0 6 12a9.18 9.18 0 0 0 3.46 7.616C10.472 20.551 11 21.081 11 22h2c0-1.84-1.11-2.866-2.185-3.86z" fill="red"/><path d="M23.04 16a9.486 9.486 0 0 1-1.862 2.143C20.107 19.135 19 20.16 19 22h2c0-.92.526-1.45 1.535-2.386A9.984 9.984 0 0 0 25.275 16z" fill="#626262"/><path d="M30 8a6 6 0 1 0-6 6a6.007 6.007 0 0 0 6-6zm-2 0a3.952 3.952 0 0 1-.567 2.019l-5.452-5.452A3.953 3.953 0 0 1 24 4a4.005 4.005 0 0 1 4 4zm-8 0a3.952 3.952 0 0 1 .567-2.019l5.452 5.452A3.953 3.953 0 0 1 24 12a4.005 4.005 0 0 1-4-4z" fill="red"/></svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
-                    </span>
+                    <div v-else class="text-warning row align-items-center mx-0">
+                      <span>En revisión</span>
+                      <div class="row justify-content-end  mx-0 mr-1 align-items-end">
+                        <div>
+                          <svg class="mx-2" v-if="edit.status_elaboracion == 'Rechazado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="red"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="red"/></svg>
+                          <svg class="mx-2" v-else-if="edit.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
+                          <svg class="mx-2" v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
+                        </div>
+                        <div>
+                          <svg v-if="edit.status_revision == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="red"/></svg>
+                          <svg v-else-if="edit.status_revision == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
+                          <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="green"/></svg>
+                        </div>
+                        <div>
+                          <svg v-if="edit.status_aprobacion == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="red"/><path d="M6 12h10v2H6z" fill="red"/><path d="M6 8h10v2H6z" fill="red"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="red"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="red"/></svg>
+                          <svg v-else-if="edit.status_aprobacion == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="orange"/><path d="M6 12h10v2H6z" fill="orange"/><path d="M6 8h10v2H6z" fill="orange"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="orange"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="orange"/></svg>
+                          <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <b-dropdown v-if="edit.diagramas != null && edit.archivo != null" class="chat-noti-dropdown ml-4" right variant="white">
                     <template v-slot:button-content>
@@ -208,7 +235,7 @@
                         </template>
                         <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar</b-dropdown-item>
                         <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_elaborar')">Elaborar </b-dropdown-item>
-                        <b-dropdown-item>Revisar documento pendiente</b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_revisar')">Revisar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Aprobar documento pendiente</b-dropdown-item>
                         <b-dropdown-item>Habilitar documento pendiente</b-dropdown-item>
                     </b-dropdown>
@@ -820,7 +847,7 @@
                 <div class="col-sm-12">
                       <div class="form-group ">
                         <label>Observaciones</label>
-                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                        <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
                           <textarea v-model="edit.observaciones_elaboracion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                           <span style="color:red">{{ errors[0] }}</span>
                       </ValidationProvider>
@@ -830,6 +857,75 @@
              
         </ValidationObserver>
             <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
+
+     </b-modal>
+
+     <b-modal id="modal_revisar" false size="lg"  title="Elaborar documento" hide-footer>
+          <ValidationObserver ref="form">
+            <div style=" margin-top: -1rem; margin-bottom: 1rem;">
+              <span>MARCAR COMO REVISADO</span>
+              <input v-model="revisado" type="checkbox" id="switch1" class="input-doc mt-2"  /><label for="switch1" class="m-0 label-doc" >Toggle</label>
+            </div>
+            <b-row class="mb-3">
+                  <b-col class="col-sm-6">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                    <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
+                    <b-form-file
+                        v-model="archivorev"
+                        :disabled="ver"
+                        placeholder="Seleccione su archivos..."
+                        drop-placeholder="Drop file here..."
+                    ></b-form-file>
+                       <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                   </b-col>
+                   <b-col class="col-sm-6">
+                   <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
+                     <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
+                        <b-form-file
+                            v-model="diagramarev"
+                            :disabled="ver"
+                            placeholder="Seleccione su archivos..."
+                            drop-placeholder="Drop file here..."
+                        ></b-form-file>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+               </b-col>
+               </b-row>
+               <b-row>
+                  <b-col class="col-sm-12">
+                    <div class="form-group ">
+                      <label>Observaciones de revisón</label>
+                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                        <textarea v-model="edit.observaciones_revision"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                  <b-col class="col-sm-12">
+                    <div class="form-group ">
+                      <label>Observaciones del diagrama</label>
+                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                        <textarea v-model="edit.observaciones_diagrama"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                  <b-col class="col-sm-12">
+                    <div class="form-group ">
+                      <label>Observaciones del documentos</label>
+                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                        <textarea v-model="edit.observaciones_documentos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+               </b-row>
+                
+            
+             
+        </ValidationObserver>
+            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
 
      </b-modal>
   </Layout>
@@ -879,6 +975,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      revisado:true,
       valorDoc:'',
       responsabilidadesSelect:[1,2,3],
       estado:1,
@@ -888,6 +985,8 @@ export default {
       logo:null,
       archivo:null,
       diagrama:null,
+      archivorev:null,
+      diagramarev:null,
       logo:null,
       ver:false,
       url:"",
@@ -964,6 +1063,12 @@ export default {
             'aprobacion':'',
             'fecha_emicion':'',
             'observaciones_elaboracion':'',
+            'observaciones_revision':'',
+            'observaciones_documentos':'',
+            'observaciones_diagrama':'',
+            'status_revision':'Pendiente',
+            'status_aprobacion':'Pendiente',
+            'status_elaboracion':'Pendiente',
             'intervalo':'',
             'status':'',
             'sedes_id':'',
@@ -1004,6 +1109,7 @@ export default {
         }
     },
   methods: {
+  
     obtener(doc){
       this.valorDoc = doc
       console.log(this.valorDoc)
@@ -1165,6 +1271,25 @@ export default {
             }
         })
           } 
+        });
+      },
+      revisar(){
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+            this.$swal({
+              title: 'Desea subir los documentos version?',
+              icon: 'question',
+              iconHtml: '',
+              confirmButtonText: 'Si',
+              cancelButtonText: 'No',
+              showCancelButton: true,
+              showCloseButton: true
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.revisarDocumento();
+              }
+          })
+            } 
         });        
       },
      async elaborarDocumento(){
@@ -1200,6 +1325,45 @@ export default {
               this.$swal('no se pudo subir!', '','danger');
           });
       },  
+    async revisarDocumento(){
+     let data = new FormData();
+     var formulario = this.edit;
+      for (var key in formulario) {
+        if (key=='normativas') {
+            data.append(key,JSON.stringify(formulario[key]));
+        } else {
+            data.append(key,formulario[key]);
+        }
+      }
+      if (this.archivo) {
+        data.append('filename',this.archivo);
+       }
+      if (this.diagrama) {
+        data.append('diagrama',this.diagrama);
+       }
+       if (this.revisado == true) {
+         formulario.status_revision = 'Revisado'
+       } else {
+         formulario.status_revision = 'Rechazado'
+       }
+       console.log(formulario)
+       await this.axios.post('api/documentos/versiones/revisar', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+              this.$root.$emit("bv::hide::modal", "modal_revisar", "#btnShow");
+               this.buscarVersiones();
+              }
+            }).catch(e => {
+              this.$swal('no se pudo subir!', '','danger');
+          });
+      },
      cargarDoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
@@ -1461,6 +1625,8 @@ export default {
                 this.edit.fecha_emicion = response.data.fecha_emicion;
                 this.edit.intervalo = response.data.intervalo;
                 this.edit.status_revision = response.data.status_revision
+                this.edit.status_aprobacion = response.data.status_aprobacion;
+                this.edit.status_elaboracion = response.data.status_elaboracion;
                 this.edit.status = response.data.status;
                 this.edit.proceso_id = response.data.proceso_id;
                 this.edit.sedes_id = response.data.sedes_id;
@@ -1731,3 +1897,49 @@ export default {
   },
 }
 </script>
+<style>
+      .input-doc{
+        height: 0;
+        width: 0;
+        visibility: hidden;
+    }
+    .input-novedades{
+        border:rgb(40 46 42 / 70%) solid 1px;
+    }
+    .label-doc {
+        cursor: pointer;
+        text-indent: -9999px;
+        width: 60px;
+        height: 26px;
+        background: red;
+        display: block;
+        border-radius: 100px;
+        position: relative;
+       
+    }
+
+    .label-doc:after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 90px;
+        transition: 0.3s;
+    }
+
+    input:checked + label {
+        background: #1cbb8c;
+    }
+
+    input:checked + label:after {
+        left: calc(100% - 3px);
+        transform: translateX(-100%);
+    }
+
+    .label-doc:active:after {
+        width: 40px;
+    }
+</style>
