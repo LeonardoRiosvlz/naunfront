@@ -867,12 +867,13 @@
               {{edit.observaciones_elaboracion}}
             </div>
             <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
-              <b-form-group v-slot="{ ariaDescribedby }" class="row m-0 w-100">
-                <div class="row m-0">
-                  <b-form-radio class="mr-2" v-model="edit.status_revision" :aria-describedby="ariaDescribedby" name="some-radios" value="Aprobado">Revisar documento</b-form-radio>
-                  <b-form-radio class="mr-2" v-model="edit.status_revision" :aria-describedby="ariaDescribedby" name="some-radios" value="Rechazado">Rechazar documento</b-form-radio>
-                </div>
-              </b-form-group>
+                <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                  <select name="Estatus" v-model="edit.status_revision" class="form-control">
+                    <option value="Aprobado">Aprobado</option>
+                    <option value="Rechazado">Rechazado</option>
+                  </select>
+                  <span style="color:red">{{ errors[0] }}</span>
+                </ValidationProvider>
             </div>
             <pre>{{edit}}</pre>
             <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
