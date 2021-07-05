@@ -860,16 +860,22 @@
 
      </b-modal>
 
-     <b-modal id="modal_revisar" false size="lg"  title="Elaborar documento" hide-footer>
+     <b-modal id="modal_revisar" false size="lg"  title="REVISAR DOCUMENTO" hide-footer>
           <ValidationObserver ref="form">
+            <div class="alert alert-warning mb-3" role="alert">
+              <h6 class="text-info">Observaciones Del Editor</h6>
+              {{edit.observaciones_elaboracion}}
+            </div>
             <div style=" margin-top: -1rem; margin-bottom: 1rem;">
               <span>MARCAR COMO REVISADO</span>
-              <input v-model="revisado" type="checkbox" id="switch1" class="input-doc mt-2"  /><label for="switch1" class="m-0 label-doc" >Toggle</label>
+              <input v-model="revisado" type="checkbox" @click="swichAprobacion()" id="switch1" class="input-doc mt-2"  /><label for="switch1" class="m-0 label-doc" >Toggle</label>
             </div>
-            <b-row class="mb-3">
-                  <b-col class="col-sm-6">
+            <pre>{{edit}}</pre>
+            
+            <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
+                  <b-col class="col-sm-12">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                    <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
+                    <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
                     <b-form-file
                         v-model="archivorev"
                         :disabled="ver"
@@ -879,18 +885,6 @@
                        <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                    </b-col>
-                   <b-col class="col-sm-6">
-                   <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
-                     <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
-                        <b-form-file
-                            v-model="diagramarev"
-                            :disabled="ver"
-                            placeholder="Seleccione su archivos..."
-                            drop-placeholder="Drop file here..."
-                        ></b-form-file>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-               </b-col>
                </b-row>
                <b-row>
                   <b-col class="col-sm-12">
@@ -975,7 +969,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
-      revisado:true,
+      revisado:false,
       valorDoc:'',
       responsabilidadesSelect:[1,2,3],
       estado:1,
@@ -1113,6 +1107,13 @@ export default {
     obtener(doc){
       this.valorDoc = doc
       console.log(this.valorDoc)
+    },
+    swichAprobacion(){
+      if (this.revisado == true) {
+        this.edit.status_revision="Aprobado"
+      }else{
+        this.edit.status_revision="Rechazado"
+      }
     },
     validacionRespon(index){
        console.log(index)
@@ -1331,6 +1332,8 @@ export default {
       for (var key in formulario) {
         if (key=='normativas') {
             data.append(key,JSON.stringify(formulario[key]));
+        }else if (key=='diagramas'||key=='archivo') {
+          
         } else {
             data.append(key,formulario[key]);
         }
@@ -1342,9 +1345,9 @@ export default {
         data.append('diagrama',this.diagrama);
        }
        if (this.revisado == true) {
-         formulario.status_revision = 'Revisado'
+         data.append('status_revision','Aprobado');
        } else {
-         formulario.status_revision = 'Rechazado'
+         data.append('status_revision','Rechazado');
        }
        console.log(formulario)
        await this.axios.post('api/documentos/versiones/revisar', data, {
