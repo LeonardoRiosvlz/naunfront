@@ -1487,7 +1487,7 @@ export default {
              console.log('error' + e);
            })
     },
-   async listarDicumentosHabilitados(){
+   async listarDocumentosHabilitados(){
       let data = new FormData();
         data.append('id',this.$route.params.id);
          await this.axios.post('api/documentos/find',data)
@@ -2356,7 +2356,7 @@ export default {
     },
     created(){
       this.session();
-      
+      this.listarDocumentosHabilitados()
       console.log(this.form)
       },
      mounted() {
