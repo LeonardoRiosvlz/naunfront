@@ -984,7 +984,7 @@
      </b-modal>
 
        <b-modal id="modal_hab" false size="lg"  title="Gestion de documentos" hide-footer>
-         <pre>{{edit.documento_actual}}</pre>
+         <pre>{{edit}}</pre>
           <ValidationObserver  ref="form">
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
