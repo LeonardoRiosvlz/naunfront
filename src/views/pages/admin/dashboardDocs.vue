@@ -12,6 +12,7 @@
                 <p class="text-muted mb-0">
                     <i class="mdi mdi-circle text-success align-middle mr-1"></i>
                     Version actual: {{doc.version}}
+                    Estado: {{doc.status}}
                 </p>
                 </div>
                 <div>
@@ -98,6 +99,7 @@
                           </div>
                   </b-card-text>
                 </b-tab>
+              <!-- fecha_nueva_version -->
                 <b-tab title="Tab 2">
                   <template v-slot:title>
                     <div @click="estado = 2" class="row align-items-center justify-content-center ">
@@ -1233,6 +1235,24 @@
                                     <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                     <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col>
+                            <div class="form-group">
+                              <label>Fecha de edición</label>
+                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                    <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col class="col-sm-12">
+                            <div class="form-group ">
+                              <label>Control del cambios</label>
+                              <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
                             </div>
                           </b-col>
                     </b-tab>
