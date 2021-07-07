@@ -12,6 +12,7 @@
                 <p class="text-muted mb-0">
                     <i class="mdi mdi-circle text-success align-middle mr-1"></i>
                     Version actual: {{doc.version}}
+                    Estado: {{doc.status}}
                 </p>
                 </div>
                 <div>
@@ -47,6 +48,7 @@
                   </template>
                   <b-card-text>
                           <div>
+                  
                           <h5 class="font-size-14 px-3 my-3 ">Versiones</h5>
                           <simplebar style="max-height: 345px" id="scrollElement">
                               <ul class="list-unstyled chat-list">
@@ -82,10 +84,10 @@
                                       </div>
                                       <div class="media-body overflow-hidden">
                                       <h5 class="text-truncate font-size-14 mb-1">
-                                          {{ data.name }}
+                                          {{ data.nombre }}
                                       </h5>
                                       <p class="text-truncate mb-0">
-                                          {{ data.message }}
+                                          {{ data.created_at }}
                                       </p>
                                       </div>
                                       <div class="font-size-11">{{ data.time }}</div>
@@ -97,6 +99,7 @@
                           </div>
                   </b-card-text>
                 </b-tab>
+              <!-- fecha_nueva_version -->
                 <b-tab title="Tab 2">
                   <template v-slot:title>
                     <div @click="estado = 2" class="row align-items-center justify-content-center ">
@@ -1234,6 +1237,24 @@
                               </ValidationProvider>
                             </div>
                           </b-col>
+                          <b-col>
+                            <div class="form-group">
+                              <label>Fecha de edición</label>
+                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                    <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col class="col-sm-12">
+                            <div class="form-group ">
+                              <label>Control del cambios</label>
+                              <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                          </b-col>
                     </b-tab>
 
                     <b-tab>
@@ -1259,8 +1280,7 @@
             <div class="col-2">
               <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
               <div v-else>
-                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
-                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Habilitar</button>
+                <button class="btn btn-block float-right btn-success" @click="habilitar()">Habilitar</button>
               </div>
             </div>
           </div>
@@ -1394,6 +1414,9 @@ export default {
             'proceso_id':'',
             'creado':'',
             'nombre': null,
+            'nombre_elabora': null,
+            'nombre_revisa': null,
+            'nombre_aprueba': null,
             'archivo': '',
             'firma_elabora':'',
             'firma_revisa':'',
@@ -1808,7 +1831,7 @@ export default {
       this.$refs.form.validate().then(esValido => {
           if (esValido) {
           this.$swal({
-            title: 'Desea subir los documentos version?',
+            title: 'Desea habilitar esta version?',
             icon: 'question',
             iconHtml: '',
             confirmButtonText: 'Si',
@@ -1827,21 +1850,12 @@ export default {
      let data = new FormData();
      var formulario = this.edit;
       for (var key in formulario) {
-        if (key=='normativas') {
+        if (key=='normativas'||key=='documento_actual') {
             data.append(key,JSON.stringify(formulario[key]));
-        }else if (key=='diagramas'||key=='archivo') {
-          
         } else {
             data.append(key,formulario[key]);
         }
       }
-      if (this.archivo && this.edit.status_revision == 'Aprobado') {
-        data.append('filename',this.archivo);
-       }
-      if (this.diagrama) {
-        data.append('diagrama',this.diagrama);
-       }
-       console.log(formulario)
        await this.axios.post('api/documentos/versiones/habilitar', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -2106,6 +2120,9 @@ export default {
                 this.edit.tipo_id = response.data.tipo_id;
                 this.edit.normativas = JSON.parse(response.data.normativas);
                 this.edit.nombre = response.data.nombre;
+                this.edit.nombre_elabora = response.data.nombre_elabora;
+                this.edit.nombre_revisa = response.data.nombre_revisa;
+                this.edit.nombre_aprueba = response.data.nombre_aprueba;
                 this.edit.creado = response.data.creado;
                 this.edit.archivo = response.data.archivo;
                 this.edit.firma_elabora = response.data.firma_elabora;
@@ -2131,6 +2148,7 @@ export default {
                 this.edit.observaciones_aprobacion = response.data.observaciones_aprobacion;
                 this.edit.status = response.data.status;
                 this.edit.proceso_id = response.data.proceso_id;
+                this.edit.documento_id = response.data.documento_id;
                 this.edit.sedes_id = response.data.sedes_id;
                 this.edit.elabora_v_id = response.data.elabora_v_id;
                 this.edit.aprueba_v_id = response.data.aprueba_v_id;
