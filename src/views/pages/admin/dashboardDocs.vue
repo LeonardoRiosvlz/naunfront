@@ -21,7 +21,7 @@
                       <i class="mdi mdi-dots-horizontal font-size-20"></i>
                       </template>
                       
-                      <b-dropdown-item>Actualizar version (solo para estado habilitado)</b-dropdown-item>
+                      <b-dropdown-item @click="setearT();editMode=false;ver=false;">Actualizar version (solo para estado habilitado)</b-dropdown-item>
                       <b-dropdown-item @click="setearD();editMode=false;ver=false;">Programar nueva versión</b-dropdown-item>
                   </b-dropdown>
                 </div>
@@ -104,7 +104,7 @@
                   <template v-slot:title>
                     <div @click="estado = 2" class="row align-items-center justify-content-center ">
                       <i class="ri-time-line font-size-20"></i>
-                      <span class="mt-2 d-none d-sm-block mx-2 mb-2">En revisión</span>
+                      <span class="mt-2 d-none d-sm-block mx-2 mb-2">En elaboración</span>
                     </div>
                   </template>
                   <b-card-text>
@@ -155,9 +155,9 @@
                                         <div class="font-size-11 mr-1">{{ data.status }}</div>
                                         <div class="row justify-content-end  mx-0 mt-2 mr-1 align-items-end">
                                           <div>
-                                            <svg class="mx-2" v-if="edit.status_elaboracion == 'En elaboración'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="blue"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="blue"/></svg>
-                                            <svg class="mx-2" v-if="edit.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
-                                            <svg class="mx-2" v-if="edit.status_elaboracion == 'Elaborado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
+                                            <svg class="mx-2" v-if="data.status_elaboracion == 'En elaboración'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="blue"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="blue"/></svg>
+                                            <svg class="mx-2" v-if="data.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
+                                            <svg class="mx-2" v-if="data.status_elaboracion == 'Elaborado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
                                           </div>
                                           <div>
                                             <svg v-if="data.status_revision == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="red"/></svg>
@@ -233,7 +233,7 @@
                 <div v-else class="col-md-4 col-6">
                   <h5 class="font-size-15 mb-1 text-truncate">Versiones</h5>
                 </div>
-                <div v-if="estado == 2" class="col-md-1 col-3">
+                <div v-if="estado == 2 && edit.id != ''" class="col-md-1 col-3">
                   <div>
                     <b-dropdown class="chat-noti-dropdown" right variant="white">
                         <template v-slot:button-content>
@@ -535,7 +535,7 @@
               </div>
             </div>
           </div>
-     </b-modal>
+        </b-modal>
         <!-- CREAR VERSIONES -->
       <b-modal id="modal-crea" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
@@ -817,11 +817,287 @@
               </div>
             </div>
           </div>
+      </b-modal>
+
+      <!-- Habilitar nueva version -->
+    <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
+          <ValidationObserver  ref="form">
+                <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                  <b-tab  class="border-0">
+                    <template v-slot:title>
+                      <span class="d-inline-block d-sm-none">
+                        <i class="fas fa-home"></i>
+                      </span>
+                      <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                    </template>
+                    <b-row class="mt-3">
+                    <b-col>
+                      <div class="form-group ">
+                        <label>Nombre del documento</label>
+                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                          <input v-model="nueva_version.nombre"  type="text" class="form-control" placeholder=" " >
+                          <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      </div>
+                    </b-col>
+                    <b-col>
+                      <div class="form-group">
+                        <label>Tipo de docemento</label>
+                        <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                          <select v-model="nueva_version.tipo_id"  name="tipo" class="form-control " >
+                              <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      </div>
+                    </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Consecutivo</label>
+                          <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                <input v-model="nueva_version.consecutivo"  type="text" class="form-control" placeholder=" " />
+                                <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Versión</label>
+                          <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                <input v-model="nueva_version.version"  type="text" class="form-control" placeholder=" " />
+                                <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Proceso</label>
+                          <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                            <select v-model="nueva_version.proceso_id"  name="tipo" class="form-control "   @change="capSubproceso()">
+                              <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <b-col>
+                        <div v-if="subproceso.length!= 0 " class="form-group">
+                          <label>Subproceso</label>
+                          <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                            <select v-model="nueva_version.subproceso_id"  name="tipo" class="form-control ">
+                              <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Sede</label>
+                            <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                <v-select  v-model="nueva_version.sedes_id"  :options="sedes" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                      <b-form-file
+                          v-model="logo"
+                          placeholder="Seleccione una imagen..."
+                          drop-placeholder="Drop file here..."
+                          @change="onFileChangeLogo"
+                      ></b-form-file>
+                    </div>
+                    </b-row>
+                      
+                  </b-tab>
+
+                  <b-tab>
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="far fa-user"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                      </template>
+                        <h5 class="mt-3">Responsabilidades</h5>
+                        <b-row>
+                          <b-col>
+                            <div class="form-group">
+                              <label v-if="nueva_version.creado==='No creado'">Elabora</label>
+                              <label v-else>Elaboró</label>
+                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
+                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col v-if="nueva_version.creado==='No creado'">  
+                            <div class="form-group">
+                              <label>Fecha de elaboración</label>
+                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                    <input v-model="nueva_version.elaboracion" type="date" class="form-control" placeholder=" "/>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </div>
+                          </b-col>
+                        </b-row>
+                        <b-row>
+                          <b-col>
+                            <div class="form-group">
+                              <label v-if="nueva_version.creado==='No creado'">Revisa</label>
+                              <label v-else>Revisó</label>
+                              <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
+                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col v-if="nueva_version.creado==='No creado'">
+                            <div class="form-group">
+                              <label>Fecha de revisión</label>
+                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                    <input v-model="nueva_version.revision"  type="date" class="form-control" placeholder=" "/>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </div>
+                          </b-col>
+                        </b-row>  
+                        <b-row>
+                          <b-col>
+                            <div class="form-group">
+                              <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
+                              <label v-else>Aprobó</label>
+                              <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
+                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-col v-if="nueva_version.creado==='No creado'">
+                            <div class="form-group">
+                              <label>Fecha de aprobación</label>
+                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                    <input v-model="nueva_version.aprobacion"  type="date" class="form-control" placeholder=" " />
+                                    <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </div>
+                          </b-col>
+                        </b-row>
+                  </b-tab>
+
+                  <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                        </template>
+                      <h5 class="mt-3">Normatividad asociada</h5> 
+                      <b-row class="align-items-center mb-3">
+                        <b-col>
+                          <div class="form-group m-0">
+                            <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+                              <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                      </b-row>
+                      <div class="card mt-3">
+                        <div class="row m-0 justify-content-end">
+                          <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                          <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                        </div>
+                        <div v-if="show" class="mb-3">
+                          <b-row v-for="(norma, index) in nueva_version.normativas" :key="index" class="px-3 ">
+                            <b-col class="form-group w-100">
+                              <div class="row m-0 justify-content-between">
+                                  <label>{{norma.nombre}}</label>
+                                  <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
+                              </div>
+                             
+                              <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" "/>
+                                <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                            </b-col>
+                          </b-row>
+                        </div>
+                      </div> 
+                  </b-tab>
+
+
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                        </template>
+                        <b-row class="mt-3">
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de emisión</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="nueva_version.fecha_emicion"  type="date" class="form-control" placeholder=" " />
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Tiempos de alerta para emisión</label>
+                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                      <select @change="suma" v-model="nueva_version.intervalo" name="tipo" class="form-control " >
+                                        <option value="1 mes">1 mes</option>
+                                        <option value="2 meses">2 mes</option>
+                                        <option value="4 meses">4 mes</option>
+                                        <option value="6 meses">6 mes</option>
+                                        <option value="12 meses">12 mes</option>
+                                      </select>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">ARCHIVO</span>
+                        </template>
+                          <b-row class="mt-3 w-100">
+                            <b-col>
+                              <VueDocPreview class="w-100" :value="nueva_version.documento_actual.archivo" type="office" />
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+              </b-tabs>
+
+          </ValidationObserver>
+          <div class="row mx-0 mb-5 justify-content-between">
+            <div class=" col-2">
+               <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+            </div>
+            <div class="col-2">
+              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
+              <div v-else>
+                <button class="btn btn-block float-right btn-success" @click="switchLocD" v-if="!ver && !editMode">Guardar</button>
+                <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+              </div>
+            </div>
+          </div>
      </b-modal>
-
-
-
-
 
       <b-modal id="modal_elaborar" false size="lg"  title="ELABORACIÓN DE DOCUMENTOS" hide-footer>
           <ValidationObserver ref="form">
@@ -987,7 +1263,6 @@
      </b-modal>
 
        <b-modal id="modal_hab" false size="lg"  title="Gestion de documentos" hide-footer>
-         <pre>{{edit}}</pre>
           <ValidationObserver  ref="form">
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
@@ -1278,7 +1553,7 @@
                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
             </div>
             <div class="col-2">
-              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
+              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
               <div v-else>
                 <button class="btn btn-block float-right btn-success" @click="habilitar()">Habilitar</button>
               </div>
@@ -1408,7 +1683,7 @@ export default {
             'revisa_v_id':'',
           },
           edit:{
-            'id': 6,
+            'id': '',
             'tipo_id': '',
             'subproceso_id':'',
             'proceso_id':'',
@@ -1445,6 +1720,41 @@ export default {
             'revisa_v_id':'',
             'documento_actual':'',
           },
+          nueva_version:{
+                'id':'',
+                'creado':'',
+                'nombre':'',
+                'nombre_elabora':'',
+                'nombre_revisa':'',
+                'nombre_aprueba':'',
+                'version':'',
+                'observaciones_version': '',
+                'consecutivo':'',
+                'elaboracion':'',
+                'revision':'',
+                'aprobacion':'',
+                'fecha_alerta':'',
+                'fecha_emicion':'',
+                'intervalo':'',
+                'status':'',
+                'archivo':'',
+                'normativas':'',
+                'observaciones_edicion':'',
+                'fecha_edicion':'', 
+                'tipo_id' : '',
+                'proceso_id':'',
+                'subproceso_id' :'',
+                'cliente_id':'',
+                'observaciones_revision':'',
+                'observaciones_documentos':'',
+                'observaciones_diagramas':'',
+                'sedes_id':'',
+                'elabora_id':'',
+                'aprueba_id':'',
+                'revisa_id':'',
+                'habilita_id':'',
+                'documento_actual':''
+          },
         doc:{
             'id': 6,
             'tipo_id': '',
@@ -1480,6 +1790,7 @@ export default {
   methods: {
     setHabilitar(){
       this.fecha_actual = new Date()
+      this.edit.version = this.edit.documento_actual.hdocumentos.length + 2
       this.documentoActual();
       console.log(this.fecha_actual)
     },
@@ -1502,6 +1813,7 @@ export default {
              
               if (response.status==200) {
                 this.edit.documento_actual = response.data
+                this.nueva_version.documento_actual = response.data
                 console.log(this.edit)
                 this.edit.documento_actual.vdocumentos = null
               }
@@ -1827,7 +2139,8 @@ export default {
           });
       },
 
-         habilitar(){
+      habilitar(){
+        console.log('hola')
       this.$refs.form.validate().then(esValido => {
           if (esValido) {
           this.$swal({
@@ -1846,7 +2159,7 @@ export default {
           } 
         });
       },
-          async habilitarDocumento(){
+      async habilitarDocumento(){
      let data = new FormData();
      var formulario = this.edit;
       for (var key in formulario) {
@@ -1866,8 +2179,8 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-              this.$root.$emit("bv::hide::modal", "modal_revisar", "#btnShow");
-               this.buscarVersiones();
+              this.$root.$emit("bv::hide::modal", "modal_hab", "#btnShow");
+              this.listarDocumentosHabilitados();
               }
             }).catch(e => {
               this.$swal('no se pudo subir!', '','danger');
@@ -2196,6 +2509,53 @@ export default {
             console.log('error' + e);
           })
       },
+        async setearT(){
+        let data = new FormData();
+      data.append('id',this.$route.params.id);
+        await this.axios.post('api/documentos/find',data)
+           .then((response) => {
+             console.log(response.data.id)
+              if (response.status==200) {
+                this.nueva_version.id = response.data.id;
+                this.nueva_version.creado = response.data.creado;
+                this.nueva_version.nombre = response.data.nombre;
+                this.nueva_version.nombre_elabora = response.data.nombre_elabora;
+                this.nueva_version.nombre_revisa = response.data.nombre_revisa;
+                this.nueva_version.nombre_aprueba = response.data.nombre_aprueba;
+                this.nueva_version.version = response.data.version;
+                this.nueva_version.observaciones_version = response.data.observaciones_version;
+                this.nueva_version.consecutivo = response.data.consecutivo;
+                this.nueva_version.elaboracion = response.data.elaboracion;
+                this.nueva_version.revision = response.data.revision;
+                this.nueva_version.aprobacion = response.data.aprobacion;
+                this.nueva_version.fecha_alerta = response.data.fecha_alerta;
+                this.nueva_version.fecha_emicion = response.data.fecha_emicion;
+                this.nueva_version.intervalo = response.data.intervalo;
+                this.nueva_version.status = response.data.status;
+                this.nueva_version.archivo = response.data.archivo;
+                this.nueva_version.normativas = JSON.parse(response.data.normativas);
+                this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
+                this.nueva_version.fecha_edicion = response.data.fecha_edicion 
+                this.nueva_version.tipo_id = response.data.tipo_id;
+                this.nueva_version.proceso_id = response.data.proceso_id;
+                this.nueva_version.subproceso_id = response.data.subproceso_id;
+                this.nueva_version.cliente_id = response.data.cliente_id
+                this.nueva_version.observaciones_revision = response.data.observaciones_revision;
+                this.nueva_version.observaciones_documentos = response.data.observaciones_documentos;
+                this.nueva_version.observaciones_diagramas = response.data.observaciones_diagramas;
+                this.nueva_version.sedes_id = response.data.sedes_id;
+                this.nueva_version.elabora_id = response.data.elabora_id;
+                this.nueva_version.aprueba_id = response.data.aprueba_id;
+                this.nueva_version.revisa_id = response.data.revisa_id;
+                this.nueva_version.habilita_id = response.data.habilita_id;
+                this.$root.$emit("bv::show::modal", "modal-nueva", "#btnShow"); 
+              }
+           })
+           .catch((e)=>{
+             console.log('error' + e);
+           })
+       },
+
     async listarDocumento(id){
       let data = new FormData();
       data.append('id',this.$route.params.id);
@@ -2374,7 +2734,8 @@ export default {
     },
     created(){
       this.session();
-      this.listarDocumentosHabilitados()
+      this.listarDocumentosHabilitados();
+      this.documentoActual();
       console.log(this.form)
       },
      mounted() {
