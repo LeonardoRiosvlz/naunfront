@@ -1420,7 +1420,7 @@ export default {
             'elabora_v_id':'',
             'aprueba_v_id':'',
             'revisa_v_id':'',
-            'documento_actual':''
+            'documento_actual':'',
           },
         doc:{
             'id': 6,
