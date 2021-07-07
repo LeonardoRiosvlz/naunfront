@@ -257,7 +257,6 @@
             </div>
         </div>
         </div>
-
         <!-- end row -->
 
 
@@ -503,6 +502,7 @@
                                   </ValidationProvider>
                               </div>
                             </b-col>
+                            
                           </b-row>
                         <b-row>
                           <b-col>
@@ -536,1030 +536,1059 @@
             </div>
           </div>
         </b-modal>
-        <!-- CREAR VERSIONES -->
-      <b-modal id="modal-crea" false size="lg"  title="Gestion de documentos" hide-footer>
-          <ValidationObserver  ref="form">
+          <!-- CREAR VERSIONES -->
+        <b-modal id="modal-crea" false size="lg"  title="Gestion de documentos" hide-footer>
+            <ValidationObserver  ref="form">
 
-                <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
-                  <b-tab  class="border-0">
-                    <template v-slot:title>
-                      <span class="d-inline-block d-sm-none">
-                        <i class="fas fa-home"></i>
-                      </span>
-                      <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
-                    </template>
-                    <b-row class="mt-3">
-                    <b-col>
-                      <div class="form-group ">
-                        <label>Nombre del documento</label>
-                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                          <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " disabled>
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    <b-col>
-                      <div class="form-group">
-                        <label>Tipo de docemento</label>
-                        <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                          <select v-model="form.tipo_id"  name="tipo" class="form-control " disabled>
-                              <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    </b-row>
-                    <b-row>
+                  <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab  class="border-0">
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="fas fa-home"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                      </template>
+                      <b-row class="mt-3">
                       <b-col>
-                        <div class="form-group">
-                          <label>Consecutivo</label>
-                          <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
-                                <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " disabled/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Versión</label>
-                          <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " disabled/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Proceso</label>
-                          <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.proceso_id"  name="tipo" class="form-control " disabled  @change="capSubproceso()">
-                              <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
-                            </select>
+                        <div class="form-group ">
+                          <label>Nombre del documento</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                            <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " disabled>
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
                       </b-col>
                       <b-col>
-                        <div v-if="subproceso.length!= 0 " class="form-group">
-                          <label>Subproceso</label>
-                          <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="form.subproceso_id"  name="tipo" class="form-control " disabled>
-                              <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
-                            </select>
-                            <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
                         <div class="form-group">
-                          <label>Sede</label>
-                            <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="form.sedes_id"  :options="sedes" disabled :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
-                      <b-form-file
-                          v-model="logo"
-                          placeholder="Seleccione una imagen..."
-                          drop-placeholder="Drop file here..."
-                          @change="onFileChangeLogo"
-                      ></b-form-file>
-                    </div>
-                    </b-row>
-                      
-                  </b-tab>
-
-                  <b-tab>
-                      <template v-slot:title>
-                        <span class="d-inline-block d-sm-none">
-                          <i class="far fa-user"></i>
-                        </span>
-                        <span class="d-none d-sm-inline-block">RESPONSABLES</span>
-                      </template>
-                        <h5 class="mt-3">Responsabilidades</h5>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Elabora</label>
-                              <label v-else>Elaboró</label>
-                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="form.creado==='No creado'">  
-                            <div class="form-group">
-                              <label>Fecha de elaboración</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " disabled/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Revisa</label>
-                              <label v-else>Revisó</label>
-                              <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="form.creado==='No creado'">
-                            <div class="form-group">
-                              <label>Fecha de revisión</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.revision"  type="date" class="form-control" placeholder=" " disabled/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>  
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="form.creado==='No creado'">Aprueba</label>
-                              <label v-else>Aprobó</label>
-                              <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="form.creado==='No creado'">
-                            <div class="form-group">
-                              <label>Fecha de aprobación</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " disabled/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                  </b-tab>
-
-                  <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                        </template>
-                      <h5 class="mt-3">Normatividad asociada</h5> 
-                      <b-row class="align-items-center mb-3">
-                        <b-col>
-                          <div class="form-group m-0">
-                            <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
-                              <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                              <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                          </div>
-                        </b-col>
-                        <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
-                      </b-row>
-                      <div class="card mt-3">
-                        <div class="row m-0 justify-content-end">
-                          <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                          <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                        </div>
-                        <div v-if="show" class="mb-3">
-                          <b-row v-for="(norma, index) in form.normativas" :key="index" class="px-3 ">
-                            <b-col class="form-group w-100">
-                              <div class="row m-0 justify-content-between">
-                                  <label>{{norma.nombre}}</label>
-                                  <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                              </div>
-                             
-                              <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" " disabled/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </b-col>
-                          </b-row>
-                        </div>
-                      </div> 
-                  </b-tab>
-
-
-                    <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">EMISIÓN</span>
-                        </template>
-                        <b-row class="mt-3">
-                            <b-col>
-                              <div class="form-group">
-                                <label>Fecha de emisión</label>
-                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="form.fecha_emicion"  type="date" class="form-control" placeholder=" " disabled/>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </div>
-                            </b-col>
-                            <b-col>
-                              <div class="form-group">
-                                <label>Tiempos de alerta para emisión</label>
-                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " disabled>
-                                        <option value="1 mes">1 mes</option>
-                                        <option value="2 meses">2 mes</option>
-                                        <option value="4 meses">4 mes</option>
-                                        <option value="6 meses">6 mes</option>
-                                        <option value="12 meses">12 mes</option>
-                                      </select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                              </div>
-                            </b-col>
-                          </b-row>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Estado</label>
-                              <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                                  <select  v-model="form.status" name="tipo" class="form-control " disabled>
-                                    <option value="Inahabilitado">Inahabilitado</option>
-                                    <option value="En elaboración">En elaboración</option>
-                                    <option value="Elaborado">Elaborado</option>
-                                  </select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                    </b-tab>
-              </b-tabs>
-
-          </ValidationObserver>
-          <div class="row mx-0 mb-5 justify-content-between">
-            <div class=" col-2">
-               <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
-            </div>
-            <div class="col-2">
-              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
-              <div v-else>
-                <button @click="switchLocD" v-if="!ver && !editMode">Guatdar</button>
-                <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
-                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
-              </div>
-            </div>
-          </div>
-      </b-modal>
-
-      <!-- Habilitar nueva version -->
-    <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
-          <ValidationObserver  ref="form">
-                <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
-                  <b-tab  class="border-0">
-                    <template v-slot:title>
-                      <span class="d-inline-block d-sm-none">
-                        <i class="fas fa-home"></i>
-                      </span>
-                      <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
-                    </template>
-                    <b-row class="mt-3">
-                    <b-col>
-                      <div class="form-group ">
-                        <label>Nombre del documento</label>
-                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                          <input v-model="nueva_version.nombre"  type="text" class="form-control" placeholder=" " >
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    <b-col>
-                      <div class="form-group">
-                        <label>Tipo de docemento</label>
-                        <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                          <select v-model="nueva_version.tipo_id"  name="tipo" class="form-control " >
-                              <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Consecutivo</label>
-                          <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
-                                <input v-model="nueva_version.consecutivo"  type="text" class="form-control" placeholder=" " />
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Versión</label>
-                          <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="nueva_version.version"  type="text" class="form-control" placeholder=" " />
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Proceso</label>
-                          <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="nueva_version.proceso_id"  name="tipo" class="form-control "   @change="capSubproceso()">
-                              <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                          <label>Tipo de docemento</label>
+                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <select v-model="form.tipo_id"  name="tipo" class="form-control " disabled>
+                                <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
                       </b-col>
-                      <b-col>
-                        <div v-if="subproceso.length!= 0 " class="form-group">
-                          <label>Subproceso</label>
-                          <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="nueva_version.subproceso_id"  name="tipo" class="form-control ">
-                              <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
-                            </select>
-                            <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Sede</label>
-                            <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="nueva_version.sedes_id"  :options="sedes" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
-                      <b-form-file
-                          v-model="logo"
-                          placeholder="Seleccione una imagen..."
-                          drop-placeholder="Drop file here..."
-                          @change="onFileChangeLogo"
-                      ></b-form-file>
-                    </div>
-                    </b-row>
-                      
-                  </b-tab>
-
-                  <b-tab>
-                      <template v-slot:title>
-                        <span class="d-inline-block d-sm-none">
-                          <i class="far fa-user"></i>
-                        </span>
-                        <span class="d-none d-sm-inline-block">RESPONSABLES</span>
-                      </template>
-                        <h5 class="mt-3">Responsabilidades</h5>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="nueva_version.creado==='No creado'">Elabora</label>
-                              <label v-else>Elaboró</label>
-                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="nueva_version.creado==='No creado'">  
-                            <div class="form-group">
-                              <label>Fecha de elaboración</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="nueva_version.elaboracion" type="date" class="form-control" placeholder=" "/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="nueva_version.creado==='No creado'">Revisa</label>
-                              <label v-else>Revisó</label>
-                              <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="nueva_version.creado==='No creado'">
-                            <div class="form-group">
-                              <label>Fecha de revisión</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="nueva_version.revision"  type="date" class="form-control" placeholder=" "/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>  
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
-                              <label v-else>Aprobó</label>
-                              <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col v-if="nueva_version.creado==='No creado'">
-                            <div class="form-group">
-                              <label>Fecha de aprobación</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="nueva_version.aprobacion"  type="date" class="form-control" placeholder=" " />
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                  </b-tab>
-
-                  <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                        </template>
-                      <h5 class="mt-3">Normatividad asociada</h5> 
-                      <b-row class="align-items-center mb-3">
+                      </b-row>
+                      <b-row>
                         <b-col>
-                          <div class="form-group m-0">
-                            <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
-                              <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                          <div class="form-group">
+                            <label>Consecutivo</label>
+                            <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                  <input v-model="form.consecutivo"  type="text" class="form-control" placeholder=" " disabled/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Versión</label>
+                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                  <input v-model="form.version"  type="text" class="form-control" placeholder=" " disabled/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Proceso</label>
+                            <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                              <select v-model="form.proceso_id"  name="tipo" class="form-control " disabled  @change="capSubproceso()">
+                                <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                              </select>
                               <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                        <b-col>
+                          <div v-if="subproceso.length!= 0 " class="form-group">
+                            <label>Subproceso</label>
+                            <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                              <select v-model="form.subproceso_id"  name="tipo" class="form-control " disabled>
+                                <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
                       </b-row>
-                      <div class="card mt-3">
-                        <div class="row m-0 justify-content-end">
-                          <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                          <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                        </div>
-                        <div v-if="show" class="mb-3">
-                          <b-row v-for="(norma, index) in nueva_version.normativas" :key="index" class="px-3 ">
-                            <b-col class="form-group w-100">
-                              <div class="row m-0 justify-content-between">
-                                  <label>{{norma.nombre}}</label>
-                                  <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                              </div>
-                             
-                              <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" "/>
-                                <span style="color:red">{{ errors[0] }}</span>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Sede</label>
+                              <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                  <v-select  v-model="form.sedes_id"  :options="sedes" disabled :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
-                            </b-col>
-                          </b-row>
-                        </div>
-                      </div> 
-                  </b-tab>
-
-
-                    <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">EMISIÓN</span>
-                        </template>
-                        <b-row class="mt-3">
-                            <b-col>
-                              <div class="form-group">
-                                <label>Fecha de emisión</label>
-                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="nueva_version.fecha_emicion"  type="date" class="form-control" placeholder=" " />
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </div>
-                            </b-col>
-                            <b-col>
-                              <div class="form-group">
-                                <label>Tiempos de alerta para emisión</label>
-                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="nueva_version.intervalo" name="tipo" class="form-control " >
-                                        <option value="1 mes">1 mes</option>
-                                        <option value="2 meses">2 mes</option>
-                                        <option value="4 meses">4 mes</option>
-                                        <option value="6 meses">6 mes</option>
-                                        <option value="12 meses">12 mes</option>
-                                      </select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                              </div>
-                            </b-col>
-                          </b-row>
-                    </b-tab>
-                    <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">ARCHIVO</span>
-                        </template>
-                          <b-row class="mt-3 w-100">
-                            <b-col>
-                              <VueDocPreview class="w-100" :value="nueva_version.documento_actual.archivo" type="office" />
-                            </b-col>
-                          </b-row>
-                    </b-tab>
-              </b-tabs>
-
-          </ValidationObserver>
-          <div class="row mx-0 mb-5 justify-content-between">
-            <div class=" col-2">
-               <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
-            </div>
-            <div class="col-2">
-              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
-              <div v-else>
-                <button class="btn btn-block float-right btn-success" @click="switchLocD" v-if="!ver && !editMode">Guardar</button>
-                <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
-                <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
-              </div>
-            </div>
-          </div>
-     </b-modal>
-
-      <b-modal id="modal_elaborar" false size="lg"  title="ELABORACIÓN DE DOCUMENTOS" hide-footer>
-          <ValidationObserver ref="form">
-            
-            <div class="alert alert-warning mb-3" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_revision != ''">
-              <h6 class="text-info">Observaciones de la revisón</h6>
-              {{edit.observaciones_revision}}
-            </div>
-            <b-row class="mb-3">
-                  <div class="col-sm-12">
-                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                    <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
-                    <b-form-file
-                        v-model="archivo"
-                        :disabled="ver"
-                        placeholder="Seleccione su archivos..."
-                        drop-placeholder="Drop file here..."
-                    ></b-form-file>
-                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
-                      <h6 class="text-info">Observaciones del documentos</h6>
-                      {{edit.observaciones_documentos}}
-                    </div>
-                   </div>
-                   <div class="col-sm-12">
-                   <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
-                     <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
+                          </div>
+                        </b-col>
+                        <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
                         <b-form-file
-                            v-model="diagrama"
+                            v-model="logo"
+                            placeholder="Seleccione una imagen..."
+                            drop-placeholder="Drop file here..."
+                            @change="onFileChangeLogo"
+                        ></b-form-file>
+                      </div>
+                      </b-row>
+                        
+                    </b-tab>
+
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                        </template>
+                          <h5 class="mt-3">Responsabilidades</h5>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="form.creado==='No creado'">Elabora</label>
+                                <label v-else>Elaboró</label>
+                                  <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="form.creado==='No creado'">  
+                              <div class="form-group">
+                                <label>Fecha de elaboración</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="form.elaboracion" type="date" class="form-control" placeholder=" " disabled/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="form.creado==='No creado'">Revisa</label>
+                                <label v-else>Revisó</label>
+                                <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
+                                  <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="form.creado==='No creado'">
+                              <div class="form-group">
+                                <label>Fecha de revisión</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="form.revision"  type="date" class="form-control" placeholder=" " disabled/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>  
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="form.creado==='No creado'">Aprueba</label>
+                                <label v-else>Aprobó</label>
+                                <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="form.creado==='No creado'">
+                              <div class="form-group">
+                                <label>Fecha de aprobación</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="form.aprobacion"  type="date" class="form-control" placeholder=" " disabled/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+
+                    <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                          </template>
+                        <h5 class="mt-3">Normatividad asociada</h5> 
+                        <b-row class="align-items-center mb-3">
+                          <b-col>
+                            <div class="form-group m-0">
+                              <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+                                <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                        </b-row>
+                        <div class="card mt-3">
+                          <div class="row m-0 justify-content-end">
+                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                          </div>
+                          <div v-if="show" class="mb-3">
+                            <b-row v-for="(norma, index) in form.normativas" :key="index" class="px-3 ">
+                              <b-col class="form-group w-100">
+                                <div class="row m-0 justify-content-between">
+                                    <label>{{norma.nombre}}</label>
+                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
+                                </div>
+                              
+                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " disabled/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div> 
+                    </b-tab>
+
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          </template>
+                          <b-row class="mt-3">
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fecha de emisión</label>
+                                  <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                        <input v-model="form.fecha_emicion"  type="date" class="form-control" placeholder=" " disabled/>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Tiempos de alerta para emisión</label>
+                                    <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                        <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " disabled>
+                                          <option value="1 mes">1 mes</option>
+                                          <option value="2 meses">2 mes</option>
+                                          <option value="4 meses">4 mes</option>
+                                          <option value="6 meses">6 mes</option>
+                                          <option value="12 meses">12 mes</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Estado</label>
+                                <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
+                                    <select  v-model="form.status" name="tipo" class="form-control " disabled>
+                                      <option value="Inahabilitado">Inahabilitado</option>
+                                      <option value="En elaboración">En elaboración</option>
+                                      <option value="Elaborado">Elaborado</option>
+                                    </select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                      </b-tab>
+                </b-tabs>
+
+            </ValidationObserver>
+            <div class="row mx-0 mb-5 justify-content-between">
+              <div class=" col-2">
+                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+              </div>
+              <div class="col-2">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
+                <div v-else>
+                  <button @click="switchLocD" v-if="!ver && !editMode">Guatdar</button>
+                  <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                  <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+                </div>
+              </div>
+            </div>
+        </b-modal>
+
+        <!-- Habilitar nueva version -->
+        <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
+            <ValidationObserver  ref="form">
+                  <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab  class="border-0">
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="fas fa-home"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                      </template>
+                      <b-row class="mt-3">
+                      <b-col>
+                        <div class="form-group ">
+                          <label>Nombre del documento</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                            <input v-model="nueva_version.nombre"  type="text" class="form-control" placeholder=" " >
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Tipo de docemento</label>
+                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <select v-model="nueva_version.tipo_id"  name="tipo" class="form-control " >
+                                <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Consecutivo</label>
+                            <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                  <input v-model="nueva_version.consecutivo"  type="text" class="form-control" placeholder=" " />
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Versión</label>
+                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                  <input v-model="nueva_version.version"  type="text" class="form-control" placeholder=" " />
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Proceso</label>
+                            <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                              <select v-model="nueva_version.proceso_id"  name="tipo" class="form-control "   @change="capSubproceso()">
+                                <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div v-if="subproceso.length!= 0 " class="form-group">
+                            <label>Subproceso</label>
+                            <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                              <select v-model="nueva_version.subproceso_id"  name="tipo" class="form-control ">
+                                <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Sede</label>
+                              <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                  <v-select  v-model="nueva_version.sedes_id"  :options="sedes" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                        <b-form-file
+                            v-model="logo"
+                            placeholder="Seleccione una imagen..."
+                            drop-placeholder="Drop file here..."
+                            @change="onFileChangeLogo"
+                        ></b-form-file>
+                      </div>
+                      </b-row>
+                        
+                    </b-tab>
+
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                        </template>
+                          <h5 class="mt-3">Responsabilidades</h5>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="nueva_version.creado==='No creado'">Elabora</label>
+                                <label v-else>Elaboró</label>
+                                  <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="nueva_version.creado==='No creado'">  
+                              <div class="form-group">
+                                <label>Fecha de elaboración</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="nueva_version.elaboracion" type="date" class="form-control" placeholder=" "/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="nueva_version.creado==='No creado'">Revisa</label>
+                                <label v-else>Revisó</label>
+                                <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
+                                  <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="nueva_version.creado==='No creado'">
+                              <div class="form-group">
+                                <label>Fecha de revisión</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="nueva_version.revision"  type="date" class="form-control" placeholder=" "/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>  
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
+                                <label v-else>Aprobó</label>
+                                <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col v-if="nueva_version.creado==='No creado'">
+                              <div class="form-group">
+                                <label>Fecha de aprobación</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="nueva_version.aprobacion"  type="date" class="form-control" placeholder=" " />
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+
+                    <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                          </template>
+                        <h5 class="mt-3">Normatividad asociada</h5> 
+                        <b-row class="align-items-center mb-3">
+                          <b-col>
+                            <div class="form-group m-0">
+                              <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+                                <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                          </b-col>
+                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                        </b-row>
+                        <div class="card mt-3">
+                          <div class="row m-0 justify-content-end">
+                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                          </div>
+                          <div v-if="show" class="mb-3">
+                            <b-row v-for="(norma, index) in nueva_version.normativas" :key="index" class="px-3 ">
+                              <b-col class="form-group w-100">
+                                <div class="row m-0 justify-content-between">
+                                    <label>{{norma.nombre}}</label>
+                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
+                                </div>
+                              
+                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" "/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div> 
+                    </b-tab>
+
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          </template>
+                          <b-row class="mt-3">
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fecha de emisión</label>
+                                  <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                        <input v-model="nueva_version.fecha_emicion"  type="date" class="form-control" placeholder=" " />
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Tiempos de alerta para emisión</label>
+                                    <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                        <select @change="suma" v-model="nueva_version.intervalo" name="tipo" class="form-control " >
+                                          <option value="1 mes">1 mes</option>
+                                          <option value="2 meses">2 mes</option>
+                                          <option value="4 meses">4 mes</option>
+                                          <option value="6 meses">6 mes</option>
+                                          <option value="12 meses">12 mes</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row>
+                            <div>
+                               <b-col>
+                              <div class="form-group">
+                                <label>Fecha de alerta</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de edición</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col class="col-sm-12">
+                              <div class="form-group ">
+                                <label>Control del cambios</label>
+                                <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                  <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                            </div>
+                      </b-tab>
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">ARCHIVO</span>
+                          </template>
+                            <b-row class="mt-3 w-100">
+                              <b-col>
+                                <VueDocPreview class="w-100" :value="nueva_version.documento_actual.archivo" type="office" />
+                              </b-col>
+                            </b-row>
+                      </b-tab>
+                </b-tabs>
+
+            </ValidationObserver>
+            <div class="row mx-0 mb-5 justify-content-between">
+              <div class=" col-2">
+                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+              </div>
+              <div class="col-2">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
+                <div v-else>
+                  <button class="btn btn-block float-right btn-success" @click="switchLocD" v-if="!ver && !editMode">Guardar</button>
+                  <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                  <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+                </div>
+              </div>
+            </div>
+        </b-modal>
+
+        <b-modal id="modal_elaborar" false size="lg"  title="ELABORACIÓN DE DOCUMENTOS" hide-footer>
+            <ValidationObserver ref="form">
+              
+              <div class="alert alert-warning mb-3" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_revision != ''">
+                <h6 class="text-info">Observaciones de la revisón</h6>
+                {{edit.observaciones_revision}}
+              </div>
+              <b-row class="mb-3">
+                    <div class="col-sm-12">
+                      <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                      <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
+                      <b-form-file
+                          v-model="archivo"
+                          :disabled="ver"
+                          placeholder="Seleccione su archivos..."
+                          drop-placeholder="Drop file here..."
+                      ></b-form-file>
+                        <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
+                        <h6 class="text-info">Observaciones del documentos</h6>
+                        {{edit.observaciones_documentos}}
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                    <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
+                      <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
+                          <b-form-file
+                              v-model="diagrama"
+                              :disabled="ver"
+                              placeholder="Seleccione su archivos..."
+                              drop-placeholder="Drop file here..."
+                          ></b-form-file>
+                          <span style="color:red">{{ errors[0] }}</span>
+                      </ValidationProvider>
+                      <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
+                        <h6 class="text-info">Observaciones del diagrama</h6>
+                        {{edit.observaciones_diagramas}}
+                      </div>
+                </div>
+                  <div class="col-sm-12">
+                        <div class="form-group ">
+                          <label>Observaciones</label>
+                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                            <textarea v-model="edit.observaciones_elaboracion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                    </div>
+              </b-row>
+              
+          </ValidationObserver>
+              <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
+
+        </b-modal>
+
+        <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
+              <ValidationObserver ref="form">
+                <div class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones Del Editor</h6>
+                  {{edit.observaciones_elaboracion}}
+                </div>
+                <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                      <select name="Estatus" v-model="edit.status_revision" class="form-control">
+                        <option value="Aprobado">Aprobado</option>
+                        <option value="Rechazado">Rechazado</option>
+                      </select>
+                      <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                </div>
+                <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
+                      <b-col class="col-sm-12">
+                        <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                        <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
+                        <b-form-file
+                            v-model="archivo"
                             :disabled="ver"
                             placeholder="Seleccione su archivos..."
                             drop-placeholder="Drop file here..."
                         ></b-form-file>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
-                      <h6 class="text-info">Observaciones del diagrama</h6>
-                      {{edit.observaciones_diagramas}}
-                    </div>
-               </div>
-                <div class="col-sm-12">
-                      <div class="form-group ">
-                        <label>Observaciones</label>
-                        <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                          <textarea v-model="edit.observaciones_elaboracion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                           <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                  </div>
-            </b-row>
-             
-        </ValidationObserver>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
-
-     </b-modal>
-
-     <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
-          <ValidationObserver ref="form">
-            <div class="alert alert-warning mb-3" role="alert">
-              <h6 class="text-info">Observaciones Del Editor</h6>
-              {{edit.observaciones_elaboracion}}
-            </div>
-            <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
-                <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                  <select name="Estatus" v-model="edit.status_revision" class="form-control">
-                    <option value="Aprobado">Aprobado</option>
-                    <option value="Rechazado">Rechazado</option>
-                  </select>
-                  <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-            </div>
-            <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
-                  <b-col class="col-sm-12">
-                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                    <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
-                    <b-form-file
-                        v-model="archivo"
-                        :disabled="ver"
-                        placeholder="Seleccione su archivos..."
-                        drop-placeholder="Drop file here..."
-                    ></b-form-file>
-                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                   </b-col>
-               </b-row>
-               <b-row>
-                  <b-col class="col-sm-12">
-                    <div class="form-group ">
-                      <label>Observaciones de revisón</label>
-                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                        <textarea v-model="edit.observaciones_revision"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </b-col>
-                  <b-col class="col-sm-12">
-                    <div class="form-group ">
-                      <label>Observaciones del diagrama</label>
-                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                        <textarea v-model="edit.observaciones_diagramas"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </b-col>
-                  <b-col class="col-sm-12">
-                    <div class="form-group ">
-                      <label>Observaciones del documentos</label>
-                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                        <textarea v-model="edit.observaciones_documentos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </b-col>
-               </b-row>
-        </ValidationObserver>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
-     </b-modal>
-
-     <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
-          <ValidationObserver ref="form">
-            <div class="alert alert-warning mb-3" role="alert">
-              <h6 class="text-info">Observaciones de revisión</h6>
-              {{edit.observaciones_revision}}
-            </div>
-            <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
-                <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                  <select name="Estatus" v-model="edit.status_aprobacion" class="form-control">
-                    <option value="Aprobado">Aprobado</option>
-                    <option value="Rechazado">Rechazado</option>
-                  </select>
-                  <span style="color:red">{{ errors[0] }}</span>
-                </ValidationProvider>
-            </div>
-            <b-row class="mb-3" v-if="edit.status_aprobacion==='Aprobado'">
-                  <b-col class="col-sm-12">
-                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                    <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
-                    <b-form-file
-                        v-model="archivo"
-                        :disabled="ver"
-                        placeholder="Seleccione su archivos..."
-                        drop-placeholder="Drop file here..."
-                    ></b-form-file>
-                       <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                   </b-col>
-               </b-row>
-               <b-row>
-                  <b-col class="col-sm-12">
-                    <div class="form-group">
-                      <label>Observaciones de aprobación</label>
-                      <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                        <textarea v-model="edit.observaciones_aprobacion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </b-col>
-               </b-row>
-        </ValidationObserver>
-            <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
-
-     </b-modal>
-
-       <b-modal id="modal_hab" false size="lg"  title="Gestion de documentos" hide-footer>
-          <ValidationObserver  ref="form">
-                <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
-                  <b-tab  class="border-0">
-                    <template v-slot:title>
-                      <span class="d-inline-block d-sm-none">
-                        <i class="fas fa-home"></i>
-                      </span>
-                      <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
-                    </template>
-                    <b-row class="mt-3">
-                    <b-col>
-                      <div class="form-group ">
-                        <label>Nombre del documento</label>
-                        <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
-                          <input v-model="edit.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    <b-col>
-                      <div class="form-group">
-                        <label>Tipo de docemento</label>
-                        <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                          <select v-model="edit.tipo_id"  name="tipo" class="form-control " :disabled="ver">
-                              <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
-                          </select>
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      </div>
-                    </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Consecutivo</label>
-                          <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
-                                <input v-model="edit.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
+                        </ValidationProvider>
+                      </b-col>
+                  </b-row>
+                  <b-row>
+                      <b-col class="col-sm-12">
+                        <div class="form-group ">
+                          <label>Observaciones de revisón</label>
+                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                            <textarea v-model="edit.observaciones_revision"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
                         </div>
                       </b-col>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Versión</label>
-                          <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="edit.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
+                      <b-col class="col-sm-12">
+                        <div class="form-group ">
+                          <label>Observaciones del diagrama</label>
+                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                            <textarea v-model="edit.observaciones_diagramas"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
                         </div>
                       </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
+                      <b-col class="col-sm-12">
+                        <div class="form-group ">
+                          <label>Observaciones del documentos</label>
+                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                            <textarea v-model="edit.observaciones_documentos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                  </b-row>
+            </ValidationObserver>
+                <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
+        </b-modal>
+
+        <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
+              <ValidationObserver ref="form">
+                <div class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones de revisión</h6>
+                  {{edit.observaciones_revision}}
+                </div>
+                <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                      <select name="Estatus" v-model="edit.status_aprobacion" class="form-control">
+                        <option value="Aprobado">Aprobado</option>
+                        <option value="Rechazado">Rechazado</option>
+                      </select>
+                      <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                </div>
+                <b-row class="mb-3" v-if="edit.status_aprobacion==='Aprobado'">
+                      <b-col class="col-sm-12">
+                        <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                        <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
+                        <b-form-file
+                            v-model="archivo"
+                            :disabled="ver"
+                            placeholder="Seleccione su archivos..."
+                            drop-placeholder="Drop file here..."
+                        ></b-form-file>
+                          <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
+                  </b-row>
+                  <b-row>
+                      <b-col class="col-sm-12">
                         <div class="form-group">
-                          <label>Proceso</label>
-                          <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="edit.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
-                              <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
-                            </select>
+                          <label>Observaciones de aprobación</label>
+                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
+                            <textarea v-model="edit.observaciones_aprobacion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                  </b-row>
+            </ValidationObserver>
+                <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
+
+        </b-modal>
+
+        <b-modal id="modal_hab" false size="lg"  title="Gestion de documentos" hide-footer>
+            <ValidationObserver  ref="form">
+                  <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab  class="border-0">
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="fas fa-home"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                      </template>
+                      <b-row class="mt-3">
+                      <b-col>
+                        <div class="form-group ">
+                          <label>Nombre del documento</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                            <input v-model="edit.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
                       </b-col>
                       <b-col>
-                        <div v-if="subproceso.length!= 0 " class="form-group">
-                          <label>Subproceso</label>
-                          <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
-                              <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                        <div class="form-group">
+                          <label>Tipo de docemento</label>
+                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <select v-model="edit.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
+                        </ValidationProvider>
                         </div>
                       </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Sede</label>
-                            <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
-                                <v-select  v-model="edit.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <div v-if="edit.creado==='Creado'" class="col-sm-6 mt-4">
-                      <b-form-file
-                          v-model="logo"
-                          placeholder="Seleccione una imagen..."
-                          drop-placeholder="Drop file here..."
-                          @change="onFileChangeLogo"
-                      ></b-form-file>
-                    </div>
-                    </b-row>
-                      
-                  </b-tab>
-
-                  <b-tab>
-                      <template v-slot:title>
-                        <span class="d-inline-block d-sm-none">
-                          <i class="far fa-user"></i>
-                        </span>
-                        <span class="d-none d-sm-inline-block">RESPONSABLES</span>
-                      </template>
-                        <h5 class="mt-3">Responsabilidades</h5>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label >Elabora</label>
-                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="edit.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col >  
-                            <div class="form-group">
-                              <label>Fecha de elaboración</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="edit.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label >Revisa</label>      
-                              <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="edit.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Fecha de revisión</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="edit.revision"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>  
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Aprueba</label>
-                              <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="edit.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[2])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Fecha de aprobación</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="edit.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
-                  </b-tab>
-
-                  <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                        </template>
-                      <h5 class="mt-3">Normatividad asociada</h5> 
-                      <b-row class="align-items-center mb-3">
+                      </b-row>
+                      <b-row>
                         <b-col>
-                          <div class="form-group m-0">
-                              <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                          <div class="form-group">
+                            <label>Consecutivo</label>
+                            <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                  <input v-model="edit.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
                           </div>
                         </b-col>
-                        <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Versión</label>
+                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                  <input v-model="edit.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
                       </b-row>
-                      <div class="card mt-3">
-                        <div class="row m-0 justify-content-end">
-                          <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                          <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                        </div>
-                        <div v-if="show" class="mb-3">
-                          <b-row v-for="(norma, index) in edit.normativas" :key="index" class="px-3 ">
-                            <b-col class="form-group w-100">
-                              <div class="row m-0 justify-content-between">
-                                  <label>{{norma.nombre}}</label>
-                                  <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                              </div>
-                             
-                              <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                <span style="color:red">{{ errors[0] }}</span>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Proceso</label>
+                            <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                              <select v-model="edit.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                                <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div v-if="subproceso.length!= 0 " class="form-group">
+                            <label>Subproceso</label>
+                            <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                              <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                                <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Sede</label>
+                              <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                  <v-select  v-model="edit.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
-                            </b-col>
-                          </b-row>
-                        </div>
-                      </div> 
-                  </b-tab>
-
+                          </div>
+                        </b-col>
+                        <div v-if="edit.creado==='Creado'" class="col-sm-6 mt-4">
+                        <b-form-file
+                            v-model="logo"
+                            placeholder="Seleccione una imagen..."
+                            drop-placeholder="Drop file here..."
+                            @change="onFileChangeLogo"
+                        ></b-form-file>
+                      </div>
+                      </b-row>
+                        
+                    </b-tab>
 
                     <b-tab>
                         <template v-slot:title>
                           <span class="d-inline-block d-sm-none">
                             <i class="far fa-user"></i>
                           </span>
-                          <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          <span class="d-none d-sm-inline-block">RESPONSABLES</span>
                         </template>
-                        <b-row class="mt-3">
+                          <h5 class="mt-3">Responsabilidades</h5>
+                          <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label>Fecha de emisión</label>
-                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="edit.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </div>
-                            </b-col>
-                            <b-col>
-                              <div class="form-group">
-                                <label>Tiempos de alerta para emisión</label>
-                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="setFechaSuma" v-model="edit.intervalo" name="tipo" class="form-control " :disabled="ver">
-                                        <option value="1 mes">1 mes</option>
-                                        <option value="2 meses">2 mes</option>
-                                        <option value="4 meses">4 mes</option>
-                                        <option value="6 meses">6 mes</option>
-                                        <option value="12 meses">12 mes</option>
-                                      </select>
-                                      <span style="color:red">{{ errors[0] }}</span>
+                                <label >Elabora</label>
+                                  <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="edit.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                             </b-col>
+                            <b-col >  
+                              <div class="form-group">
+                                <label>Fecha de elaboración</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.elaboracion" type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
                           </b-row>
-                        <b-col>
-                            <div class="form-group">
-                              <label>Fecha de alerta</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Fecha de edición</label>
-                              <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                    <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
-                                    <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                          <b-col class="col-sm-12">
-                            <div class="form-group ">
-                              <label>Control del cambios</label>
-                              <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
-                                <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
-                            </div>
-                          </b-col>
-                    </b-tab>
-
-                    <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">ARCHIVO</span>
-                        </template>
-                          <b-row class="mt-3 w-100">
+                          <b-row>
                             <b-col>
-                              <VueDocPreview class="w-100" :value="edit.firma_aprueba" type="office" />
+                              <div class="form-group">
+                                <label >Revisa</label>      
+                                <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
+                                  <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="edit.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de revisión</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.revision"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>  
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Aprueba</label>
+                                <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
+                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="edit.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[2])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de aprobación</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.aprobacion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
                             </b-col>
                           </b-row>
                     </b-tab>
-              </b-tabs>
 
-          </ValidationObserver>
-          <div class="row mx-0 mb-5 justify-content-between">
-            <div class=" col-2">
-               <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
-            </div>
-            <div class="col-2">
-              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
-              <div v-else>
-                <button class="btn btn-block float-right btn-success" @click="habilitar()">Habilitar</button>
+                    <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                          </template>
+                        <h5 class="mt-3">Normatividad asociada</h5> 
+                        <b-row class="align-items-center mb-3">
+                          <b-col>
+                            <div class="form-group m-0">
+                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                            </div>
+                          </b-col>
+                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                        </b-row>
+                        <div class="card mt-3">
+                          <div class="row m-0 justify-content-end">
+                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                          </div>
+                          <div v-if="show" class="mb-3">
+                            <b-row v-for="(norma, index) in edit.normativas" :key="index" class="px-3 ">
+                              <b-col class="form-group w-100">
+                                <div class="row m-0 justify-content-between">
+                                    <label>{{norma.nombre}}</label>
+                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
+                                </div>
+                              
+                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div> 
+                    </b-tab>
+
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          </template>
+                          <b-row class="mt-3">
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fecha de emisión</label>
+                                  <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                        <input v-model="edit.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Tiempos de alerta para emisión</label>
+                                    <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                        <select @change="setFechaSuma" v-model="edit.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                          <option value="1 mes">1 mes</option>
+                                          <option value="2 meses">2 mes</option>
+                                          <option value="4 meses">4 mes</option>
+                                          <option value="6 meses">6 mes</option>
+                                          <option value="12 meses">12 mes</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row>
+                          <b-col>
+                              <div class="form-group">
+                                <label>Fecha de alerta</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de edición</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col class="col-sm-12">
+                              <div class="form-group ">
+                                <label>Control del cambios</label>
+                                <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                  <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                      </b-tab>
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">ARCHIVO</span>
+                          </template>
+                            <b-row class="mt-3 w-100">
+                              <b-col>
+                                <VueDocPreview class="w-100" :value="edit.firma_aprueba" type="office" />
+                              </b-col>
+                            </b-row>
+                      </b-tab>
+                </b-tabs>
+
+            </ValidationObserver>
+            <div class="row mx-0 mb-5 justify-content-between">
+              <div class=" col-2">
+                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+              </div>
+              <div class="col-2">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
+                <div v-else>
+                  <button class="btn btn-block float-right btn-success" @click="habilitar()">Habilitar</button>
+                </div>
               </div>
             </div>
-          </div>
-     </b-modal>
+        </b-modal>
   </Layout>
 </template>
 
@@ -2583,7 +2612,6 @@ export default {
               this.doc.elabora_id = response.data.elabora_id;
               this.doc.aprueba_id = response.data.aprueba_id;
               this.doc.revisa_id = response.data.revisa_id;
-              this.versiones = response.data.versiones;
              }
           })
           .catch((e)=>{
@@ -2727,8 +2755,8 @@ export default {
         this.listarCargos();
         this.listarSedes();
         this.listarDocumento();
-        this.buscarVersiones();
         this.swichAprobacion();
+        this.buscarVersiones();
         this.title=this.cliente.nombre_prestador;
       },
     },
@@ -2739,6 +2767,7 @@ export default {
       console.log(this.form)
       },
      mounted() {
+       this.buscarVersiones();
         const $ = require('jquery')
         window.$ = $
           $(document).ready(function() {
