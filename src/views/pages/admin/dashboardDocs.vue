@@ -1238,7 +1238,8 @@
                       </b-col>
                   </b-row>
             </ValidationObserver>
-                <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
+                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
+                <button v-if="edit.status_revision == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="revisar()">Rechazar</button>
         </b-modal>
 
         <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
@@ -1282,7 +1283,8 @@
                       </b-col>
                   </b-row>
             </ValidationObserver>
-                <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
+                <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
+                <button v-if="edit.status_aprobacion == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="aprueba()">Rechazar</button>
 
         </b-modal>
 
@@ -2271,7 +2273,7 @@ export default {
        }}).then(response => {
         if (response.status==200) {
             this.$swal('Agregado exito!','','success');
-            this.listardocscreados();
+            this.listarDocumento();
             this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
             this.resete();
           }
@@ -2401,7 +2403,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listardocscreados();
+               this.listarDocumento();
                this.$root.$emit("bv::hide::modal", "modal-nueva", "#btnShow");
                ///limpiar el formulario   
                this.resete();

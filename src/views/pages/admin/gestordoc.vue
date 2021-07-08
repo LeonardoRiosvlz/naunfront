@@ -138,7 +138,7 @@
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                   
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setearLinea(data.item.id)"> Ver linea de tiempo</b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -156,7 +156,7 @@
           </div>
         </div>
       </div>
-
+      <!-- v-for="(historial, index) in historialdocs" :key="index" -->
 
     <div class="row justify-content-center">
       <div class="col-xl-10">
@@ -170,33 +170,26 @@
           </div>
 
           <div
- 
-           
-          
-            class="timeline-left"
-          >
+            class="timeline-item"
+            v-for="(historial, index) in historialdocs"
+            :key="index"
+            :class="{'timeline-left': index % 2 === 1 && index != 0}"
+            >
             <div class="timeline-block">
               <div class="timeline-box card">
                 <div class="card-body">
                   <span class="timeline-icon"></span>
                   <div class="timeline-date">
                     <i class="mdi mdi-circle-medium circle-dot"></i>
-                    
+                    {{historial.fecha_emicion}}
                   </div>
-                  <h5 class="mt-3 foont-size-15"></h5>
+                  <h5 class="mt-3 foont-size-15">{{historial.nombre}}</h5>
+                  <a :href="historial.archivo">Descargar documento subido</a>
                   <div class="text-muted">
-                    <p class="mb-0"></p>
+                    <p class="mb-0">{{historial.observaciones_edicion}}</p>
                   </div>
-                  <div class="timeline-album">
-                    <a href="#" class="mr-1">
-                     
-                    </a>
-                    <a href="#" class="mr-1">
-                      
-                    </a>
-                    <a href="#" class="mr-1">
-                
-                    </a>
+                  <div>
+                    <p>Fecha de alerta: {{historial.fecha_alerta}}</p>
                   </div>
                 </div>
               </div>
@@ -640,6 +633,7 @@ export default {
       articulo:"",
       sedes:"",
       rango:0,
+      historialdocs:[],
       buscador:{
         'tipo_id': '',
         'subproceso_id':'',
@@ -1069,6 +1063,20 @@ export default {
             console.log('error' + e);
           })
       },
+      async setearLinea(id){
+      let data = new FormData();
+      data.append('id',id);
+        await this.axios.post('api/documentos/find',data)
+          .then((response) => {
+             if (response.status==200) { 
+              this.historialdocs = response.data.hdocumentos
+              console.log(this.historialdocs)
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      }, 
     async setearCarga(id){
       let data = new FormData();
       data.append('id',id);
