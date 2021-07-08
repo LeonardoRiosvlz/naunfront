@@ -504,21 +504,7 @@
                             </b-col>
                             
                           </b-row>
-                        <b-row>
-                          <b-col>
-                            <div class="form-group">
-                              <label>Estado</label>
-                              <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
-                                  <select  v-model="edit.status" name="tipo" class="form-control " :disabled="ver">
-                                    <option value="Inahabilitado">Inahabilitado</option>
-                                    <option value="En elaboración">En elaboración</option>
-                                    <option value="Elaborado">Elaborado</option>
-                                  </select>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </div>
-                          </b-col>
-                        </b-row>
+
                     </b-tab>
               </b-tabs>
 
@@ -821,6 +807,7 @@
 
         <!-- Habilitar nueva version -->
         <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
+          <pre>{{nueva_version}}</pre>
             <ValidationObserver  ref="form">
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
@@ -906,14 +893,7 @@
                               </ValidationProvider>
                           </div>
                         </b-col>
-                        <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
-                        <b-form-file
-                            v-model="logo"
-                            placeholder="Seleccione una imagen..."
-                            drop-placeholder="Drop file here..."
-                            @change="onFileChangeLogo"
-                        ></b-form-file>
-                      </div>
+
                       </b-row>
                         
                     </b-tab>
@@ -1002,10 +982,9 @@
                         <b-row class="align-items-center mb-3">
                           <b-col>
                             <div class="form-group m-0">
-                              <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
+
                                 <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
+
                             </div>
                           </b-col>
                           <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -1072,7 +1051,7 @@
                               <div class="form-group">
                                 <label>Fecha de alerta</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <input v-model="nueva_version.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                               </div>
@@ -1081,7 +1060,7 @@
                               <div class="form-group">
                                 <label>Fecha de edición</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
-                                      <input v-model="edit.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <input v-model="nueva_version.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                               </div>
@@ -1090,7 +1069,7 @@
                               <div class="form-group ">
                                 <label>Control del cambios</label>
                                 <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
-                                  <textarea v-model="edit.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                  <textarea v-model="nueva_version.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                               </div>
@@ -1102,6 +1081,13 @@
                             <span class="d-inline-block d-sm-none">
                               <i class="far fa-user"></i>
                             </span>
+                            <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                              <b-form-file
+                                  v-model="logo"
+                                  placeholder="Seleccione el archivo..."
+                                  drop-placeholder="Drop file here..."
+                              ></b-form-file>
+                            </div>
                             <span class="d-none d-sm-inline-block">ARCHIVO</span>
                           </template>
                             <b-row class="mt-3 w-100">
@@ -1120,9 +1106,9 @@
               <div class="col-2">
                 <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
                 <div v-else>
-                  <button class="btn btn-block float-right btn-success" @click="switchLocD" v-if="!ver && !editMode">Guardar</button>
+                  <button class="btn btn-block float-right btn-success" @click="validarVersionNuevaHabilitada" v-if="!ver && !editMode">Editar</button>
                   <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
-                  <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
+                  <button class="btn btn-block float-right btn-success" @click="validarVersionNuevaHabilitada" v-if="!ver && editMode">Editar</button>
                 </div>
               </div>
             </div>
@@ -2245,6 +2231,21 @@ export default {
         }});
       }
     },
+        validarVersionNuevaHabilitada(){
+      if (!this.editMode) {
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+              this.editarVersionHabilitada()();
+            } else {}
+          });        
+        }else{
+          this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+            this.editarVersion();
+          } else {
+        }});
+      }
+    },
    async editarDocumento(){
       let data = new FormData();
       var formulario = this.form;
@@ -2352,6 +2353,54 @@ export default {
             this.eliminarVersions(id);
           }
         })
+      },
+      editarVersionHabilitada(){
+        this.$swal({
+          title: 'Desea realizar esta edición? esta acción generara una version nueva',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.edicionVersionHabilitada();
+          }
+        })
+      },
+   async edicionVersionHabilitada(){
+     let data = new FormData();
+      var formulario = this.nueva_version;
+        for (var key in formulario) {
+          if (key=='normativas'||key=='documento_actual') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+        if (this.logo) {
+        data.append('filename',this.logo);
+       }
+      console.log(formulario)
+       await this.axios.post('api/documentos/versiones/editversionando', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listardocscreados();
+               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               ///limpiar el formulario   
+               this.resete();
+              }
+            }).catch(e => {
+              console.log(e.response.data.menssag);
+              this.$swal(e.response.data);
+          });
       },
       async eliminarVersions(id){
         let data = new FormData();
@@ -2577,6 +2626,8 @@ export default {
                 this.nueva_version.aprueba_id = response.data.aprueba_id;
                 this.nueva_version.revisa_id = response.data.revisa_id;
                 this.nueva_version.habilita_id = response.data.habilita_id;
+                this.nueva_version.fecha_edicion = response.data.fecha_edicion;
+                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
                 this.$root.$emit("bv::show::modal", "modal-nueva", "#btnShow"); 
               }
            })

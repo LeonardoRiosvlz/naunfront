@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <PageHeader :title="title" :items="items" />
-        <b-button class="mb-3" v-b-toggle.sidebar-right>Filtrar enventos</b-button>
+        <b-button class="mb-3" v-b-toggle.sidebar-right>Filtrar documentos</b-button>
     <b-sidebar id="sidebar-right" title="Filtros" right shadow>
       <div class="px-3 py-2">
         <div class="accordion" role="tablist">
@@ -157,22 +157,58 @@
         </div>
       </div>
 
+
+    <div class="row justify-content-center">
+      <div class="col-xl-10">
+        <div class="timeline" dir="ltr">
+          <div class="timeline-item timeline-left">
+            <div class="timeline-block">
+              <div class="time-show-btn mt-0">
+                <a href="#" class="btn btn-danger btn-rounded w-lg">2020</a>
+              </div>
+            </div>
+          </div>
+
+          <div
+ 
+           
+          
+            class="timeline-left"
+          >
+            <div class="timeline-block">
+              <div class="timeline-box card">
+                <div class="card-body">
+                  <span class="timeline-icon"></span>
+                  <div class="timeline-date">
+                    <i class="mdi mdi-circle-medium circle-dot"></i>
+                    
+                  </div>
+                  <h5 class="mt-3 foont-size-15"></h5>
+                  <div class="text-muted">
+                    <p class="mb-0"></p>
+                  </div>
+                  <div class="timeline-album">
+                    <a href="#" class="mr-1">
+                     
+                    </a>
+                    <a href="#" class="mr-1">
+                      
+                    </a>
+                    <a href="#" class="mr-1">
+                
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
         <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
-              <b-row class="mb-3">
-                <div class="col-md-5">
-                    <div class="form-group">
-                      <label>Vas a: </label>
-                      <ValidationProvider name="tipo de documento" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.creado" name="tipo" class="form-control " :disabled="ver">
-                            <option value="Creado" selected>Subir documento creado</option>
-                            <option value="No creado">Crear documento</option>
-                        </select>
-                        <span style="color:red">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                    </div>
-                  </div>
-              </b-row>
 
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
@@ -218,7 +254,7 @@
                         <div class="form-group">
                           <label>Versión</label>
                           <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                <input v-model="form.version"  type="text" class="form-control" placeholder=" " disabled/>
                                 <span style="color:red">{{ errors[0] }}</span>
                           </ValidationProvider>
                         </div>
@@ -262,7 +298,7 @@
                       <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
                       <b-form-file
                           v-model="logo"
-                          placeholder="Seleccione una imagen..."
+                          placeholder="Seleccione el archivo  ..."
                           drop-placeholder="Drop file here..."
                           @change="onFileChangeLogo"
                       ></b-form-file>
@@ -285,7 +321,7 @@
                               <label v-if="form.creado==='No creado'">Elabora</label>
                               <label v-else>Elaboró</label>
                                 <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre+' '+option.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -306,7 +342,7 @@
                               <label v-if="form.creado==='No creado'">Revisa</label>
                               <label v-else>Revisó</label>
                               <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre+' '+option.nombre" ></v-select>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                             </div>
@@ -327,7 +363,7 @@
                               <label v-if="form.creado==='No creado'">Aprueba</label>
                               <label v-else>Aprobó</label>
                               <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_id" @input="validacionRespon(responsabilidadesSelect[2])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_id" @input="validacionRespon(responsabilidadesSelect[2])" :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre+' '+option.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                                 </ValidationProvider>
                             </div>
@@ -427,8 +463,8 @@
                               <ValidationProvider name="estado" rules="required" v-slot="{ errors }">
                                   <select  v-model="form.status" name="tipo" class="form-control " :disabled="ver">
                                     <option value="Inahabilitado">Inahabilitado</option>
-                                    <option value="En elaboración">En elaboración</option>
-                                    <option value="Elaborado">Elaborado</option>
+                                    <option value="Habilitado">Habilitado</option>
+                                    <option value="Obsoleto">Obsoleto</option>
                                   </select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
@@ -517,6 +553,9 @@
      </b-modal>
   </Layout>
 </template>
+
+
+
 
 <script>
 import "vue-select/dist/vue-select.css";
@@ -611,7 +650,7 @@ export default {
             'tipo_id': '',
             'subproceso_id':'',
             'proceso_id':'',
-            'creado':'',
+            'creado':'Creado',
             'nombre': null,
             'archivo': '',
             'normativas':[],
@@ -977,6 +1016,7 @@ export default {
           for (var key in formulario) {
               this.buscador[key]=""
           }
+          
       },
       resete(){
           var formulario = this.form;
@@ -988,6 +1028,8 @@ export default {
             }
         }
          this.form.cliente_id=this.cliente.id;
+         this.form.creado="Creado";
+         this.form.version=1;
       },
     async setear(id){
       let data = new FormData();
