@@ -118,7 +118,8 @@
             </div>
           </div>
           <simplebar style="max-height: 230px;">
-            <a v-for="(msg, index) in notificaciones" :key="index" href class="text-reset notification-item">
+      
+            <a v-for="(msg, index) in notificaciones[0].notificacions" :key="index" href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs mr-3">
                   <span :class="msg.color">
