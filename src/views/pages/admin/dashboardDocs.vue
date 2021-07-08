@@ -43,7 +43,7 @@
                   <template v-slot:title>
                     <div @click="estado = 1" class="row align-items-center justify-content-center ">
                       <i class="ri-calendar-line font-size-20"></i>
-                      <span class="mt-2 d-none d-sm-block mx-2 mb-2">Habilitados</span>
+                      <span class="mt-2 d-none d-sm-block mx-2 mb-2">Habilitados <span class="badge badge-pill badge-primary">{{ docs_Habilitados.length}}</span></span>
                     </div>
                   </template>
                   <b-card-text>
@@ -87,10 +87,14 @@
                                           {{ data.nombre }}
                                       </h5>
                                       <p class="text-truncate mb-0">
-                                          {{ data.created_at }}
+                                         Version: v-{{ data.version }}
                                       </p>
+                                      <!-- <p class="text-truncate mb-0">
+                                          {{ data.created_at | fecha }}
+                                      </p> -->
                                       </div>
-                                      <div class="font-size-11">{{ data.time }}</div>
+                                      <div class="font-size-11">{{ data.created_at | fecha}}</div>
+                                      
                                   </div>
                                   </a>
                               </li>
@@ -2273,7 +2277,8 @@ export default {
        }}).then(response => {
         if (response.status==200) {
             this.$swal('Agregado exito!','','success');
-            this.listarDocumento();
+             this.listarDocumento()
+              this.listarDocumentosHabilitados();
             this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
             this.resete();
           }
@@ -2403,7 +2408,8 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarDocumento();
+              this.listarDocumento()
+               this.listarDocumentosHabilitados();
                this.$root.$emit("bv::hide::modal", "modal-nueva", "#btnShow");
                ///limpiar el formulario   
                this.resete();
@@ -2637,7 +2643,7 @@ export default {
                 this.nueva_version.habilita_id = response.data.habilita_id;
                 this.nueva_version.fecha_edicion = response.data.fecha_edicion;
                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
-                this.nueva_version.version = response.data.hdocumentos.length + 1;
+                this.nueva_version.version = response.data.hdocumentos.length + 2;
                 this.$root.$emit("bv::show::modal", "modal-nueva", "#btnShow"); 
               }
            })

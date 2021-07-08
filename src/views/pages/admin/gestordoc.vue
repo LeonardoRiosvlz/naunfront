@@ -158,13 +158,16 @@
       </div>
       <!-- v-for="(historial, index) in historialdocs" :key="index" -->
 
-    <div class="row justify-content-center">
+    
+
+    <b-modal id="modal-historial" size="xl" false   title="Gestion de documentos" hide-footer>
+      <div class="row justify-content-center">
       <div class="col-xl-10">
         <div class="timeline" dir="ltr">
           <div class="timeline-item timeline-left">
             <div class="timeline-block">
               <div class="time-show-btn mt-0">
-                <a href="#" class="btn btn-danger btn-rounded w-lg">2020</a>
+                <a href="#" class="btn btn-danger btn-rounded w-lg">Historial de versiones</a>
               </div>
             </div>
           </div>
@@ -181,15 +184,15 @@
                   <span class="timeline-icon"></span>
                   <div class="timeline-date">
                     <i class="mdi mdi-circle-medium circle-dot"></i>
-                    {{historial.fecha_emicion}}
+                    {{historial.fecha_edicion | fecha}}
                   </div>
                   <h5 class="mt-3 foont-size-15">{{historial.nombre}}</h5>
-                  <a :href="historial.archivo">Descargar documento subido</a>
+                  <a class="mb-3" :href="historial.archivo">Descargar documento subido <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1056 992"><path d="M189 992q-67 0-119-52q-55-55-55-133.5T70 673L645 63q44-45 101.5-58T863 12t109 69q16 17 29.5 37.5t22 43t13 47.5t4.5 50q-2 106-72 177L534 898q-9 10-22 10.5t-22.5-8.5t-10-22.5T488 854l435-462q53-54 54-134t-51-131q-32-33-71-50t-84-11t-80 41L116 717q-37 37-37 89t37 89q17 17 37 25.5t42 6.5q44-2 82-41l457-486q5-5 9.5-10.5t9.5-13t8-16t4-17t-3-17.5t-12-17q-19-20-37-18q-19 2-43 25L326 682q-6 6-14 8.5t-16.5.5t-14.5-8q-10-9-10-22t9-23l344-367q41-40 83-44q48-4 88 36q38 37 33.5 87T780 444L323 931q-56 56-125 60q-2 0-4.5.5t-4.5.5z" fill="#626262"/></svg></a>
                   <div class="text-muted">
-                    <p class="mb-0">{{historial.observaciones_edicion}}</p>
+                    <p class="mb-0 text-justify">{{historial.observaciones_edicion}}</p>
                   </div>
-                  <div>
-                    <p>Fecha de alerta: {{historial.fecha_alerta}}</p>
+                  <div class="mt-3 ">
+                    <p>Creado: {{historial.fecha_emicion | fecha}}</p>
                   </div>
                 </div>
               </div>
@@ -198,8 +201,7 @@
         </div>
       </div>
     </div>
-
-
+     </b-modal>
         <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
 
@@ -1065,13 +1067,14 @@ export default {
       },
       async setearLinea(id){
       let data = new FormData();
-      data.append('id',id);
+      data.append('id',id); 
         await this.axios.post('api/documentos/find',data)
           .then((response) => {
              if (response.status==200) { 
               this.historialdocs = response.data.hdocumentos
               console.log(this.historialdocs)
              }
+             this.$root.$emit("bv::show::modal", "modal-historial", "#btnShow");
           })
           .catch((e)=>{
             console.log('error' + e);
