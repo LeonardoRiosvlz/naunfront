@@ -912,7 +912,7 @@
                                 <label v-if="nueva_version.creado==='No creado'">Elabora</label>
                                 <label v-else>Elaboró</label>
                                   <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
@@ -954,7 +954,7 @@
                                 <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
                                 <label v-else>Aprobó</label>
                                 <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
@@ -983,7 +983,7 @@
                           <b-col>
                             <div class="form-group m-0">
 
-                                <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
 
                             </div>
                           </b-col>
@@ -1081,20 +1081,26 @@
                             <span class="d-inline-block d-sm-none">
                               <i class="far fa-user"></i>
                             </span>
-                            <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
-                              <b-form-file
-                                  v-model="logo"
-                                  placeholder="Seleccione el archivo..."
-                                  drop-placeholder="Drop file here..."
-                              ></b-form-file>
-                            </div>
                             <span class="d-none d-sm-inline-block">ARCHIVO</span>
                           </template>
-                            <b-row class="mt-3 w-100">
-                              <b-col>
+                            <div class="mt-3 w-100">
+                              <div class="col-ms-12">
+                                <div class="alert alert-info mb-2" role="alert">
+                                  <p class="text-info">Si desea modificar el documento actual, seleccion el nuevo archivo</p>
+                                </div>
+                                <div class="col-sm-12 my-3">
+                                  <b-form-file
+                                      v-model="logo"
+                                      placeholder="Seleccione el archivo..."
+                                      drop-placeholder="Drop file here..."
+                                  ></b-form-file>
+                                </div>
+                              </div>
+                              
+                              <div class="col-sm-12 w-100">
                                 <VueDocPreview class="w-100" :value="nueva_version.documento_actual.archivo" type="office" />
-                              </b-col>
-                            </b-row>
+                              </div>
+                            </div>
                       </b-tab>
                 </b-tabs>
 
@@ -1167,7 +1173,6 @@
               
           </ValidationObserver>
               <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
-
         </b-modal>
 
         <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
@@ -1175,6 +1180,10 @@
                 <div class="alert alert-warning mb-3" role="alert">
                   <h6 class="text-info">Observaciones Del Editor</h6>
                   {{edit.observaciones_elaboracion}}
+                </div>
+                <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones Del Editor</h6>
+                  {{edit.observaciones_aprobacion}}
                 </div>
                 <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
@@ -2393,7 +2402,7 @@ export default {
                     '',
                     'success');
                this.listardocscreados();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               this.$root.$emit("bv::hide::modal", "modal-nueva", "#btnShow");
                ///limpiar el formulario   
                this.resete();
               }
@@ -2592,7 +2601,6 @@ export default {
       data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
            .then((response) => {
-             console.log(response.data.id)
               if (response.status==200) {
                 this.nueva_version.id = response.data.id;
                 this.nueva_version.creado = response.data.creado;
@@ -2600,7 +2608,6 @@ export default {
                 this.nueva_version.nombre_elabora = response.data.nombre_elabora;
                 this.nueva_version.nombre_revisa = response.data.nombre_revisa;
                 this.nueva_version.nombre_aprueba = response.data.nombre_aprueba;
-                this.nueva_version.version = response.data.version;
                 this.nueva_version.observaciones_version = response.data.observaciones_version;
                 this.nueva_version.consecutivo = response.data.consecutivo;
                 this.nueva_version.elaboracion = response.data.elaboracion;
@@ -2627,7 +2634,8 @@ export default {
                 this.nueva_version.revisa_id = response.data.revisa_id;
                 this.nueva_version.habilita_id = response.data.habilita_id;
                 this.nueva_version.fecha_edicion = response.data.fecha_edicion;
-                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
+                this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
+                this.nueva_version.version = response.data.hdocumentos.length + 1;
                 this.$root.$emit("bv::show::modal", "modal-nueva", "#btnShow"); 
               }
            })
@@ -2814,6 +2822,7 @@ export default {
     created(){
       this.session();
       this.listarDocumentosHabilitados();
+      this.listardocscreados();
       this.documentoActual();
       console.log(this.form)
       },
