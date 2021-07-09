@@ -20,7 +20,7 @@
                       <template v-slot:button-content>
                       <i class="mdi mdi-dots-horizontal font-size-20"></i>
                       </template>
-                      
+                      <b-dropdown-item @click="$bvModal.show('nuevo')">NUEVO</b-dropdown-item>
                       <b-dropdown-item @click="setearT();editMode=false;ver=false;">Actualizar version (solo para estado habilitado)</b-dropdown-item>
                       <b-dropdown-item @click="setearD();editMode=false;ver=false;">Programar nueva versión</b-dropdown-item>
                   </b-dropdown>
@@ -262,6 +262,63 @@
         </div>
         </div>
         <!-- end row -->
+
+      <b-modal id="nuevo" false size="lg"  title="Acciones a realizar" hide-footer>
+        <div class="row">
+          <div class="col-lg-12">
+            <b-card no-body>
+              <b-row no-gutters class="align-items-center">
+                <b-col md="4">
+                  <b-card-img :src="require('@/assets/images/nuevodocs.svg')" class="rounded-0 p-4"></b-card-img>
+                </b-col>
+                <b-col md="8">
+                  <b-card-body title="Gestionar documento habilitado">
+                    <b-card-text>Actualmente este documento esta en creación por lo que debes completar datos para  poder habilitarlo en la platforma</b-card-text>
+                    <p class="card-text">
+                      <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                  </b-card-body>
+                </b-col>
+              </b-row>
+            </b-card>
+          </div>
+          <div class="col-lg-12">
+            <b-card no-body>
+              <b-row no-gutters class="align-items-center">
+                <b-col md="8">
+                  <b-card-body title="Nueva versión">
+                    <b-card-text>Esta acción te llevara a generar una version nueva la cual debe cumplir ciertos pasos para poder ser habilitada como la versión habilitada.</b-card-text>
+                    <p class="card-text">
+                      <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                  </b-card-body>
+                </b-col>
+                <b-col md="4">
+                  <b-card-img :src="require('@/assets/images/programardocs.svg')" class="rounded-0 p-4"></b-card-img>
+                </b-col>
+              </b-row>
+            </b-card>
+          </div>
+          <div class="col-lg-12">
+            <b-card no-body>
+              <b-row no-gutters class="align-items-center">
+                <b-col md="4">
+                  <b-card-img :src="require('@/assets/images/historialdocs.svg')" class="rounded-0 p-4"></b-card-img>
+                </b-col>
+                <b-col md="8">
+                  <b-card-body title="Agregar versión obsoleta">
+                    <b-card-text>Puede que tengas versiones anteriores que desees reespaldara en el historal de versioens obsoletas, aqui podras registrar todas las versiones antiguas.</b-card-text>
+                    <p class="card-text">
+                      <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                  </b-card-body>
+                </b-col>
+              </b-row>
+            </b-card>
+          </div>
+        </div>
+        <!-- end row -->
+      </b-modal>
 
 
         <!-- EDITAR VERSIOENS -->
