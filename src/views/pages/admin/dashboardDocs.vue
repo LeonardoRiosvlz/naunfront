@@ -1909,7 +1909,7 @@
                
                 
             </ValidationObserver>
-                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Revisar</button>
+                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Aprobar</button>
                 <button v-if="edit.status_revision == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="revisar()">Rechazar</button>
         </b-modal>
 
@@ -2014,7 +2014,7 @@
                
                   
             </ValidationObserver>
-                <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
+                <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Probar</button>
                 <button v-if="edit.status_aprobacion == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="aprueba()">Rechazar</button>
 
         </b-modal>
