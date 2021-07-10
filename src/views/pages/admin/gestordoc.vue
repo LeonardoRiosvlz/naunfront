@@ -133,9 +133,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button><a :href="'/gestion-versiones/'+data.item.id" style="color:#000;">Gestion de versiones</a></b-dropdown-item-button>
-                    <b-dropdown-item-button v-if="data.item.creado==='No creado'" @click="editMode=false;ver=false;setearCarga(data.item.id)"> Cargar documentos </b-dropdown-item-button>
                     <b-dropdown-item-button v-if="data.item.creado==='Creado'"><a :href="'documentos/'+data.item.id" style="color:#000"> Vista al Documento </a></b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarDoc(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setearLinea(data.item.id)"> Ver linea de tiempo</b-dropdown-item-button>
