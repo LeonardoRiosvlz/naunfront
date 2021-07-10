@@ -1,6 +1,7 @@
 import store from '@/state/store'
 
 export default [
+  
     {
         path: '/',
         name: '/',
@@ -829,5 +830,13 @@ export default [
             authRequired: true,
         },
         component: () => import('../views/pages/chat/index')
+    },
+    {
+        path: '/prueba',
+        name: 'Prueba',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/visorPdf'),
     },
 ]
