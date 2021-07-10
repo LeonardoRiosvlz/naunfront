@@ -864,7 +864,6 @@
 
           <!-- CREAR VERSIONES -->
         <b-modal id="modal-obsoleto" false size="lg"  title="Gestion de documentos obsoletos" hide-footer>
-          <pre>{{doc_obsoleto}}</pre>
             <ValidationObserver  ref="form">
 
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
