@@ -96,12 +96,7 @@ export const menuItems = [
                 id: 19,
                 label: 'Gestor de formatos',
                 link: ''
-            },
-            {
-                id: 20,
-                label: 'Gestor de plantillas',
-                link: '/plantillas'
-            },
+            }
         ]
     },    {
         id: 20,
