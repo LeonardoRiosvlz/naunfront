@@ -1716,13 +1716,15 @@
         </b-modal>
 
         <b-modal id="modal_elaborar" false size="lg"  title="ELABORACIÓN DE DOCUMENTOS" hide-footer>
-            <ValidationObserver ref="form">
-              
-              <div class="alert alert-warning mb-3" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_revision != ''">
-                <h6 class="text-info">Observaciones de la revisón</h6>
-                {{edit.observaciones_revision}}
-              </div>
-              <b-row class="mb-3">
+           <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+              <b-tab  class="border-0">
+                <template v-slot:title>
+                    <span class="d-inline-block d-sm-none">
+                        <i class="fas fa-home"></i>
+                    </span>
+                    <span class="d-none d-sm-inline-block">DATOS DE ELABORACIÓN</span>
+                  </template>
+                  <b-row class="mb-3">
                     <div class="col-sm-12">
                       <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                       <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
@@ -1764,32 +1766,52 @@
                         </ValidationProvider>
                         </div>
                     </div>
-              </b-row>
+                </b-row>
+              </b-tab>
+              <b-tab  class="border-0" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_revision != ''">
+                <template v-slot:title>
+                    <span class="d-inline-block d-sm-none">
+                        <i class="fas fa-home"></i>
+                    </span>
+                    <span class="d-none d-sm-inline-block"> OBSERVACIONES</span>
+                </template>
+                <div class="alert alert-warning mb-3" role="alert" >
+                  <h6 class="text-info">Observaciones de la revisón</h6>
+                  {{edit.observaciones_revision}}
+                </div>
+              </b-tab>
+           </b-tabs>
+            <ValidationObserver ref="form">
+              
+              
+              
               
           </ValidationObserver>
-              <button class="btn btn-block float-right btn-success mb-5 mt-3" @click="elaborar()">Guardar</button>
+              <button class="btn btn-block float-right btn-success mb-3 mt-2" @click="elaborar()">Elaborar</button>
         </b-modal>
 
         <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
+          
               <ValidationObserver ref="form">
-                <div class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones Del Editor</h6>
-                  {{edit.observaciones_elaboracion}}
-                </div>
-                <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones Del Editor</h6>
-                  {{edit.observaciones_aprobacion}}
-                </div>
-                <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
+                 
+                <div class="row align-items-center mx-0 mb-3 col-ms-12" style=" margin-top: 1rem;">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                      <select name="Estatus" v-model="edit.status_revision" class="form-control">
+                      <select name="Estatus" v-model="edit.status_revision" class="form-control col-ms-12">
                         <option value="Aprobado">Aprobado</option>
                         <option value="Rechazado">Rechazado</option>
                       </select>
                       <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                 </div>
-                <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
+                <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+              <b-tab  class="border-0">
+                <template v-slot:title>
+                    <span class="d-inline-block d-sm-none">
+                        <i class="fas fa-home"></i>
+                    </span>
+                    <span class="d-none d-sm-inline-block">DATOS DE REVISIÓN</span>
+                  </template>
+                  <b-row class="mb-3" v-if="edit.status_revision==='Aprobado'">
                       <b-col class="col-sm-12">
                         <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                         <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
@@ -1832,18 +1854,35 @@
                         </div>
                       </b-col>
                   </b-row>
+              </b-tab>
+              <b-tab>
+                 <template v-slot:title>
+                    <span class="d-inline-block d-sm-none">
+                        <i class="fas fa-home"></i>
+                    </span>
+                    <span class="d-none d-sm-inline-block">OBSERVECIONES</span>
+                  </template>
+                <div class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones Del Editor</h6>
+                  {{edit.observaciones_elaboracion}}
+                </div>
+                <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones Del Editor</h6>
+                  {{edit.observaciones_aprobacion}}
+                </div>
+              </b-tab>
+          </b-tabs>
+               
+                
             </ValidationObserver>
-                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Guardar</button>
+                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Revisar</button>
                 <button v-if="edit.status_revision == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="revisar()">Rechazar</button>
         </b-modal>
 
         <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
+           
               <ValidationObserver ref="form">
-                <div class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones de revisión</h6>
-                  {{edit.observaciones_revision}}
-                </div>
-                <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
+                 <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                       <select name="Estatus" v-model="edit.status_aprobacion" class="form-control">
                         <option value="Aprobado">Aprobado</option>
@@ -1852,7 +1891,15 @@
                       <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
                 </div>
-                <b-row class="mb-3" v-if="edit.status_aprobacion==='Aprobado'">
+            <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+              <b-tab  class="border-0">
+                <template v-slot:title>
+                  <span class="d-inline-block d-sm-none">
+                    <i class="fas fa-home"></i>
+                  </span>
+                  <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                </template>
+                 <b-row class="mb-3" v-if="edit.status_aprobacion==='Aprobado'">
                       <b-col class="col-sm-12">
                         <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
                         <span class="d-none d-sm-inline-block">DOCUMENTO CON SU FIRMA</span>
@@ -1877,6 +1924,26 @@
                         </div>
                       </b-col>
                   </b-row>
+              </b-tab>
+              <b-tab  class="border-0" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_revision != ''">
+                <template v-slot:title>
+                  <span class="d-inline-block d-sm-none">
+                    <i class="fas fa-home"></i>
+                  </span>
+                  <span class="d-none d-sm-inline-block">OBSERVACIONES</span>
+                </template>
+                <div class="alert alert-warning mb-3" role="alert">
+                  <h6 class="text-info">Observaciones de revisión</h6>
+                  {{edit.observaciones_revision}}
+                </div>
+              </b-tab>
+            </b-tabs>
+            
+              
+                
+               
+               
+                  
             </ValidationObserver>
                 <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Guardar</button>
                 <button v-if="edit.status_aprobacion == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="aprueba()">Rechazar</button>
