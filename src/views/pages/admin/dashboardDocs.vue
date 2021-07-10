@@ -271,7 +271,7 @@
                     <b-card-img :src="require('@/assets/images/nuevodocs.svg')" class="rounded-0 p-4"></b-card-img>
                   </b-col>
                   <b-col md="8">
-                    <b-card-body title="Gestionar documento habilitado">
+                    <b-card-body title="¿Tienes una version vigente de este documento?">
                       <b-card-text>Actualmente este documento esta en creación por lo que debes completar los datos para  poder habilitarlo en la plataforma...</b-card-text>
                     </b-card-body>
                   </b-col>

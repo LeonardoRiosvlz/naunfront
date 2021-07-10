@@ -123,9 +123,12 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-
-      
-
+              <template v-slot:cell(fecha_emicion)="data">
+                 {{data.item.fecha_emicion | fecha}}
+              </template>
+               <template v-slot:cell(fecha_revision)="data">
+                 {{data.item.fecha_alerta | fecha}}
+              </template>
                 <template v-slot:cell(actions)="data">
                 <b-dropdown size="sm" class="">
                   <template v-slot:button-content>
@@ -321,8 +324,8 @@
                   <p>Aprobar: {{form.nombre_aprueba}}</p>
                 </b-card>
                 <div class="row justify-content-end col-12">
-                    <span class="mr-4">Fecha de emicion: {{form.fecha_emicion}}</span>
-                    <span> Fecha de revision: {{form.fecha_alerta}}</span>
+                    <span class="mr-4">Fecha de emicion: {{form.fecha_emicion | fecha}}</span>
+                    <span> Fecha de revision: {{form.fecha_alerta | fecha}}</span>
                   </div>
               </b-card>
             </b-tab>
