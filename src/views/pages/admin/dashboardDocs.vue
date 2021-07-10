@@ -1863,7 +1863,7 @@
                     <span class="d-none d-sm-inline-block">OBSERVECIONES</span>
                   </template>
                 <div class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones Del Editor</h6>
+                  <h6 class="text-info">Observaciones Del Elaborador</h6>
                   {{edit.observaciones_elaboracion}}
                 </div>
                 <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
