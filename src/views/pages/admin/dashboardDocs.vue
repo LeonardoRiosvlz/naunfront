@@ -1403,6 +1403,7 @@
 
             <ValidationObserver  ref="form">
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    
                     <b-tab  class="border-0">
                       <template v-slot:title>
                         <span class="d-inline-block d-sm-none">
@@ -1790,7 +1791,6 @@
         </b-modal>
 
         <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
-          
               <ValidationObserver ref="form">
                  
                 <div class="row align-items-center mx-0 mb-3 col-ms-12" style=" margin-top: 1rem;">
@@ -1803,6 +1803,41 @@
                     </ValidationProvider>
                 </div>
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab>
+              <template v-slot:title>
+                <span class="d-inline-block d-sm-none">
+                  <i class="far fa-user"></i>
+                </span>
+                <span class="d-none d-sm-inline-block">DATOS GENERALES</span>
+              </template>
+              <b-card>
+                <div class="row justify-content-between col-12 align-items-center ml-0 px-0">
+                  <h4 class="col-6 px-0">{{edit.nombre}}</h4>
+                  <div class="row justify-content-end col-6">
+                    <span class="mr-4">Versión: v-{{edit.version}}</span>
+                    <span>Estatus: {{edit.status}}</span>
+                  </div>
+                </div>
+                
+                <p>Consecutivo: {{edit.consecutivo}}</p>
+                <span>{{items.texto}}</span>
+                <b-card>
+                  <h5>Normativas</h5>
+                  <div v-for="(items,index) in edit.normativas" :key="index">
+                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                    <span>{{items.texto}}</span>
+                  </div>
+                  <h5 class="mt-3">Responsabilidades</h5>
+                  <p>Elaborar: {{edit.nombre_elabora}}</p>
+                  <p>Revisar: {{edit.nombre_revisa}}</p>
+                  <p>Aprobar: {{edit.nombre_aprueba}}</p>
+                </b-card>
+                <div class="row justify-content-end col-12">
+                    <span class="mr-4">Fecha de emicion: {{edit.fecha_emicion}}</span>
+                    <span> Fecha de revision: {{edit.fecha_alerta}}</span>
+                  </div>
+              </b-card>
+            </b-tab>
               <b-tab  class="border-0">
                 <template v-slot:title>
                     <span class="d-inline-block d-sm-none">
@@ -1891,6 +1926,41 @@
                     </ValidationProvider>
                 </div>
             <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+               <b-tab>
+              <template v-slot:title>
+                <span class="d-inline-block d-sm-none">
+                  <i class="far fa-user"></i>
+                </span>
+                <span class="d-none d-sm-inline-block">DATOS APROBACIónN</span>
+              </template>
+              <b-card>
+                <div class="row justify-content-between col-12 align-items-center ml-0 px-0">
+                  <h4 class="col-6 px-0">{{edit.nombre}}</h4>
+                  <div class="row justify-content-end col-6">
+                    <span class="mr-4">Versión: v-{{edit.version}}</span>
+                    <span>Estatus: {{edit.status}}</span>
+                  </div>
+                </div>
+                
+                <p>Consecutivo: {{edit.consecutivo}}</p>
+                <span>{{items.texto}}</span>
+                <b-card>
+                  <h5>Normativas</h5>
+                  <div v-for="(items,index) in edit.normativas" :key="index">
+                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                    <span>{{items.texto}}</span>
+                  </div>
+                  <h5 class="mt-3">Responsabilidades</h5>
+                  <p>Elaborar: {{edit.nombre_elabora}}</p>
+                  <p>Revisar: {{edit.nombre_revisa}}</p>
+                  <p>Aprobar: {{edit.nombre_aprueba}}</p>
+                </b-card>
+                <div class="row justify-content-end col-12">
+                    <span class="mr-4">Fecha de emicion: {{edit.fecha_emicion}}</span>
+                    <span> Fecha de revision: {{edit.fecha_alerta}}</span>
+                  </div>
+              </b-card>
+            </b-tab>
               <b-tab  class="border-0">
                 <template v-slot:title>
                   <span class="d-inline-block d-sm-none">

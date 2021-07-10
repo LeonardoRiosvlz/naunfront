@@ -200,11 +200,10 @@
         </div>
       </div>
     </div>
-     </b-modal>
-        <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
+    </b-modal>
+    <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
           <ValidationObserver  ref="form">
-
-  <b-row class="mt-3">
+              <b-row class="mt-3">
                     <b-col>
                       <div class="form-group ">
                         <label>Nombre del documento</label>
@@ -288,8 +287,62 @@
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
           </div>
-     </b-modal>
-
+    </b-modal>
+    <b-modal id="modal-ver" false size="lg"  title="Gestion de documentos" hide-footer>
+      <div>
+      <b-tabs>
+        <b-tab>
+              <template v-slot:title>
+                <span class="d-inline-block d-sm-none">
+                  <i class="far fa-user"></i>
+                </span>
+                <span class="d-none d-sm-inline-block">DATOS GENERALES</span>
+              </template>
+              <b-card>
+                <div class="row justify-content-between col-12 align-items-center ml-0 px-0">
+                  <h4 class="col-6 px-0">{{form.nombre}}</h4>
+                  <div class="row justify-content-end col-6">
+                    <span class="mr-4">Versión: v-{{form.version}}</span>
+                    <span>Estatus: {{form.status}}</span>
+                  </div>
+                </div>
+                
+                <p>Consecutivo: {{form.consecutivo}}</p>
+                <span>{{items.texto}}</span>
+                <b-card>
+                  <h5>Normativas</h5>
+                  <div v-for="(items,index) in form.normativas" :key="index">
+                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                    <span>{{items.texto}}</span>
+                  </div>
+                  <h5 class="mt-3">Responsabilidades</h5>
+                  <p>Elaborar: {{form.nombre_elabora}}</p>
+                  <p>Revisar: {{form.nombre_revisa}}</p>
+                  <p>Aprobar: {{form.nombre_aprueba}}</p>
+                </b-card>
+                <div class="row justify-content-end col-12">
+                    <span class="mr-4">Fecha de emicion: {{form.fecha_emicion}}</span>
+                    <span> Fecha de revision: {{form.fecha_alerta}}</span>
+                  </div>
+              </b-card>
+            </b-tab>
+            <b-tab>
+                <template v-slot:title>
+                <span class="d-inline-block d-sm-none">
+                  <i class="far fa-user"></i>
+                </span>
+                <span class="d-none d-sm-inline-block">ARCHIVO</span>
+              </template>
+               <div class="col-sm-12 w-100">
+                 <h5 class="text-center mt-5" v-if="form.archivo == ''">NO CONTIENE ARCHIVO</h5>
+                <VueDocPreview class="w-100" :value="form.archivo" type="office" />
+              </div>
+            </b-tab>
+        </b-tabs>
+      
+       
+      </div>
+    </b-modal>
 
         <b-modal id="modal_carga" false size="lg"  title="Gestión de normatividad" hide-footer>
           <ValidationObserver ref="form">
@@ -863,9 +916,23 @@ export default {
               this.form.sedes_id = response.data.sedes_id;
               this.form.elabora_id = response.data.elabora_id;
               this.form.aprueba_id = response.data.aprueba_id;
-              this.form.revisa_id = response.data.revisa_id;
+              this.form.revisa_id = response.data.revisa_id
+              this.form.nombre_revisa = response.data.nombre_revisa;
+              this.form.nombre_aprueba = response.data.nombre_aprueba;
+              this.form.nombre_elabora = response.data.nombre_elabora;
               this.versiones = response.data.versiones;
-              this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+              if (this.form.nombre_revisa == "null" || this.nombre_revisa == "") {
+                this.form.nombre_revisa = 'Por revisar'
+              }
+
+              if(this.form.nombre_elabora == "null" || this.nombre_elabora == "") {
+                this.form.nombre_elabora = 'Por elaborar'
+              }
+
+              if(this.form.nombre_aprueba == "null" || this.nombre_aprueba == ""){
+                this.form.nombre_aprueba = 'Por aprobar'
+              }
+              this.$root.$emit("bv::show::modal", "modal-ver", "#btnShow");
              }
           })
           .catch((e)=>{
