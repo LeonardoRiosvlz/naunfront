@@ -128,7 +128,7 @@
                </div>
                
               </b-row> 
-                 
+              
                  
         </ValidationObserver>
         <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
@@ -206,6 +206,7 @@ export default {
       'nombre': null,
       'descripcion': '',
       'archivo': '',
+      'cliente_id': '',
       
       }
     }
@@ -292,7 +293,6 @@ export default {
           data.append(key,formulario[key]);
         }
       if (this.foto) {
-        console.log("hay archivo");
         data.append('filename',this.foto);
        }
        await this.axios.post('api/normatividad', data, {
@@ -427,11 +427,13 @@ export default {
        this.listartipos();
         this.listarProceso();
         this.title=this.cliente.nombre_prestador;
+        this.form.cliente_id=this.cliente.id;
       },
     },
     created(){
         this.session();
        console.log(this.form)
+       this.form.cliente_id=this.cliente.id;
       },
      mounted() {
 

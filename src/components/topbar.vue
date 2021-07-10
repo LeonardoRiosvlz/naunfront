@@ -119,7 +119,7 @@
           </div>
           <simplebar style="max-height: 230px;">
       
-            <a v-for="(msg, index) in notificaciones[0].notificacions" :key="index" href class="text-reset notification-item">
+            <a v-for="(msg, index) in notificaciones" :key="index" href class="text-reset notification-item">
               <div class="media">
                 <div class="avatar-xs mr-3">
                   <span :class="msg.color">
@@ -291,7 +291,7 @@ export default {
     async listarNotificaciones(index){
       await this.axios.get('api/notificacion/').then(response => {
         if (response.status==200) {
-            this.notificaciones=response.data.rows;
+            this.notificaciones=response.data.rows[0].notificacions;
           }
         }).catch(e => { 
     });
