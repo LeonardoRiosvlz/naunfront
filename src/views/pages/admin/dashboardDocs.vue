@@ -265,56 +265,53 @@
 
       <b-modal id="nuevo" false size="lg"  title="Acciones a realizar" hide-footer>
         <div class="row">
-          <div class="col-lg-12">
-            <b-card no-body>
-              <b-row no-gutters class="align-items-center">
-                <b-col md="4">
-                  <b-card-img :src="require('@/assets/images/nuevodocs.svg')" class="rounded-0 p-4"></b-card-img>
-                </b-col>
-                <b-col md="8">
-                  <b-card-body title="Gestionar documento habilitado">
-                    <b-card-text>Actualmente este documento esta en creación por lo que debes completar datos para  poder habilitarlo en la platforma</b-card-text>
-                    <p class="card-text">
-                      <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
-                  </b-card-body>
-                </b-col>
-              </b-row>
-            </b-card>
+          <div class="col-lg-12" v-if="doc.status==='En creación'">
+            <a href="#" @click="$bvModal.show('modal-padre');$bvModal.hide('nuevo');editMode=false;ver=false;">
+              <b-card no-body>
+                <b-row no-gutters class="align-items-center">
+                  <b-col md="4">
+                    <b-card-img :src="require('@/assets/images/nuevodocs.svg')" class="rounded-0 p-4"></b-card-img>
+                  </b-col>
+                  <b-col md="8">
+                    <b-card-body title="Gestionar documento habilitado">
+                      <b-card-text>Actualmente este documento esta en creación por lo que debes completar los datos para  poder habilitarlo en la plataforma...</b-card-text>
+                    </b-card-body>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </a>
           </div>
           <div class="col-lg-12">
-            <b-card no-body>
-              <b-row no-gutters class="align-items-center">
-                <b-col md="8">
-                  <b-card-body title="Nueva versión">
-                    <b-card-text>Esta acción te llevara a generar una version nueva la cual debe cumplir ciertos pasos para poder ser habilitada como la versión habilitada.</b-card-text>
-                    <p class="card-text">
-                      <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
-                  </b-card-body>
-                </b-col>
-                <b-col md="4">
-                  <b-card-img :src="require('@/assets/images/programardocs.svg')" class="rounded-0 p-4"></b-card-img>
-                </b-col>
-              </b-row>
-            </b-card>
+            <a href="#">
+              <b-card no-body>
+                <b-row no-gutters class="align-items-center">
+                  <b-col md="8">
+                    <b-card-body title="Nueva versión">
+                      <b-card-text>Esta acción te llevara a generar una version nueva la cual debe cumplir ciertos pasos para poder ser habilitada como la versión habilitada.</b-card-text>
+                    </b-card-body>
+                  </b-col>
+                  <b-col md="4">
+                    <b-card-img :src="require('@/assets/images/programardocs.svg')" class="rounded-0 p-4"></b-card-img>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </a>
           </div>
           <div class="col-lg-12">
-            <b-card no-body>
-              <b-row no-gutters class="align-items-center">
-                <b-col md="4">
-                  <b-card-img :src="require('@/assets/images/historialdocs.svg')" class="rounded-0 p-4"></b-card-img>
-                </b-col>
-                <b-col md="8">
-                  <b-card-body title="Agregar versión obsoleta">
-                    <b-card-text>Puede que tengas versiones anteriores que desees reespaldara en el historal de versioens obsoletas, aqui podras registrar todas las versiones antiguas.</b-card-text>
-                    <p class="card-text">
-                      <small class="text-muted">Last updated 3 mins ago</small>
-                    </p>
-                  </b-card-body>
-                </b-col>
-              </b-row>
-            </b-card>
+            <a href="#" @click="$bvModal.show('modal-obsoleto');$bvModal.hide('nuevo');editMode=false;ver=false;">
+              <b-card no-body>
+                <b-row no-gutters class="align-items-center">
+                  <b-col md="4">
+                    <b-card-img :src="require('@/assets/images/historialdocs.svg')" class="rounded-0 p-4"></b-card-img>
+                  </b-col>
+                  <b-col md="8">
+                    <b-card-body title="Agregar versión obsoleta">
+                      <b-card-text>Puede que tengas versiones anteriores que desees reespaldara en el historal de versioens obsoletas, aqui podras registrar todas las versiones antiguas.</b-card-text>
+                    </b-card-body>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </a>  
           </div>
         </div>
         <!-- end row -->
@@ -583,6 +580,543 @@
             </div>
           </div>
         </b-modal>
+
+          <!-- CREAR VERSIONES -->
+        <b-modal id="modal-padre" false size="lg"  title="Gestion de documento actual" hide-footer>
+            <ValidationObserver  ref="form">
+
+                  <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab  class="border-0">
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="fas fa-home"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                      </template>
+                      <b-row class="mt-3">
+                      <b-col>
+                        <div class="form-group ">
+                          <label>Nombre del documento</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                            <input v-model="doc.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Tipo de docemento</label>
+                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <select v-model="doc.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Consecutivo</label>
+                            <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                  <input v-model="doc.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Versión</label>
+                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                  <input v-model="doc.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Proceso</label>
+                            <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                              <select v-model="doc.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                                <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div v-if="subproceso.length!= 0 " class="form-group">
+                            <label>Subproceso</label>
+                            <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                              <select v-model="doc.subproceso_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Sede</label>
+                              <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                  <v-select  v-model="doc.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                        <b-form-file
+                            v-model="logo"
+                            placeholder="Seleccione una imagen..."
+                            drop-placeholder="Drop file here..."
+                            @change="onFileChangeLogo"
+                        ></b-form-file>
+                      </div>
+                      </b-row>
+                        
+                    </b-tab>
+
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                        </template>
+                          <h5 class="mt-3">Responsabilidades</h5>
+                         <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Elaboró</label>
+                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc.nombre_elabora"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Revisó</label>
+                                <ValidationProvider name="revisó" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc.nombre_revisa"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Aprobó</label>
+                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc.nombre_aprueba"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+
+                    <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                          </template>
+                        <h5 class="mt-3">Normatividad asociada</h5> 
+                        <b-row class="align-items-center mb-3">
+                          <b-col>
+                            <div class="form-group m-0">
+                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                            </div>
+                          </b-col>
+                          <b-button  @click="cargarNorma_doc" class="float-right btn-success py-1"> agregar</b-button>
+                        </b-row>
+                        <div class="card mt-3">
+                          <div class="row m-0 justify-content-end">
+                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                          </div>
+                          <div v-if="show" class="mb-3">
+                            <b-row v-for="(norma, index) in doc.normativas" :key="index" class="px-3 ">
+                              <b-col class="form-group w-100">
+                                <div class="row m-0 justify-content-between">
+                                    <label>{{norma.nombre}}</label>
+                                    <button class="btn" @click=" eliminarNormativa_doc(norma)"   >Eliminar</button>
+                                </div>
+
+                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div> 
+                    </b-tab>
+
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          </template>
+                          <b-row class="mt-3">
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fecha de emisión</label>
+                                  <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                        <input v-model="doc.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Tiempos de alerta para emisión</label>
+                                    <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
+                                        <select @change="suma_doc" v-model="doc.intervalo" name="tipo" class="form-control " :disabled="ver">
+                                          <option value="1 mes">1 mes</option>
+                                          <option value="2 meses">2 meses</option>
+                                          <option value="4 meses">4 meses</option>
+                                          <option value="6 meses">6 meses</option>
+                                          <option value="12 meses">12 meses</option>
+                                          <option value="24 meses">24 meses</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row>
+
+
+                        <b-row>
+                          <b-col>
+                              <div class="form-group">
+                                <label>Fecha de alerta</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de edición</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col class="col-sm-12">
+                              <div class="form-group ">
+                                <label>Control del cambios</label>
+                                <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                  <textarea v-model="doc.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                         <b-col class="col-sm-12">
+                            <label>Achivo </label>
+                              <ValidationProvider name="archivo" rules="required" v-slot="{ errors }" >
+                                <b-form-file
+                                    v-model="logo"
+                                    placeholder="Seleccione el archivo..."
+                                    drop-placeholder="Drop file here..."
+                                ></b-form-file>
+                                <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                          </b-col>
+                          
+                      </b-row>
+                      </b-tab>
+                </b-tabs>
+
+            </ValidationObserver>
+            <div class="row mx-0  justify-content-between">
+              <div class=" col-2">
+                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+              </div>
+              <div class="col-2">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
+                <div v-else>
+                  <button @click="switchLocDoc('En creación');" class="btn btn-block float-right btn-success" v-if="!ver && !editMode && doc.status==='En creación'">Guardar</button>
+                  <button @click="switchLocDoc('Habilitado');" class="btn btn-block float-right btn-info" v-if="!ver && !editMode && doc.status==='En creación'">Guardar  y habilitar</button>
+                  <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                </div>
+              </div>
+            </div>
+            
+        </b-modal>
+
+
+          <!-- CREAR VERSIONES -->
+        <b-modal id="modal-obsoleto" false size="lg"  title="Gestion de documentos obsoletos" hide-footer>
+          <pre>{{doc_obsoleto}}</pre>
+            <ValidationObserver  ref="form">
+
+                  <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+                    <b-tab  class="border-0">
+                      <template v-slot:title>
+                        <span class="d-inline-block d-sm-none">
+                          <i class="fas fa-home"></i>
+                        </span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                      </template>
+                      <b-row class="mt-3">
+                      <b-col>
+                        <div class="form-group ">
+                          <label>Nombre del documento</label>
+                          <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                            <input v-model="doc_obsoleto.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      <b-col>
+                        <div class="form-group">
+                          <label>Tipo de docemento</label>
+                          <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                            <select v-model="doc_obsoleto.tipo_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option :value="tipo.id" v-for="(tipo,index) in tiposdocumentos" :key="index">{{tipo.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                      </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Consecutivo</label>
+                            <ValidationProvider name="prefijo" rules="required" v-slot="{ errors }">
+                                  <input v-model="doc_obsoleto.consecutivo"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Versión</label>
+                            <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                  <input v-model="doc_obsoleto.version"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Proceso</label>
+                            <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
+                              <select v-model="doc_obsoleto.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
+                                <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                          </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <b-col>
+                          <div v-if="subproceso.length!= 0 " class="form-group">
+                            <label>Subproceso</label>
+                            <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
+                              <select v-model="doc_obsoleto.subproceso_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
+                              </select>
+                              <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                          </div>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col>
+                          <div class="form-group">
+                            <label>Sede</label>
+                              <ValidationProvider name="sede" rules="required" v-slot="{ errors }" >
+                                  <v-select  v-model="doc_obsoleto.sedes_id"  :options="sedes" :disabled="ver" :reduce="sedes => sedes.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                          </div>
+                        </b-col>
+                        <div v-if="form.creado==='Creado'" class="col-sm-6 mt-4">
+                        <b-form-file
+                            v-model="logo"
+                            placeholder="Seleccione una imagen..."
+                            drop-placeholder="Drop file here..."
+                            @change="onFileChangeLogo"
+                        ></b-form-file>
+                      </div>
+                      </b-row>
+                        
+                    </b-tab>
+
+                    <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                        </template>
+                          <h5 class="mt-3">Responsabilidades</h5>
+                         <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Elaboró</label>
+                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc_obsoleto.nombre_elabora"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Revisó</label>
+                                <ValidationProvider name="revisó" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc_obsoleto.nombre_revisa"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                          <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Aprobó</label>
+                                <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc_obsoleto.nombre_aprueba"  type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                          </b-row>
+                    </b-tab>
+
+                    <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
+                          </template>
+                        <h5 class="mt-3">Normatividad asociada</h5> 
+                        <b-row class="align-items-center mb-3">
+                          <b-col>
+                            <div class="form-group m-0">
+                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                            </div>
+                          </b-col>
+                          <b-button  @click="cargarNorma_doc_obsoleto()" class="float-right btn-success py-1"> agregar</b-button>
+                        </b-row>
+                        <div class="card mt-3">
+                          <div class="row m-0 justify-content-end">
+                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
+                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
+                          </div>
+                          <div v-if="show" class="mb-3">
+                            <b-row v-for="(norma, index) in doc_obsoleto.normativas" :key="index" class="px-3 ">
+                              <b-col class="form-group w-100">
+                                <div class="row m-0 justify-content-between">
+                                    <label>{{norma.nombre}}</label>
+                                    <button class="btn" @click=" eliminarNormativa_doc_obsoleto(norma)"   >Eliminar</button>
+                                </div>
+
+                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
+                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </div> 
+                    </b-tab>
+
+
+                      <b-tab>
+                          <template v-slot:title>
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">EMISIÓN</span>
+                          </template>
+                          <b-row class="mt-3">
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fecha de emisión</label>
+                                  <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                        <input v-model="doc_obsoleto.fecha_emicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                            </b-row>
+                        <b-row>
+                            <b-col>
+                              <div class="form-group">
+                                <label>Fecha de edición</label>
+                                <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
+                                      <input v-model="doc_obsoleto.fecha_edicion"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
+                                      <span style="color:red">{{ errors[0] }}</span>
+                                </ValidationProvider>
+                              </div>
+                            </b-col>
+                            <b-col class="col-sm-12">
+                              <div class="form-group ">
+                                <label>Control del cambios</label>
+                                <ValidationProvider name="control de cambio" rules="required" v-slot="{ errors }" >
+                                  <textarea v-model="doc_obsoleto.observaciones_edicion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                  <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                              </div>
+                            </b-col>
+                         <b-col class="col-sm-12">
+                            <label>Achivo </label>
+                              <ValidationProvider name="archivo" rules="required" v-slot="{ errors }" >
+                                <b-form-file
+                                    v-model="logo"
+                                    placeholder="Seleccione el archivo..."
+                                    drop-placeholder="Drop file here..."
+                                ></b-form-file>
+                                <span style="color:red">{{ errors[0] }}</span>
+                              </ValidationProvider>
+                          </b-col>
+                          
+                      </b-row>
+                      </b-tab>
+                </b-tabs>
+
+            </ValidationObserver>
+            <div class="row mx-0  justify-content-between">
+              <div class=" col-2">
+                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
+              </div>
+              <div class="col-2">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
+                <div v-else>
+                  <button @click="switchLocDocObsoleto();" class="btn btn-block float-right btn-success" v-if="!ver && !editMode">Guardar</button>
+                  <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                </div>
+              </div>
+            </div>
+            
+        </b-modal>
+
+
+
           <!-- CREAR VERSIONES -->
         <b-modal id="modal-crea" false size="lg"  title="Gestion de documentos" hide-footer>
             <ValidationObserver  ref="form">
@@ -767,10 +1301,7 @@
                         <b-row class="align-items-center mb-3">
                           <b-col>
                             <div class="form-group m-0">
-                              <ValidationProvider name="normatividad" rules="required" v-slot="{ errors }" >
                                 <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                                <span style="color:red">{{ errors[0] }}</span>
-                            </ValidationProvider>
                             </div>
                           </b-col>
                           <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -858,7 +1389,7 @@
               <div class="col-2">
                 <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
                 <div v-else>
-                  <button @click="switchLocD" v-if="!ver && !editMode">Guatdar</button>
+                  <button @click="switchLocD" v-if="!ver && !editMode">Guardar</button>
                   <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
                   <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
                 </div>
@@ -868,7 +1399,7 @@
 
         <!-- Habilitar nueva version -->
         <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
-          <pre>{{nueva_version}}</pre>
+
             <ValidationObserver  ref="form">
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
@@ -1746,7 +2277,7 @@ export default {
       rango:0,
       versionobj:null,
       docs_Habilitados:[],
-      form:{
+          form:{
             'id': 6,
             'tipo_id': '',
             'subproceso_id':'',
@@ -1843,6 +2374,29 @@ export default {
                 'documento_actual':''
           },
         doc:{
+            'id': 6,
+            'tipo_id': '',
+            'subproceso_id':'',
+            'proceso_id':'',
+            'creado':'',
+            'nombre': null,
+            'archivo': '',
+            'normativas':[],
+            'consecutivo':'',
+            'version':'',
+            'elaboracion':'',
+            'revision':'',
+            'aprobacion':'',
+            'fecha_alerta':'',
+            'fecha_emicion':'',
+            'intervalo':'',
+            'status':'',
+            'sedes_id':'',
+            'elabora_id':'',
+            'aprueba_id':'',
+            'revisa_id':'',
+          },
+          doc_obsoleto:{
             'id': 6,
             'tipo_id': '',
             'subproceso_id':'',
@@ -1972,8 +2526,21 @@ export default {
       console.log(indice,index )
       if (indice != -1){
         this.form.normativas.splice(indice, 1);
-      }
-        
+      }  
+    },
+    eliminarNormativa_doc(index){
+      var indice = this.doc.normativas.indexOf(index);
+      console.log(indice,index )
+      if (indice != -1){
+        this.doc.normativas.splice(indice, 1);
+      }  
+    },
+    eliminarNormativa_doc_obsoleto(index){
+      var indice = this.doc_obsoleto.normativas.indexOf(index);
+      console.log(indice,index )
+      if (indice != -1){
+        this.doc_obsoleto.normativas.splice(indice, 1);
+      }  
     },
      suma(){
        var regex = /(\d+)/g;
@@ -1984,6 +2551,15 @@ export default {
        let fecha = moment(this.form.fecha_emicion).format("YYYY-MM-DDTHH:MM");
        this.form.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DDTHH:MM");
        console.log(this.form.fecha_alerta)
+     },
+     suma_doc(){
+       var regex = /(\d+)/g;
+       for (let index = 0; index <  this.doc.intervalo.match(regex).length; index++) {
+           var valor = this.doc.intervalo.match(regex)
+           this.rango = valor[index]
+       }
+       let fecha = moment(this.doc.fecha_emicion).format("YYYY-MM-DDTHH:MM");
+       this.doc.fecha_alerta = moment(fecha).add(this.rango, 'month').format("YYYY-MM-DD");
      },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
@@ -1996,6 +2572,22 @@ export default {
     },
     cargarNorma(){
       this.form.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        archivo:this.titulo.archivo,
+        texto : ''
+      });
+    },
+    cargarNorma_doc(){
+      this.doc.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        archivo:this.titulo.archivo,
+        texto : ''
+      });
+    },
+    cargarNorma_doc_obsoleto(){
+      this.doc_obsoleto.normativas.push({
         id : this.titulo.id,
         nombre : this.titulo.nombre,
         archivo:this.titulo.archivo,
@@ -2303,7 +2895,123 @@ export default {
         }});
       }
     },
-        validarVersionNuevaHabilitada(){
+        switchLocDocObsoleto(){
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+                this.$swal({
+                  title: 'Desea guardar este documento?',
+                  icon: 'question',
+                  iconHtml: '',
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  showCancelButton: true,
+                  showCloseButton: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    this.agregarObsoleto();
+                  }
+                })
+              } 
+          });        
+    },
+        async agregarObsoleto(){
+          let data = new FormData();
+          this.doc_obsoleto.documento_id=this.$route.params.id;
+          var formulario = this.doc_obsoleto;
+          for (var key in formulario) {
+            if (key=='normativas') {
+              data.append(key,JSON.stringify(formulario[key]));
+            } else {
+              data.append(key,formulario[key]);
+            }
+        }
+        if (this.logo ) {
+          data.append('filename',this.logo);
+        }
+        await this.axios.post('api/documentos/versiones/obsoleta', data, {
+          headers: {
+          'Content-Type': 'multipart/form-data'
+          }}).then(response => {
+            if (response.status==200) {
+                this.$swal('Agregado exito!','','success');
+                this.listarDocumento();
+                this.$root.$emit("bv::hide::modal", "modal-obsoleto", "#btnShow");
+              }
+          }).catch(e => {
+              this.$swal('No se pudo agregar!','','warning');
+        });
+      },
+    switchLocDoc(index){
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+              if (index=="Habilitado") {
+                this.$swal({
+                  title: 'Desea guardar los cambios y habilitar este documento?',
+                  icon: 'question',
+                  iconHtml: '',
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  showCancelButton: true,
+                  showCloseButton: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    this.editarPadre("Habilitado");
+                  }else{
+                    this.listarDocumento();
+                  }
+                })
+              }else{
+              this.$swal({
+                title: 'Desea editar este documento?',
+                icon: 'question',
+                iconHtml: '',
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+                showCancelButton: true,
+                showCloseButton: true
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.editarPadre("En creación");
+                }else{
+                  this.listarDocumento();
+                }
+              })
+              }
+
+            } 
+          });        
+
+    },
+    async editarPadre(estado){
+          let data = new FormData();
+          this.doc.status=estado;
+          var formulario = this.doc;
+          for (var key in formulario) {
+            if (key=='normativas') {
+              data.append(key,JSON.stringify(formulario[key]));
+            } else {
+              data.append(key,formulario[key]);
+            }
+        }
+      if (this.logo ) {
+        data.append('filename',this.logo);
+       }
+        await this.axios.put('api/documentos', data, {
+          headers: {
+          'Content-Type': 'multipart/form-data'
+          }}).then(response => {
+            if (response.status==200) {
+                this.$swal('Agregado exito!','','success');
+                this.listarDocumento();
+                this.$root.$emit("bv::hide::modal", "modal-padre", "#btnShow");
+                this.resete();
+              }
+          }).catch(e => {
+            console.log(e.response.data.menssage);
+            this.$swal(e.response.data);
+        });
+      },
+      validarVersionNuevaHabilitada(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
@@ -2721,12 +3429,18 @@ export default {
               this.doc.nombre = response.data.nombre;
               this.doc.normativas = JSON.parse(response.data.normativas);
               this.doc.creado = response.data.creado;
+              this.doc.archivo = response.data.archivo;
               this.doc.consecutivo = response.data.consecutivo;
               this.doc.version = response.data.version;
               this.doc.subproceso_id = response.data.subproceso_id;
               this.doc.elaboracion = response.data.elaboracion;
+              this.doc.nombre_elabora = response.data.nombre_elabora;
+              this.doc.nombre_revisa = response.data.nombre_revisa;
+              this.doc.nombre_aprueba = response.data.nombre_aprueba;
               this.doc.revision = response.data.revision;
               this.doc.aprobacion = response.data.aprobacion;
+              this.doc.fecha_edicion = response.data.fecha_edicion;
+              this.doc.observaciones_edicion = response.data.observaciones_edicion;
               this.doc.fecha_alerta = response.data.fecha_alerta;
               this.doc.fecha_emicion = response.data.fecha_emicion;
               this.doc.intervalo = response.data.intervalo;
@@ -2736,6 +3450,9 @@ export default {
               this.doc.elabora_id = response.data.elabora_id;
               this.doc.aprueba_id = response.data.aprueba_id;
               this.doc.revisa_id = response.data.revisa_id;
+              if (this.doc.status==="En creación") {
+                this.$root.$emit("bv::show::modal", "nuevo", "#btnShow"); 
+              }
              }
           })
           .catch((e)=>{
@@ -2933,3 +3650,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.div_creciente {
+  width: 100px;
+  height: 100px;
+  background: red;
+  transition: width 2s, height 4s;
+}
+
+.div_creciente:hover {
+  width: 300px;
+  height: 300px;
+}
+</style>
