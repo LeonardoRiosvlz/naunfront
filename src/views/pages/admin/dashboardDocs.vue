@@ -20,7 +20,7 @@
                       <template v-slot:button-content>
                       <i class="mdi mdi-dots-horizontal font-size-20"></i>
                       </template>
-                      <b-dropdown-item @click="$bvModal.show('nuevo')">NUEVO</b-dropdown-item>
+                      <b-dropdown-item @click="$bvModal.show('nuevo')">AGREGAR</b-dropdown-item>
                   </b-dropdown>
                 </div>
             </div>
@@ -1507,12 +1507,12 @@
                                 <label v-if="nueva_version.creado==='No creado'">Elabora</label>
                                 <label v-else>Elaboró</label>
                                   <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="nueva_version.creado==='No creado'">  
+                            <b-col >  
                               <div class="form-group">
                                 <label>Fecha de elaboración</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1528,12 +1528,12 @@
                                 <label v-if="nueva_version.creado==='No creado'">Revisa</label>
                                 <label v-else>Revisó</label>
                                 <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
-                                  <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="nueva_version.creado==='No creado'">
+                            <b-col>
                               <div class="form-group">
                                 <label>Fecha de revisión</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1549,12 +1549,12 @@
                                 <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
                                 <label v-else>Aprobó</label>
                                 <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
-                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                    <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="nueva_version.creado==='No creado'">
+                            <b-col>
                               <div class="form-group">
                                 <label>Fecha de aprobación</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1578,7 +1578,7 @@
                           <b-col>
                             <div class="form-group m-0">
 
-                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas.id"  :getOptionLabel="option => option.nombre" ></v-select>
 
                             </div>
                           </b-col>
