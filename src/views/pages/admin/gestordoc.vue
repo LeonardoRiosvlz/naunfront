@@ -161,9 +161,10 @@
     
 
     <b-modal id="modal-historial" size="xl" false   title="Gestion de documentos" hide-footer>
-      <div class="row justify-content-center">
-      <div class="col-xl-10">
-        <div class="timeline" dir="ltr">
+      <div class="row justify-content-center" style="height: 35rem;
+           overflow: auto;" >
+      <div class="col-xl-10 pr-0">
+        <div class="timeline pr-0" dir="ltr"    >
           <div class="timeline-item timeline-left">
             <div class="timeline-block">
               <div class="time-show-btn mt-0">
@@ -260,7 +261,7 @@
                         </div>
                       </b-col>
                       <b-col>
-                        <div v-if="subproceso.length!= 0 " class="form-group">
+                        <div class="form-group">
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                             <select v-model="form.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
@@ -424,7 +425,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre", "version", "fecha_emicion", "fecha_alerta", "status","actions"],
+      fields: ["nombre", "version", "fecha_emicion", "fecha_revision", "status","actions"],
       procesos: [],
       versiones: [],  
       subprocesos:[],

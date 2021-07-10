@@ -831,12 +831,5 @@ export default [
         },
         component: () => import('../views/pages/chat/index')
     },
-    {
-        path: '/prueba',
-        name: 'Prueba',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/visorPdf'),
-    },
+
 ]

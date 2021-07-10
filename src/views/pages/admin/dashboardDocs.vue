@@ -21,8 +21,6 @@
                       <i class="mdi mdi-dots-horizontal font-size-20"></i>
                       </template>
                       <b-dropdown-item @click="$bvModal.show('nuevo')">NUEVO</b-dropdown-item>
-                      <b-dropdown-item @click="setearT();editMode=false;ver=false;">Actualizar version (solo para estado habilitado)</b-dropdown-item>
-                      <b-dropdown-item @click="setearD();editMode=false;ver=false;">Programar nueva versión</b-dropdown-item>
                   </b-dropdown>
                 </div>
             </div>
@@ -43,7 +41,7 @@
                   <template v-slot:title>
                     <div @click="estado = 1" class="row align-items-center justify-content-center ">
                       <i class="ri-calendar-line font-size-20"></i>
-                      <span class="mt-2 d-none d-sm-block mx-2 mb-2">Habilitados <span class="badge badge-pill badge-primary">{{ docs_Habilitados.length}}</span></span>
+                      <span class="mt-2 d-none d-sm-block mx-2 mb-2 text-left">Historial <span class="badge badge-pill badge-primary">{{ docs_Habilitados.length}}</span></span>
                     </div>
                   </template>
                   <b-card-text>
@@ -60,7 +58,7 @@
                                   
                               >
                                   <a href="javascript: void(0);">
-                                  <div class="media">
+                                  <div class="media"  v-b-tooltip.hover.lefttop="data.observaciones_edicion">
                                       <div
                                       class="user-img align-self-center mr-3"
                                       v-if="data.image"
@@ -282,7 +280,7 @@
             </a>
           </div>
           <div class="col-lg-12">
-            <a href="#">
+            <a href="#" @click="setearT();editMode=false;ver=false;">
               <b-card no-body>
                 <b-row no-gutters class="align-items-center">
                   <b-col md="8">
@@ -389,6 +387,7 @@
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                             <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                              <option value="NA" >NA</option>
                               <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -547,7 +546,7 @@
                             </b-col>
                             <b-col>
                               <div class="form-group">
-                                <label>Tiempos de alerta para emisión</label>
+                                <label>Tiempos de alerta para revision</label>
                                   <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
                                       <select @change="suma" v-model="edit.intervalo" name="tipo" class="form-control " :disabled="ver">
                                         <option value="1 mes">1 mes</option>
@@ -648,10 +647,11 @@
                           </div>
                         </b-col>
                         <b-col>
-                          <div v-if="subproceso.length!= 0 " class="form-group">
+                          <div class="form-group">
                             <label>Subproceso</label>
                             <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                               <select v-model="doc.subproceso_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option value="NA" >NA</option>
                                 <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -783,7 +783,7 @@
                               </b-col>
                               <b-col>
                                 <div class="form-group">
-                                  <label>Tiempos de alerta para emisión</label>
+                                  <label>Tiempos de alerta para revisión</label>
                                     <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
                                         <select @change="suma_doc" v-model="doc.intervalo" name="tipo" class="form-control " :disabled="ver">
                                           <option value="1 mes">1 mes</option>
@@ -803,7 +803,7 @@
                         <b-row>
                           <b-col>
                               <div class="form-group">
-                                <label>Fecha de alerta</label>
+                                <label>Fecha de revisión</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
                                       <input v-model="doc.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
@@ -930,10 +930,11 @@
                           </div>
                         </b-col>
                         <b-col>
-                          <div v-if="subproceso.length!= 0 " class="form-group">
+                          <div  class="form-group">
                             <label>Subproceso</label>
                             <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                               <select v-model="doc_obsoleto.subproceso_id"  name="tipo" class="form-control " :disabled="ver">
+                                <option value="NA" >NA</option>
                                 <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -1184,10 +1185,11 @@
                           </div>
                         </b-col>
                         <b-col>
-                          <div v-if="subproceso.length!= 0 " class="form-group">
+                          <div class="form-group">
                             <label>Subproceso</label>
                             <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                               <select v-model="form.subproceso_id"  name="tipo" class="form-control " disabled>
+                                <option value="NA">NA</option>
                                 <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -1349,7 +1351,7 @@
                               </b-col>
                               <b-col>
                                 <div class="form-group">
-                                  <label>Tiempos de alerta para emisión</label>
+                                  <label>Tiempos de alerta para revisión</label>
                                     <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
                                         <select @change="suma" v-model="form.intervalo" name="tipo" class="form-control " disabled>
                                           <option value="1 mes">1 mes</option>
@@ -1464,10 +1466,11 @@
                           </div>
                         </b-col>
                         <b-col>
-                          <div v-if="subproceso.length!= 0 " class="form-group">
+                          <div class="form-group">
                             <label>Subproceso</label>
                             <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                               <select v-model="nueva_version.subproceso_id"  name="tipo" class="form-control ">
+                                <option value="NA" >NA</option>
                                 <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -1624,7 +1627,7 @@
                               </b-col>
                               <b-col>
                                 <div class="form-group">
-                                  <label>Tiempos de alerta para emisión</label>
+                                  <label>Tiempos de alerta para revisión</label>
                                     <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
                                         <select @change="suma" v-model="nueva_version.intervalo" name="tipo" class="form-control " >
                                           <option value="1 mes">1 mes</option>
@@ -1641,7 +1644,7 @@
                             <div>
                                <b-col>
                               <div class="form-group">
-                                <label>Fecha de alerta</label>
+                                <label>Fecha de revision</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
                                       <input v-model="nueva_version.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
@@ -1678,7 +1681,7 @@
                             <div class="mt-3 w-100">
                               <div class="col-ms-12">
                                 <div class="alert alert-info mb-2" role="alert">
-                                  <p class="text-info">Si desea modificar el documento actual, seleccion el nuevo archivo</p>
+                                  <p class="text-info">Si desea modificar el documento actual, seleccione el nuevo archivo</p>
                                 </div>
                                 <div class="col-sm-12 my-3">
                                   <b-form-file
@@ -1945,10 +1948,11 @@
                           </div>
                         </b-col>
                         <b-col>
-                          <div v-if="subproceso.length!= 0 " class="form-group">
+                          <div class="form-group">
                             <label>Subproceso</label>
                             <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                               <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
+                                <option value="NA" >NA</option>
                                 <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
                               </select>
                               <span style="color:red">{{ errors[0] }}</span>
@@ -2107,7 +2111,7 @@
                               </b-col>
                               <b-col>
                                 <div class="form-group">
-                                  <label>Tiempos de alerta para emisión</label>
+                                  <label>Tiempos de alerta para revisión</label>
                                     <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
                                         <select @change="setFechaSuma" v-model="edit.intervalo" name="tipo" class="form-control " :disabled="ver">
                                           <option value="1 mes">1 mes</option>
@@ -2123,7 +2127,7 @@
                             </b-row>
                           <b-col>
                               <div class="form-group">
-                                <label>Fecha de alerta</label>
+                                <label>Fecha de revision</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
                                       <input v-model="edit.fecha_alerta"  type="date" class="form-control" placeholder=" " :disabled="ver"/>
                                       <span style="color:red">{{ errors[0] }}</span>
@@ -2431,7 +2435,7 @@ export default {
   methods: {
     setHabilitar(){
       this.fecha_actual = new Date()
-      this.edit.version = this.edit.documento_actual.hdocumentos.length + 2
+      this.edit.version = parseInt(this.edit.documento_actual.version ) + 1
       this.documentoActual();
       console.log(this.fecha_actual)
     },
@@ -2563,11 +2567,15 @@ export default {
      },
     capSubproceso(proceso){
       for (let index = 0; index < this.procesos.length; index++) {
-       if(this.procesos[index].id == this.form.proceso_id){
+       if(this.procesos[index].id == this.doc.proceso_id){
          this.subproceso = this.procesos[index].subprocesos
          console.log(this.subproceso)
        }
-        
+
+       if(this.procesos[index].id == this.edit.proceso_id){
+         this.subproceso = this.procesos[index].subprocesos
+         console.log(this.subproceso)
+       }
       }
     },
     cargarNorma(){
@@ -3426,30 +3434,41 @@ export default {
               console.log(response) 
               this.doc.id = response.data.id;
               this.doc.tipo_id = response.data.tipo_id;
+              this.doc_obsoleto.tipo_id = response.data.tipo_id;
               this.doc.nombre = response.data.nombre;
+              this.doc_obsoleto.nombre = response.data.nombre;
               this.doc.normativas = JSON.parse(response.data.normativas);
+              this.doc_obsoleto.normativas = JSON.parse(response.data.normativas);
               this.doc.creado = response.data.creado;
+              this.doc_obsoleto.creado = response.data.creado;
               this.doc.archivo = response.data.archivo;
+              this.doc_obsoleto.archivo = response.data.archivo;
               this.doc.consecutivo = response.data.consecutivo;
+              this.doc_obsoleto.consecutivo = response.data.consecutivo;
               this.doc.version = response.data.version;
+              this.doc_obsoleto.version = response.data.version;
               this.doc.subproceso_id = response.data.subproceso_id;
-              this.doc.elaboracion = response.data.elaboracion;
+              this.doc_obsoleto.subproceso_id = response.data.subproceso_id;
+              this.doc_obsoleto.elaboracion = response.data.elaboracion;
               this.doc.nombre_elabora = response.data.nombre_elabora;
               this.doc.nombre_revisa = response.data.nombre_revisa;
               this.doc.nombre_aprueba = response.data.nombre_aprueba;
               this.doc.revision = response.data.revision;
               this.doc.aprobacion = response.data.aprobacion;
               this.doc.fecha_edicion = response.data.fecha_edicion;
-              this.doc.observaciones_edicion = response.data.observaciones_edicion;
               this.doc.fecha_alerta = response.data.fecha_alerta;
               this.doc.fecha_emicion = response.data.fecha_emicion;
               this.doc.intervalo = response.data.intervalo;
               this.doc.status = response.data.status;
               this.doc.proceso_id = response.data.proceso_id;
+              this.doc_obsoleto.proceso_id=response.data.proceso_id
               this.doc.sedes_id = response.data.sedes_id;
+              this.doc_obsoleto.sedes_id=response.data.sedes_id;
               this.doc.elabora_id = response.data.elabora_id;
               this.doc.aprueba_id = response.data.aprueba_id;
               this.doc.revisa_id = response.data.revisa_id;
+
+              
               if (this.doc.status==="En creación") {
                 this.$root.$emit("bv::show::modal", "nuevo", "#btnShow"); 
               }
