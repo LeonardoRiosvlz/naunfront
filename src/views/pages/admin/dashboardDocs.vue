@@ -1740,7 +1740,7 @@
                     </span>
                     <span class="d-none d-sm-inline-block"> OBSERVACIONES</span>
                 </template>
-                <div class="alert alert-warning mb-3" role="alert" >
+                <div class="alert alert-warning mb-3" style="background:#f1f5f7; border:none; color:#343a40;" role="alert" >
                   <div class="row">
                     <div class="col-9">
                        <h6 class="text-info">Observaciones de la revisón</h6>
@@ -1749,7 +1749,7 @@
                     <img src="@/assets/images/observacion-info.svg" alt="" class="col-3">
                   </div>
                 </div>
-                  <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
+                  <div class="alert alert-warning mb-3 mt-2" style="background:#f1f5f7; border:none; color:#343a40;" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
                     <div class="row">
                       <img src="@/assets/images/document-ob-info.svg" alt="" class="col-3">
                       <div class="col-9 row justify-content-between text-right">
@@ -1759,7 +1759,7 @@
                     </div>
                   </div>
 
-                  <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
+                  <div class="alert alert-warning mb-3 mt-2" style="background:#f1f5f7; border:none; color:#343a40;" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
                      <div class="row">
                       <div class="col-9">
                     <h6 class="text-info">Observaciones del diagrama</h6>
@@ -1901,9 +1901,9 @@
                     <span class="d-inline-block d-sm-none">
                         <i class="fas fa-home"></i>
                     </span>
-                    <span class="d-none d-sm-inline-block">OBSERVECIONES</span>
+                    <span class="d-none d-sm-inline-block">OBSERVACIONES</span>
                   </template> 
-                <div class="alert alert-warning mb-3" role="alert" >
+                <div class="alert alert-warning mb-3" style="background:#f1f5f7; border:none; color:#343a40;" role="alert" >
                   <div class="row">
                     <div class="col-9">
                        <h6 class="text-info">Observaciones Del Elaborador</h6>
@@ -1912,7 +1912,7 @@
                     <img src="@/assets/images/elabora-info.svg" alt="" class="col-3">
                   </div>
                 </div>
-                <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
+                <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" style="background:#f1f5f7; border:none; color:#343a40;" role="alert">
                   <div class="row">
                     <img src="@/assets/images/edit-info.svg" alt="" class="col-3">
                     <div class="col-9 row justify-content-between text-right">
@@ -2036,9 +2036,14 @@
                   </span>
                   <span class="d-none d-sm-inline-block">OBSERVACIONES</span>
                 </template>
-                <div class="alert alert-warning mb-3" role="alert">
+                <div class="alert alert-warning mb-3" role="alert" style="background:#f1f5f7; border:none; color:#343a40;">
+                  <div class="row">
+                    <div class="col-9">
                   <h6 class="text-info">Observaciones de revisión</h6>
                   {{edit.observaciones_revision}}
+                  </div>
+                    <img src="@/assets/images/habilita-info.svg" alt="" class="col-3">
+                  </div>
                 </div>
               </b-tab>
             </b-tabs>
