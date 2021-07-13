@@ -321,7 +321,10 @@
 
         <!-- EDITAR VERSIOENS -->
         <b-modal id="modal" false size="lg"  title="Gestion de documentos" hide-footer>
-          <ValidationObserver  ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+          <ValidationObserver style="z-index:1; position: relative;" ref="form">
 
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
@@ -585,7 +588,10 @@
 
           <!-- CREAR VERSIONES -->
         <b-modal id="modal-padre" false size="lg"  title="Gestion de documento actual" hide-footer>
-            <ValidationObserver  ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+            <ValidationObserver style="z-index:1; position: relative;" ref="form">
 
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
@@ -867,7 +873,10 @@
 
           <!-- CREAR VERSIONES -->
            <b-modal id="modal-obsoleto" false size="lg"  title="Gestion de documentos obsoletos" hide-footer>
-            <ValidationObserver  ref="form">
+             <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+            </div>
+            <ValidationObserver style="z-index:1; position: relative;" ref="form">
 
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
@@ -1122,7 +1131,10 @@
 
           <!-- CREAR VERSIONES -->
         <b-modal id="modal-crea" false size="lg"  title="Gestion de documentos" hide-footer>
-            <ValidationObserver  ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+            <ValidationObserver style="z-index:1; position: relative;" ref="form">
 
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
@@ -1400,8 +1412,11 @@
 
         <!-- Habilitar nueva version -->
         <b-modal id="modal-nueva" false size="lg"  title="Gestion de documentos" hide-footer>
-
-            <ValidationObserver  ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+            
+            <ValidationObserver style="z-index:1; position: relative;" ref="form">
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     
                     <b-tab  class="border-0">
@@ -1687,7 +1702,10 @@
         </b-modal>
 
         <b-modal id="modal_elaborar" false size="lg"  title="ELABORACIÓN DE DOCUMENTOS" hide-footer>
-           <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 3rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+           <b-tabs v-model="tabIndex" content-class="p-3 text-muted" style="z-index:1; position: relative;">
               <b-tab  class="border-0">
                 <template v-slot:title>
                     <span class="d-inline-block d-sm-none">
@@ -1780,7 +1798,10 @@
         </b-modal>
 
         <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
-              <ValidationObserver ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 8rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+              <ValidationObserver ref="form" style="z-index:1; position: relative;">
                  
                 <div class="row align-items-center mx-0 mb-3 col-ms-12" style=" margin-top: 1rem;">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }" class="col-12 p-0">
@@ -1932,8 +1953,10 @@
         </b-modal>
 
         <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
-           
-              <ValidationObserver ref="form">
+           <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+              <ValidationObserver style="z-index:1; position: relative;" ref="form">
                  <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
                     <ValidationProvider name="documento" rules="required" v-slot="{ errors }" class="w-100">
                       <select name="Estatus" v-model="edit.status_aprobacion" class="form-control">
@@ -2060,7 +2083,10 @@
         </b-modal>
 
         <b-modal id="modal_hab" false size="lg"  title="Gestion de documentos" hide-footer>
-            <ValidationObserver  ref="form">
+          <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 5rem;"> 
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
+          </div>
+            <ValidationObserver style="z-index:1; position: relative;" ref="form">
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                     <b-tab  class="border-0">
                       <template v-slot:title>
@@ -3128,6 +3154,7 @@ export default {
             if (response.status==200) {
                 this.$swal('Agregado exito!','','success');
                 this.listarDocumento();
+                this.listarDocumentosHabilitados();
                 this.$root.$emit("bv::hide::modal", "modal-obsoleto", "#btnShow");
               }
           }).catch(e => {
