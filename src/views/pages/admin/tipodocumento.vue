@@ -58,6 +58,7 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                   <b-dropdown-item-button><a :href="'plantilla/'+data.item.id" style="color:#000">Editar plantilla</a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarProceso(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
@@ -192,6 +193,7 @@ export default {
         'nombre': null,
         'descripcion': '',
         'archivo': '',
+        'documento': [],
         }
     }
   },
@@ -235,8 +237,12 @@ export default {
         let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
+          if (key=='documento') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
         await this.axios.put('api/documentos/tipo', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
@@ -261,8 +267,12 @@ export default {
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
+          if (key=='documento') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
        await this.axios.post('api/documentos/tipo', data, {
            headers: {
             'Content-Type': 'multipart/form-data'

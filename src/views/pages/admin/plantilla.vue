@@ -139,7 +139,7 @@ export default {
         async  listarPlantilla(){
             let data = new FormData();
             data.append('id',this.$route.params.id);
-            await this.axios.post('api/plantillas/find',data)
+            await this.axios.post('api/documentos/tipo/find',data)
             .then((response) => {
                 console.log(response.data)
                 this.plantillas = response.data;
@@ -154,7 +154,7 @@ export default {
             let data = new FormData();
             data.append('id',this.$route.params.id);
             data.append('documento',JSON.stringify(this.doc));
-        await this.axios.put('api/plantillas/editar', data, {
+        await this.axios.put('api/documentos/tipo/editar', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
