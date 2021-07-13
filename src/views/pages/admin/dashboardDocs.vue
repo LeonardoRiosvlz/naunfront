@@ -283,7 +283,7 @@
             </a>
           </div>
           <div class="col-lg-12">
-            <a href="#" @click="setearT();editMode=false;ver=false;">
+            <a href="#" @click="setearT();$bvModal.hide('nuevo');editMode=false;ver=false;">
               <b-card no-body>
                 <b-row no-gutters class="align-items-center">
                   <b-col md="8">
@@ -866,7 +866,7 @@
 
 
           <!-- CREAR VERSIONES -->
-        <b-modal id="modal-obsoleto" false size="lg"  title="Gestion de documentos obsoletos" hide-footer>
+           <b-modal id="modal-obsoleto" false size="lg"  title="Gestion de documentos obsoletos" hide-footer>
             <ValidationObserver  ref="form">
 
                   <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
@@ -1232,15 +1232,14 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="form.creado==='No creado'">Elabora</label>
-                                <label v-else>Elaboró</label>
+                                <label>Elabora</label>
                                   <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
                                     <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="form.elabora_v_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="form.creado==='No creado'">  
+                            <b-col>  
                               <div class="form-group">
                                 <label>Fecha de elaboración</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1253,15 +1252,14 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="form.creado==='No creado'">Revisa</label>
-                                <label v-else>Revisó</label>
+                                <label>Revisa</label>
                                 <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
                                   <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="form.revisa_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
                               </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="form.creado==='No creado'">
+                            <b-col>
                               <div class="form-group">
                                 <label>Fecha de revisión</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1274,15 +1272,14 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="form.creado==='No creado'">Aprueba</label>
-                                <label v-else>Aprobó</label>
+                                <label>Aprueba</label>
                                 <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
                                     <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="form.aprueba_v_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" disabled :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
                             </b-col>
-                            <b-col v-if="form.creado==='No creado'">
+                            <b-col>
                               <div class="form-group">
                                 <label>Fecha de aprobación</label>
                                 <ValidationProvider name="fecha" rules="required" v-slot="{ errors }">
@@ -1305,7 +1302,7 @@
                         <b-row class="align-items-center mb-3">
                           <b-col>
                             <div class="form-group m-0">
-                                <v-select  v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
                             </div>
                           </b-col>
                           <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
@@ -1507,10 +1504,9 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="nueva_version.creado==='No creado'">Elabora</label>
-                                <label v-else>Elaboró</label>
+                                <label>Elabora</label>
                                   <ValidationProvider name="elaboró" rules="required" v-slot="{ errors }" >
-                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                    <v-select :id="'ela'+responsabilidadesSelect[0]" v-model="nueva_version.elabora_id" @input="validacionRespon(responsabilidadesSelect[0])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' - '+option.user.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
                               </div>
@@ -1528,8 +1524,7 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="nueva_version.creado==='No creado'">Revisa</label>
-                                <label v-else>Revisó</label>
+                                <label>Revisa</label>
                                 <ValidationProvider name="revisó" rules="required" v-slot="{ errors }" >
                                   <v-select :id="'rev'+responsabilidadesSelect[1]" v-model="nueva_version.revisa_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                   <span style="color:red">{{ errors[0] }}</span>
@@ -1549,8 +1544,7 @@
                           <b-row>
                             <b-col>
                               <div class="form-group">
-                                <label v-if="nueva_version.creado==='No creado'">Aprueba</label>
-                                <label v-else>Aprobó</label>
+                                <label>Aprueba</label>
                                 <ValidationProvider name="aprobó" rules="required" v-slot="{ errors }" >
                                     <v-select :id="'apr'+responsabilidadesSelect[2]" v-model="nueva_version.aprueba_id" @input="validacionRespon(responsabilidadesSelect[1])" :options="cargos" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre" ></v-select>
                                     <span style="color:red">{{ errors[0] }}</span>
@@ -1581,11 +1575,11 @@
                           <b-col>
                             <div class="form-group m-0">
 
-                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas.id"  :getOptionLabel="option => option.nombre" ></v-select>
+                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
 
                             </div>
                           </b-col>
-                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
+                          <b-button  @click="cargarNorma_nuevaversion" class="float-right btn-success py-1"> agregar</b-button>
                         </b-row>
                         <div class="card mt-3">
                           <div class="row m-0 justify-content-end">
@@ -1672,32 +1666,6 @@
                               </ValidationProvider>
                               </div>
                             </b-col>
-                            </div>
-                      </b-tab>
-                      <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">ARCHIVO</span>
-                          </template>
-                            <div class="mt-3 w-100">
-                              <div class="col-ms-12">
-                                <div class="alert alert-info mb-2" role="alert">
-                                  <p class="text-info">Si desea modificar el documento actual, seleccione el nuevo archivo</p>
-                                </div>
-                                <div class="col-sm-12 my-3">
-                                  <b-form-file
-                                      v-model="logo"
-                                      placeholder="Seleccione el archivo..."
-                                      drop-placeholder="Drop file here..."
-                                  ></b-form-file>
-                                </div>
-                              </div>
-                              
-                              <div class="col-sm-12 w-100">
-                                <VueDocPreview class="w-100" :value="nueva_version.documento_actual.archivo" type="office" />
-                              </div>
                             </div>
                       </b-tab>
                 </b-tabs>
@@ -2796,6 +2764,15 @@ export default {
         archivo:this.titulo.archivo,
         texto : ''
       });
+    },
+    cargarNorma_nuevaversion(){
+      this.nueva_version.normativas.push({
+        id : this.titulo.id,
+        nombre : this.titulo.nombre,
+        archivo:this.titulo.archivo,
+        texto : ''
+      });
+      console.log(this.titulo)
     },
     cargarNorma_doc_obsoleto(){
       this.doc_obsoleto.normativas.push({
