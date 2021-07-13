@@ -312,20 +312,37 @@
                 
                 <p>Consecutivo: {{form.consecutivo}}</p>
                 <span>{{items.texto}}</span>
-                <b-card>
-                  <h5>Normativas</h5>
-                  <div v-for="(items,index) in form.normativas" :key="index">
-                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
-                    <span>{{items.texto}}</span>
-                  </div>
-                  <h5 class="mt-3">Responsabilidades</h5>
-                  <p>Elaborar: {{form.nombre_elabora}}</p>
-                  <p>Revisar: {{form.nombre_revisa}}</p>
-                  <p>Aprobar: {{form.nombre_aprueba}}</p>
-                </b-card>
+                    
+                      <b-card>
+                        <div class="row">
+                          <div class="col-8">
+                            <h5>Normativas</h5>
+                              <div v-for="(items,index) in form.normativas" :key="index">
+                                <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                                <span>{{items.texto}}</span>
+                              </div>
+                          </div>
+                          <div class="col-4">
+                            <img src="@/assets/images/info-general.svg" alt="" class="img-fluid">
+                          </div>
+                        </div>
+                      </b-card>
+                      <b-card>
+                        <div class="row">
+                          <div class="col-4">
+                            <img src="@/assets/images/info-responsable.svg" alt="" class="img-fluid">
+                          </div>
+                          <div class="col-8">
+                            <h5 class="mt-3 text-right">Responsabilidades</h5>
+                            <p class="text-right">Elaborar: {{form.nombre_elabora}}</p>
+                            <p class="text-right">Revisar: {{form.nombre_revisa}}</p>
+                            <p class="text-right">Aprobar: {{form.nombre_aprueba}}</p>
+                          </div>
+                        </div>
+                      </b-card>
                 <div class="row justify-content-end col-12">
-                    <span class="mr-4">Fecha de emicion: {{form.fecha_emicion | fecha}}</span>
-                    <span> Fecha de revision: {{form.fecha_alerta | fecha}}</span>
+                    <span class="mr-4">Fecha de emicion: {{form.fecha_emicion}}</span>
+                    <span> Fecha de revision: {{form.fecha_alerta}}</span>
                   </div>
               </b-card>
             </b-tab>
@@ -337,8 +354,10 @@
                 <span class="d-none d-sm-inline-block">ARCHIVO</span>
               </template>
                <div class="col-sm-12 w-100">
-                 <h5 class="text-center mt-5" v-if="form.archivo == ''">NO CONTIENE ARCHIVO</h5>
-                <VueDocPreview class="w-100" :value="form.archivo" type="office" />
+                <VueDocPreview v-if="form.archivo != ''" class="w-100" :value="form.archivo" type="office" />
+                <div v-else class="row justify-content-center align-items-center w-100 h-100 my-5">
+                    <img src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
+                </div>
               </div>
             </b-tab>
         </b-tabs>

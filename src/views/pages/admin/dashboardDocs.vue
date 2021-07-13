@@ -156,17 +156,17 @@
                                       <div>
                                         <div class="font-size-11 mr-1">{{ data.status }}</div>
                                         <div class="row justify-content-end  mx-0 mt-2 mr-1 align-items-end">
-                                          <div>
+                                          <div v-b-tooltip.hover title="Elaboración">
                                             <svg class="mx-2" v-if="data.status_elaboracion == 'En elaboración'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="blue"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="blue"/></svg>
                                             <svg class="mx-2" v-if="data.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
                                             <svg class="mx-2" v-if="data.status_elaboracion == 'Elaborado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
                                           </div>
-                                          <div>
+                                          <div v-b-tooltip.hover title="Revisión">
                                             <svg v-if="data.status_revision == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="red"/></svg>
                                             <svg v-else-if="data.status_revision == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
                                             <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="green"/></svg>
                                           </div>
-                                          <div>
+                                          <div v-b-tooltip.hover title="Aprobación">
                                             <svg v-if="data.status_aprobacion == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="red"/><path d="M6 12h10v2H6z" fill="red"/><path d="M6 8h10v2H6z" fill="red"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="red"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="red"/></svg>
                                             <svg v-else-if="data.status_aprobacion == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="orange"/><path d="M6 12h10v2H6z" fill="orange"/><path d="M6 8h10v2H6z" fill="orange"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="orange"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="orange"/></svg>
                                             <svg v-else class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
@@ -201,17 +201,17 @@
                     <div v-else class="text-warning row align-items-center mx-0">
                       <span>En revisión</span>
                       <div class="row justify-content-end  mx-0 mr-1 align-items-end">
-                        <div>
+                        <div  v-b-tooltip.hover title="Elaboración">
                           <svg class="mx-2" v-if="edit.status_elaboracion == 'En elaboración'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="blue"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="blue"/></svg>
                           <svg class="mx-2" v-if="edit.status_elaboracion == 'Pendiente'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="orange"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="orange"/></svg>
                           <svg class="mx-2" v-if="edit.status_elaboracion == 'Elaborado'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M30 25l-1.414-1.414L26 26.172V18h-2v8.172l-2.586-2.586L20 25l5 5l5-5z" fill="green"/><path d="M18 28H8V4h8v6a2.006 2.006 0 0 0 2 2h6v3h2v-5a.91.91 0 0 0-.3-.7l-7-7A.909.909 0 0 0 18 2H8a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h10zm0-23.6l5.6 5.6H18z" fill="green"/></svg>
                         </div>
-                        <div>
+                        <div v-b-tooltip.hover title="Revisión">
                           <svg v-if="edit.status_revision == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="red"/></svg>
                           <svg v-if="edit.status_revision == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="orange"/></svg>
                           <svg v-if="edit.status_revision == 'Aprobado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5s-2.24-5-5-5zm1.65 7.35L16.5 17.2V14h1v2.79l1.85 1.85l-.7.71zM18 3h-3.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H6c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h6.11a6.743 6.743 0 0 1-1.42-2H6V5h2v3h8V5h2v5.08c.71.1 1.38.31 2 .6V5c0-1.1-.9-2-2-2zm-6 2c-.55 0-1-.45-1-1s.45-1 1-1s1 .45 1 1s-.45 1-1 1z" fill="green"/></svg>
                         </div>
-                        <div>
+                        <div v-b-tooltip.hover title="Aprobación">
                           <svg v-if="edit.status_aprobacion == 'Rechazado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="red"/><path d="M6 12h10v2H6z" fill="red"/><path d="M6 8h10v2H6z" fill="red"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="red"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="red"/></svg>
                           <svg v-if="edit.status_aprobacion == 'Pendiente'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="orange"/><path d="M6 12h10v2H6z" fill="orange"/><path d="M6 8h10v2H6z" fill="orange"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="orange"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="orange"/></svg>
                           <svg v-if="edit.status_aprobacion == 'Aprobado'" class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M6 16h6v2H6z" fill="green"/><path d="M6 12h10v2H6z" fill="green"/><path d="M6 8h10v2H6z" fill="green"/><path d="M14 26H4V6h24v10h2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h10z" fill="green"/><path d="M22 25.59L19.41 23L18 24.41l4 4l8-8L28.59 19L22 25.59z" fill="green"/></svg>
@@ -253,8 +253,11 @@
             </div>
             </div>
             <div class="px-lg-2 chat-users">
-            <div class="chat-conversation p-3">
-                <VueDocPreview :value="valorDoc" type="office" />
+            <div class="chat-conversation p-3 flex-column row justify-content-center align-items-center ">
+                <VueDocPreview v-if="valorDoc != ''" :value="valorDoc" type="office" class="w-100"/>
+                <div v-else class="row justify-content-center align-items-center w-100 h-100">
+                    <img src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
+                </div>  
             </div>
             </div>
         </div>
@@ -383,7 +386,7 @@
                         </div>
                       </b-col>
                       <b-col>
-                        <div v-if="subproceso.length!= 0 " class="form-group">
+                        <div class="form-group">
                           <label>Subproceso</label>
                           <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
                             <select v-model="edit.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
@@ -849,11 +852,11 @@
               <div class=" col-2">
                 <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
               </div>
-              <div class="col-2">
-                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
-                <div v-else>
-                  <button @click="switchLocDoc('En creación');" class="btn btn-block float-right btn-success" v-if="!ver && !editMode && doc.status==='En creación'">Guardar</button>
-                  <button @click="switchLocDoc('Habilitado');" class="btn btn-block float-right btn-info" v-if="!ver && !editMode && doc.status==='En creación'">Guardar  y habilitar</button>
+              <div class="w-75 row justify-content-end">
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success col-2" v-if="tabIndex !=3">Siguiente</button>
+                <div v-else class="row col-12 justify-content-end">
+                  <button @click="switchLocDoc('En creación');" class="btn btn-block float-right btn-success col-2" v-if="!ver && !editMode && doc.status==='En creación'">Guardar</button>
+                  <button @click="switchLocDoc('Habilitado');" class="btn btn-block float-right btn-info col-4 mt-0 ml-2" v-if="!ver && !editMode && doc.status==='En creación'">Guardar  y habilitar</button>
                   <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
                 </div>
               </div>
@@ -1736,10 +1739,7 @@
                       ></b-form-file>
                         <span style="color:red">{{ errors[0] }}</span>
                       </ValidationProvider>
-                      <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
-                        <h6 class="text-info">Observaciones del documentos</h6>
-                        {{edit.observaciones_documentos}}
-                      </div>
+                      
                     </div>
                     <div class="col-sm-12">
                     <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
@@ -1752,10 +1752,7 @@
                           ></b-form-file>
                           <span style="color:red">{{ errors[0] }}</span>
                       </ValidationProvider>
-                      <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
-                        <h6 class="text-info">Observaciones del diagrama</h6>
-                        {{edit.observaciones_diagramas}}
-                      </div>
+                      
                 </div>
                   <div class="col-sm-12">
                         <div class="form-group ">
@@ -1776,9 +1773,33 @@
                     <span class="d-none d-sm-inline-block"> OBSERVACIONES</span>
                 </template>
                 <div class="alert alert-warning mb-3" role="alert" >
-                  <h6 class="text-info">Observaciones de la revisón</h6>
-                  {{edit.observaciones_revision}}
+                  <div class="row">
+                    <div class="col-9">
+                       <h6 class="text-info">Observaciones de la revisón</h6>
+                        {{edit.observaciones_revision}}
+                    </div>
+                    <img src="@/assets/images/observacion-info.svg" alt="" class="col-3">
+                  </div>
                 </div>
+                  <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' && edit.observaciones_documentos != ''">
+                    <div class="row">
+                      <img src="@/assets/images/document-ob-info.svg" alt="" class="col-3">
+                      <div class="col-9 row justify-content-between text-right">
+                        <h6 class="text-info">Observaciones del documentos</h6>
+                        {{edit.observaciones_documentos}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="alert alert-warning mb-3 mt-2" role="alert" v-if="edit.status_revision == 'Rechazado' &&  edit.observaciones_diagramas != ''">
+                     <div class="row">
+                      <div class="col-9">
+                    <h6 class="text-info">Observaciones del diagrama</h6>
+                    {{edit.observaciones_diagramas}}
+                    </div>
+                      <img src="@/assets/images/diagrama-info.svg" alt="" class="col-3">
+                    </div>
+                  </div>
               </b-tab>
            </b-tabs>
             <ValidationObserver ref="form">
@@ -1794,8 +1815,9 @@
               <ValidationObserver ref="form">
                  
                 <div class="row align-items-center mx-0 mb-3 col-ms-12" style=" margin-top: 1rem;">
-                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                      <select name="Estatus" v-model="edit.status_revision" class="form-control col-ms-12">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }" class="col-12 p-0">
+                      <select class="form-select form-control l col-ms-12" v-model="edit.status_revision" aria-label="Default select example">
+                        <option selected >Seleccione el estado de revisión</option>
                         <option value="Aprobado">Aprobado</option>
                         <option value="Rechazado">Rechazado</option>
                       </select>
@@ -1821,17 +1843,34 @@
                 
                 <p>Consecutivo: {{edit.consecutivo}}</p>
                 <span>{{items.texto}}</span>
-                <b-card>
-                  <h5>Normativas</h5>
-                  <div v-for="(items,index) in edit.normativas" :key="index">
-                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
-                    <span>{{items.texto}}</span>
-                  </div>
-                  <h5 class="mt-3">Responsabilidades</h5>
-                  <p>Elaborar: {{edit.nombre_elabora}}</p>
-                  <p>Revisar: {{edit.nombre_revisa}}</p>
-                  <p>Aprobar: {{edit.nombre_aprueba}}</p>
-                </b-card>
+                    
+                      <b-card>
+                        <div class="row">
+                          <div class="col-8">
+                            <h5>Normativas</h5>
+                              <div v-for="(items,index) in edit.normativas" :key="index">
+                                <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                                <span>{{items.texto}}</span>
+                              </div>
+                          </div>
+                          <div class="col-4">
+                            <img src="@/assets/images/info-general.svg" alt="" class="img-fluid">
+                          </div>
+                        </div>
+                      </b-card>
+                      <b-card>
+                        <div class="row">
+                          <div class="col-4">
+                            <img src="@/assets/images/info-responsable.svg" alt="" class="img-fluid">
+                          </div>
+                          <div class="col-8">
+                            <h5 class="mt-3 text-right">Responsabilidades</h5>
+                            <p class="text-right">Elaborar: {{edit.nombre_elabora}}</p>
+                            <p class="text-right">Revisar: {{edit.nombre_revisa}}</p>
+                            <p class="text-right">Aprobar: {{edit.nombre_aprueba}}</p>
+                          </div>
+                        </div>
+                      </b-card>
                 <div class="row justify-content-end col-12">
                     <span class="mr-4">Fecha de emicion: {{edit.fecha_emicion}}</span>
                     <span> Fecha de revision: {{edit.fecha_alerta}}</span>
@@ -1895,15 +1934,26 @@
                         <i class="fas fa-home"></i>
                     </span>
                     <span class="d-none d-sm-inline-block">OBSERVECIONES</span>
-                  </template>
-                <div class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones Del Elaborador</h6>
-                  {{edit.observaciones_elaboracion}}
+                  </template> 
+                <div class="alert alert-warning mb-3" role="alert" >
+                  <div class="row">
+                    <div class="col-9">
+                       <h6 class="text-info">Observaciones Del Elaborador</h6>
+                        {{edit.observaciones_elaboracion}}
+                    </div>
+                    <img src="@/assets/images/elabora-info.svg" alt="" class="col-3">
+                  </div>
                 </div>
                 <div v-if="edit.status_aprobacion == 'Rechazado'" class="alert alert-warning mb-3" role="alert">
-                  <h6 class="text-info">Observaciones Del Editor</h6>
-                  {{edit.observaciones_aprobacion}}
+                  <div class="row">
+                    <img src="@/assets/images/edit-info.svg" alt="" class="col-3">
+                    <div class="col-9 row justify-content-between text-right">
+                    <h6 class="text-info">Observaciones Del Editor</h6>
+                    {{edit.observaciones_aprobacion}}
+                    </div>
+                  </div>
                 </div>
+                
               </b-tab>
           </b-tabs>
                
@@ -1917,7 +1967,7 @@
            
               <ValidationObserver ref="form">
                  <div class="row align-items-center mx-0 mb-3" style=" margin-top: 1rem;">
-                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
+                    <ValidationProvider name="documento" rules="required" v-slot="{ errors }" class="w-100">
                       <select name="Estatus" v-model="edit.status_aprobacion" class="form-control">
                         <option value="Aprobado">Aprobado</option>
                         <option value="Rechazado">Rechazado</option>
@@ -1931,7 +1981,7 @@
                 <span class="d-inline-block d-sm-none">
                   <i class="far fa-user"></i>
                 </span>
-                <span class="d-none d-sm-inline-block">DATOS APROBACIónN</span>
+                <span class="d-none d-sm-inline-block">DATOS APROBACIÓN</span>
               </template>
               <b-card>
                 <div class="row justify-content-between col-12 align-items-center ml-0 px-0">
@@ -1944,17 +1994,34 @@
                 
                 <p>Consecutivo: {{edit.consecutivo}}</p>
                 <span>{{items.texto}}</span>
-                <b-card>
-                  <h5>Normativas</h5>
-                  <div v-for="(items,index) in edit.normativas" :key="index">
-                    <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
-                    <span>{{items.texto}}</span>
-                  </div>
-                  <h5 class="mt-3">Responsabilidades</h5>
-                  <p>Elaborar: {{edit.nombre_elabora}}</p>
-                  <p>Revisar: {{edit.nombre_revisa}}</p>
-                  <p>Aprobar: {{edit.nombre_aprueba}}</p>
-                </b-card>
+                    
+                      <b-card>
+                        <div class="row">
+                          <div class="col-8">
+                            <h5>Normativas</h5>
+                              <div v-for="(items,index) in edit.normativas" :key="index">
+                                <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
+                                <span>{{items.texto}}</span>
+                              </div>
+                          </div>
+                          <div class="col-4">
+                            <img src="@/assets/images/info-general.svg" alt="" class="img-fluid">
+                          </div>
+                        </div>
+                      </b-card>
+                      <b-card>
+                        <div class="row">
+                          <div class="col-4">
+                            <img src="@/assets/images/info-responsable.svg" alt="" class="img-fluid">
+                          </div>
+                          <div class="col-8">
+                            <h5 class="mt-3 text-right">Responsabilidades</h5>
+                            <p class="text-right">Elaborar: {{edit.nombre_elabora}}</p>
+                            <p class="text-right">Revisar: {{edit.nombre_revisa}}</p>
+                            <p class="text-right">Aprobar: {{edit.nombre_aprueba}}</p>
+                          </div>
+                        </div>
+                      </b-card>
                 <div class="row justify-content-end col-12">
                     <span class="mr-4">Fecha de emicion: {{edit.fecha_emicion}}</span>
                     <span> Fecha de revision: {{edit.fecha_alerta}}</span>
@@ -2482,9 +2549,9 @@ export default {
                 'id':'',
                 'creado':'',
                 'nombre':'',
-                'nombre_elabora':'',
-                'nombre_revisa':'',
-                'nombre_aprueba':'',
+                'nombre_elabora':null,
+                'nombre_revisa':null,
+                'nombre_aprueba':null,
                 'version':'',
                 'observaciones_version': '',
                 'consecutivo':'',
@@ -3470,6 +3537,17 @@ export default {
                 this.edit.elabora_v_id = response.data.elabora_v_id;
                 this.edit.aprueba_v_id = response.data.aprueba_v_id;
                 this.edit.revisa_v_id = response.data.revisa_v_id;
+                if (this.edit.nombre_revisa == null || this.edit.nombre_revisa == "") {
+                this.edit.nombre_revisa = 'Por revisar'
+              }
+
+              if(this.edit.nombre_elabora == null || this.edit.nombre_elabora == "") {
+                this.form.nombre_elabora = 'Por elaborar'
+              }
+
+              if(this.edit.nombre_aprueba == null || this.edit.nombre_aprueba == ""){
+                this.edit.nombre_aprueba = 'Por aprobar'
+              }
                 if (this.editMode) {
                   this.$root.$emit("bv::show::modal", "modal", "#btnShow");
                 }
