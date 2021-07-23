@@ -142,7 +142,7 @@
           <div class="p-2 border-top">
             <a
               class="btn btn-sm btn-link font-size-14 btn-block text-center"
-              href="javascript:void(0)"
+             href="/notificaciones"
             >
               <i class="mdi mdi-arrow-right-circle mr-1"></i>
               {{ $t('navbar.dropdown.notification.button')}}
