@@ -94,7 +94,7 @@
 
                       <div class="mt-5 text-center">
                         <p>
-                          © 2021 Pristel
+                          © 2021 N.A.U.
                           <i class="mdi mdi-heart text-danger"></i> by Bioscenter
                         </p>
                       </div>
@@ -173,15 +173,32 @@ export default {
         data.append('password',this.form.password);
        await  this.axios.post('api/auth/signin', data).then(response => {
             if (response.status==200) {
-               this.$swal('Bien!!!');
+               this.$swal('Acceso Confirmado!',
+                          'Bienvenido',
+                          'success');
                ///limpiar el formulario 
               this.guardarUsuario(response.data.accessToken);  
 			        this.session();
               return;                
               }
             }).catch(e => {
+                            if (e.response.status===401) {
+                     this.$swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: 'Algo ha salido mal, usuario o contraseña incorrectos<br>¿No recuerdas tus Credenciales?',
+                        confirmButtonText: 'Reintentar',
+                        footer: '<a href="/forgot-password">Recuperar Cuenta</a>'
+                      });
+              }
+              if (e.response.status===403) {
+                     this.$swal({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: 'esta cuenta has sido baneada por el admintrador de este portal?',
+                      });
+              }
               console.log(e);
-              this.$swal(e);
            });     
     },
     session(){

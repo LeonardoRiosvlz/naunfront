@@ -7,7 +7,7 @@
             <div class="p-3 border-bottom">
             <div class="media">
 
-              <pre>{{documentos}}</pre>
+            
                 <div class="media-body">
                 <h5 class="font-size-15 mt-0 mb-1">{{doc.nombre}}</h5>
                 <p class="text-muted mb-0">
