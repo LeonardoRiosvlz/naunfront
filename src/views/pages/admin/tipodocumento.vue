@@ -164,6 +164,8 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      
+      fecha:'12/08/21',
       ver:false,
       url:"",
       url_perfil:"",
@@ -265,6 +267,33 @@ export default {
       },
   async agregarProceso(){
      let data = new FormData();
+   this.form.documento.push(
+          `<div class="row col-12 justify-content-between px-0 mx-0">
+                <div class="col-3 border border-dark row justify-content-center align-items-center mx-0">
+                  <img src="https://cdn.pixabay.com/photo/2016/02/18/07/13/social-1206614_960_720.png" alt="" style="width:7rem; height:6rem;">
+                </div>
+                <div class="col-5 border border-dark">
+                  <h5 class="text-center mt-3" style="font-weight:800; font-size:16px">PROCEDIMIENTO PARA
+                    CONTROL DE LA INFORMACION
+                    DOCUMENTADA- <span style="background:yellow">CENTRO MATERNO
+                    INFANTIL DE MEDIA LUNA</span></h5>
+                </div>
+                <div class="col-2 border border-dark p-0">
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Código:</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Versión:</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Página:</div>
+                  <div class="col-12 m-0" style=" font-size:17px">Fecha de emisión:</div>
+                </div>
+                <div class="col-2 border border-dark p-0">
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">PR-GC-01</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">12</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">1 de 11</div>
+                  <div class="col-12 m-0" style=" font-size:17px">${this.fecha}</div>
+                </div>
+              </div>
+             <p class=" mt-3">CONTENIDO</p> 
+              `
+      )
       var formulario = this.form;
         for (var key in formulario) {
           if (key=='documento') {
@@ -331,10 +360,12 @@ export default {
         var formulario = this.form;
 
         for (var key in formulario) {
-           this.form[key]="";
+          if (key != 'documento') {
+             this.form[key]="";
+          } else {
+            this.form.documento = []
+          }
         }
-       this.form.actividades = [],
-       
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {

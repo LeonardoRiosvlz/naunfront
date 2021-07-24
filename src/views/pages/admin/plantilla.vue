@@ -150,7 +150,7 @@ export default {
                 console.log('error' + e);
             })
         },
-        async  editarPlantilla(){
+        async editarPlantilla(){
             let data = new FormData();
             data.append('id',this.$route.params.id);
             data.append('documento',JSON.stringify(this.doc));
