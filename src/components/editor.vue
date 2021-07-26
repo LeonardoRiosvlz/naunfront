@@ -14,7 +14,6 @@
       :page_format_mm="page_format_mm"
       :page_margins="page_margins"
       :display="display" />
-
   </div>
 </div>
   
@@ -44,7 +43,6 @@ export default {
     }
   },
   created () {
-    this.encabezado()
     // Initialize gesture flags
     let start_zoom_gesture = false;
     let start_dist_touch = false;
@@ -109,7 +107,6 @@ export default {
   },
   mounted () { 
     this.mounted = true; 
-    
     },
   computed: {
      ...mapState(['usuarioDB','cliente','doc']),

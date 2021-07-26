@@ -326,7 +326,6 @@
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
           </div>
           <ValidationObserver style="z-index:1; position: relative;" ref="form">
-
                 <b-tabs v-model="tabIndex" content-class="p-3 text-muted">
                   <b-tab  class="border-0">
                     <template v-slot:title>
@@ -493,47 +492,6 @@
                           </b-col>
                         </b-row>
                   </b-tab>
-
-                  <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                        </template>
-                      <h5 class="mt-3">Normatividad asociada</h5> 
-                      <b-row class="align-items-center mb-3">
-                        <b-col>
-                          <div class="form-group m-0">
-                              <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                          </div>
-                        </b-col>
-                        <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
-                      </b-row>
-                      <div class="card mt-3">
-                        <div class="row m-0 justify-content-end">
-                          <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                          <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                        </div>
-                        <div v-if="show" class="mb-3">
-                          <b-row v-for="(norma, index) in edit.normativas" :key="index" class="px-3 ">
-                            <b-col class="form-group w-100">
-                              <div class="row m-0 justify-content-between">
-                                  <label>{{norma.nombre}}</label>
-                                  <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                              </div>
-                             
-                              <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                <span style="color:red">{{ errors[0] }}</span>
-                              </ValidationProvider>
-                            </b-col>
-                          </b-row>
-                        </div>
-                      </div> 
-                  </b-tab>
-
-
                     <b-tab>
                         <template v-slot:title>
                           <span class="d-inline-block d-sm-none">
@@ -734,46 +692,6 @@
                           </b-row>
                     </b-tab>
 
-                    <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                          </template>
-                        <h5 class="mt-3">Normatividad asociada</h5> 
-                        <b-row class="align-items-center mb-3">
-                          <b-col>
-                            <div class="form-group m-0">
-                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                            </div>
-                          </b-col>
-                          <b-button  @click="cargarNorma_doc" class="float-right btn-success py-1"> agregar</b-button>
-                        </b-row>
-                        <div class="card mt-3">
-                          <div class="row m-0 justify-content-end">
-                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                          </div>
-                          <div v-if="show" class="mb-3">
-                            <b-row v-for="(norma, index) in doc.normativas" :key="index" class="px-3 ">
-                              <b-col class="form-group w-100">
-                                <div class="row m-0 justify-content-between">
-                                    <label>{{norma.nombre}}</label>
-                                    <button class="btn" @click=" eliminarNormativa_doc(norma)"   >Eliminar</button>
-                                </div>
-
-                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </b-col>
-                            </b-row>
-                          </div>
-                        </div> 
-                    </b-tab>
-
-
                       <b-tab>
                           <template v-slot:title>
                             <span class="d-inline-block d-sm-none">
@@ -852,6 +770,18 @@
                           
                       </b-row>
                       </b-tab>
+                      <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">DOCUMENTO</span>
+                        </template>
+                        <b-row class="mt-3">
+                            <Editor/>
+                        </b-row>
+
+                    </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -1019,46 +949,6 @@
                           </b-row>
                     </b-tab>
 
-                    <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                          </template>
-                        <h5 class="mt-3">Normatividad asociada</h5> 
-                        <b-row class="align-items-center mb-3">
-                          <b-col>
-                            <div class="form-group m-0">
-                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                            </div>
-                          </b-col>
-                          <b-button  @click="cargarNorma_doc_obsoleto()" class="float-right btn-success py-1"> agregar</b-button>
-                        </b-row>
-                        <div class="card mt-3">
-                          <div class="row m-0 justify-content-end">
-                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                          </div>
-                          <div v-if="show" class="mb-3">
-                            <b-row v-for="(norma, index) in doc_obsoleto.normativas" :key="index" class="px-3 ">
-                              <b-col class="form-group w-100">
-                                <div class="row m-0 justify-content-between">
-                                    <label>{{norma.nombre}}</label>
-                                    <button class="btn" @click=" eliminarNormativa_doc_obsoleto(norma)"   >Eliminar</button>
-                                </div>
-
-                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </b-col>
-                            </b-row>
-                          </div>
-                        </div> 
-                    </b-tab>
-
-
                       <b-tab>
                           <template v-slot:title>
                             <span class="d-inline-block d-sm-none">
@@ -1110,6 +1000,18 @@
                           
                       </b-row>
                       </b-tab>
+                      <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">DOCUMENTO</span>
+                        </template>
+                        <b-row class="mt-3">
+                          
+                        </b-row>
+
+                    </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -1304,46 +1206,6 @@
                           </b-row>
                     </b-tab>
 
-                    <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                          </template>
-                        <h5 class="mt-3">Normatividad asociada</h5> 
-                        <b-row class="align-items-center mb-3">
-                          <b-col>
-                            <div class="form-group m-0">
-                                <v-select v-model="titulo"  :options="normativas" disabled :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                            </div>
-                          </b-col>
-                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
-                        </b-row>
-                        <div class="card mt-3">
-                          <div class="row m-0 justify-content-end">
-                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                          </div>
-                          <div v-if="show" class="mb-3">
-                            <b-row v-for="(norma, index) in form.normativas" :key="index" class="px-3 ">
-                              <b-col class="form-group w-100">
-                                <div class="row m-0 justify-content-between">
-                                    <label>{{norma.nombre}}</label>
-                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                                </div>
-                              
-                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " disabled/>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </b-col>
-                            </b-row>
-                          </div>
-                        </div> 
-                    </b-tab>
-
-
                       <b-tab>
                           <template v-slot:title>
                             <span class="d-inline-block d-sm-none">
@@ -1393,6 +1255,18 @@
                             </b-col>
                           </b-row>
                       </b-tab>
+                      <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">DOCUMENTO</span>
+                        </template>
+                        <b-row class="mt-3">
+                          
+                        </b-row>
+
+                    </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -1579,48 +1453,6 @@
                           </b-row>
                     </b-tab>
 
-                    <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                          </template>
-                        <h5 class="mt-3">Normatividad asociada</h5> 
-                        <b-row class="align-items-center mb-3">
-                          <b-col>
-                            <div class="form-group m-0">
-
-                                <v-select  v-model="titulo"  :options="normativas" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-
-                            </div>
-                          </b-col>
-                          <b-button  @click="cargarNorma_nuevaversion" class="float-right btn-success py-1"> agregar</b-button>
-                        </b-row>
-                        <div class="card mt-3">
-                          <div class="row m-0 justify-content-end">
-                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                          </div>
-                          <div v-if="show" class="mb-3">
-                            <b-row v-for="(norma, index) in nueva_version.normativas" :key="index" class="px-3 ">
-                              <b-col class="form-group w-100">
-                                <div class="row m-0 justify-content-between">
-                                    <label>{{norma.nombre}}</label>
-                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                                </div>
-                              
-                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" "/>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </b-col>
-                            </b-row>
-                          </div>
-                        </div> 
-                    </b-tab>
-
-
                       <b-tab>
                           <template v-slot:title>
                             <span class="d-inline-block d-sm-none">
@@ -1684,6 +1516,18 @@
                             </b-col>
                             </div>
                       </b-tab>
+                      <b-tab>
+                        <template v-slot:title>
+                          <span class="d-inline-block d-sm-none">
+                            <i class="far fa-user"></i>
+                          </span>
+                          <span class="d-none d-sm-inline-block">DOCUMENTO</span>
+                        </template>
+                        <b-row class="mt-3">
+                          
+                        </b-row>
+
+                    </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -2255,46 +2099,6 @@
                           </b-row>
                     </b-tab>
 
-                    <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">NORMATIVIDAD</span>
-                          </template>
-                        <h5 class="mt-3">Normatividad asociada</h5> 
-                        <b-row class="align-items-center mb-3">
-                          <b-col>
-                            <div class="form-group m-0">
-                                <v-select  v-model="titulo"  :options="normativas" :disabled="ver" :reduce="normativas => normativas"  :getOptionLabel="option => option.nombre" ></v-select>
-                            </div>
-                          </b-col>
-                          <b-button  @click="cargarNorma" class="float-right btn-success py-1"> agregar</b-button>
-                        </b-row>
-                        <div class="card mt-3">
-                          <div class="row m-0 justify-content-end">
-                            <button class="btn" @click="show = false"   v-if="show"><b-card-sub-title >Ocultar</b-card-sub-title></button>
-                            <button class="btn" @click="show = true"  v-else><b-card-sub-title >Ver</b-card-sub-title></button>
-                          </div>
-                          <div v-if="show" class="mb-3">
-                            <b-row v-for="(norma, index) in edit.normativas" :key="index" class="px-3 ">
-                              <b-col class="form-group w-100">
-                                <div class="row m-0 justify-content-between">
-                                    <label>{{norma.nombre}}</label>
-                                    <button class="btn" @click=" eliminarNormativa(norma)"   >Eliminar</button>
-                                </div>
-                              
-                                <ValidationProvider name="contenido" rules="required" v-slot="{ errors }">
-                                  <input v-model="norma.texto" type="text" class="form-control" placeholder=" " :disabled="ver"/>
-                                  <span style="color:red">{{ errors[0] }}</span>
-                                </ValidationProvider>
-                              </b-col>
-                            </b-row>
-                          </div>
-                        </div> 
-                    </b-tab>
-
-
                       <b-tab>
                           <template v-slot:title>
                             <span class="d-inline-block d-sm-none">
@@ -2400,6 +2204,7 @@ import PageHeader from "@/components/page-header";
 import Chat from '@/components/chat'
 import moment from 'moment'
 import VueDocPreview from 'vue-doc-preview'
+import Editor from "@/components/editor";
 /**
  * Dashboard component
  */
@@ -2413,7 +2218,8 @@ export default {
     vSelect,
     Chat,
     simplebar,
-    VueDocPreview
+    VueDocPreview,
+    Editor
   },
   data() {
     return {
@@ -3623,7 +3429,6 @@ export default {
                 this.nueva_version.intervalo = response.data.intervalo;
                 this.nueva_version.status = response.data.status;
                 this.nueva_version.archivo = response.data.archivo;
-                this.nueva_version.normativas = JSON.parse(response.data.normativas);
                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
                 this.nueva_version.fecha_edicion = response.data.fecha_edicion 
                 this.nueva_version.tipo_id = response.data.tipo_id;
@@ -3640,7 +3445,7 @@ export default {
                 this.nueva_version.habilita_id = response.data.habilita_id;
                 this.nueva_version.fecha_edicion = response.data.fecha_edicion;
                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
-                this.nueva_version.version = response.data.hdocumentos.length + 2;
+                // this.nueva_version.version = response.data.hdocumentos.length + 2;
                 this.$root.$emit("bv::show::modal", "modal-nueva", "#btnShow"); 
               }
            })
@@ -3649,7 +3454,7 @@ export default {
            })
        },
 
-    async listarDocumento(id){
+    async listarDocumento(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
         await this.axios.post('api/documentos/find',data)
@@ -3661,8 +3466,6 @@ export default {
               this.doc_obsoleto.tipo_id = response.data.tipo_id;
               this.doc.nombre = response.data.nombre;
               this.doc_obsoleto.nombre = response.data.nombre;
-              this.doc.normativas = JSON.parse(response.data.normativas);
-              this.doc_obsoleto.normativas = JSON.parse(response.data.normativas);
               this.doc.creado = response.data.creado;
               this.doc_obsoleto.creado = response.data.creado;
               this.doc.archivo = response.data.archivo;
@@ -3692,7 +3495,6 @@ export default {
               this.doc.aprueba_id = response.data.aprueba_id;
               this.doc.revisa_id = response.data.revisa_id;
 
-              
               if (this.doc.status==="En creación") {
                 this.$root.$emit("bv::show::modal", "nuevo", "#btnShow"); 
               }
