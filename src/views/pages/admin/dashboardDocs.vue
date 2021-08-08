@@ -2635,7 +2635,21 @@ export default {
            return fechafina
         }
     },
+      ...mapActions(['cargarDocumento']),
   methods: {
+    async  listarPlantilla(){
+        let data = new FormData();
+        data.append('id',this.$route.params.id);
+        await this.axios.post('api/documentos/tipo/find',data)
+        .then((response) => {
+            console.log(response.data)
+            var plantilla = response.data;
+            console.log(plantilla)
+        })
+        .catch((e)=>{
+            console.log('error' + e);
+        })
+    },
     setHabilitar(){
       this.fecha_actual = new Date()
       this.edit.version = parseInt(this.edit.documento_actual.version ) + 1
@@ -3849,6 +3863,7 @@ export default {
       this.listarDocumentosHabilitados();
       this.listardocscreados();
       this.documentoActual();
+      this.listarPlantilla();
       console.log(this.form)
       },
      mounted() {

@@ -1,6 +1,8 @@
 <template>
-  <div class="main">
-
+<div>
+    
+    <div class="main">
+    
     <!-- Top bar -->
     <vue-file-toolbar-menu :content="menu" class="bar" />
 
@@ -14,6 +16,8 @@
       :display="display" />
 
   </div>
+</div>
+  
 </template>
 
 <script>
@@ -26,6 +30,8 @@ export default {
     return {
       // This is where the pages content is stored and synced
       content: [],
+      fecha:'12/08/21',
+      img:require('@/assets/images/encabezado.png'),
       zoom: 0.8,
       zoom_min: 0.10,
       zoom_max: 7.0,
@@ -38,6 +44,7 @@ export default {
     }
   },
   created () {
+    this.encabezado()
     // Initialize gesture flags
     let start_zoom_gesture = false;
     let start_dist_touch = false;
@@ -100,7 +107,10 @@ export default {
     // If your component is susceptible to be destroyed, don't forget to
     // use window.removeEventListener in the Vue.js beforeDestroy handler
   },
-  mounted () { this.mounted = true; },
+  mounted () { 
+    this.mounted = true; 
+    
+    },
   computed: {
      ...mapState(['usuarioDB','cliente','doc']),
     // This is the menu content
@@ -274,6 +284,36 @@ export default {
     can_redo () { return this.content_history.length - this.undo_count - 1 > 0; }
   },
   methods: {
+    encabezado(){
+      this.content.push(
+          `<div class="row col-12 justify-content-between px-0 mx-0">
+                <div class="col-3 border border-dark row justify-content-center align-items-center mx-0">
+                  <img :src="this.img" alt="">
+                </div>
+                <div class="col-4 border border-dark">
+                  <h5 class="text-center my-1">PROCEDIMIENTO PARA
+                    CONTROL DE LA INFORMACION
+                    DOCUMENTADA- <span style="background:yellow">CENTRO MATERNO
+                    INFANTIL DE MEDIA LUNA</span></h5>
+                </div>
+                <div class="col-3 border border-dark p-0">
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Código:</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Versión:</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Página:</div>
+                  <div class="col-12 m-0" style=" font-size:17px">Fecha de emisión:</div>
+                </div>
+                <div class="col-2 border border-dark p-0">
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">PR-GC-01</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">12</div>
+                  <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">1 de 11</div>
+                  <div class="col-12 m-0" style=" font-size:17px">${this.fecha}</div>
+                </div>
+              </div>
+             <p class=" mt-3">CONTENIDO</p> 
+              `
+      )
+      console.log(this.content)
+    },
     ...mapActions(['cargarDocumento']),
     // Page overlays (headers, footers, page numbers)
     overlay (page, total) {
