@@ -26,4 +26,15 @@ export default {
 .ex1{
   height:70vh!important;
 }
+.bar{
+  width:auto!important;
+}
+@media (max-width: 769px){
+  .bar{
+    width:28rem!important;
+  }
+  .page{
+        width: 152mm!important;
+  }
+}
 </style>

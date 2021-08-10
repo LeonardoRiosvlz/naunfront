@@ -14,7 +14,6 @@
       :page_format_mm="page_format_mm"
       :page_margins="page_margins"
       :display="display" />
-
   </div>
 </div>
   
@@ -30,8 +29,6 @@ export default {
     return {
       // This is where the pages content is stored and synced
       content: [],
-      fecha:'12/08/21',
-      img:require('@/assets/images/encabezado.png'),
       zoom: 0.8,
       zoom_min: 0.10,
       zoom_max: 7.0,
@@ -44,7 +41,6 @@ export default {
     }
   },
   created () {
-    this.encabezado()
     // Initialize gesture flags
     let start_zoom_gesture = false;
     let start_dist_touch = false;
@@ -109,7 +105,6 @@ export default {
   },
   mounted () { 
     this.mounted = true; 
-    
     },
   computed: {
      ...mapState(['usuarioDB','cliente','doc']),
@@ -284,19 +279,21 @@ export default {
     can_redo () { return this.content_history.length - this.undo_count - 1 > 0; }
   },
   methods: {
-    encabezado(){
-      this.content.push(
-          `<div class="row col-12 justify-content-between px-0 mx-0">
+    ...mapActions(['cargarDocumento']),
+    // Page overlays (headers, footers, page numbers)
+    overlay (page, total) {
+      // Add page numbers on each page
+      let html = `<div class="row col-12 justify-content-between px-0 mx-0">
                 <div class="col-3 border border-dark row justify-content-center align-items-center mx-0">
-                  <img :src="this.img" alt="">
+                  <img src="https://cdn.pixabay.com/photo/2016/02/18/07/13/social-1206614_960_720.png" alt="" style="width:7rem; height:6rem;">
                 </div>
-                <div class="col-4 border border-dark">
-                  <h5 class="text-center my-1">PROCEDIMIENTO PARA
+                <div class="col-5 border border-dark">
+                  <h5 class="text-center mt-3" style="font-weight:800; font-size:16px">PROCEDIMIENTO PARA
                     CONTROL DE LA INFORMACION
                     DOCUMENTADA- <span style="background:yellow">CENTRO MATERNO
                     INFANTIL DE MEDIA LUNA</span></h5>
                 </div>
-                <div class="col-3 border border-dark p-0">
+                <div class="col-2 border border-dark p-0">
                   <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Código:</div>
                   <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Versión:</div>
                   <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">Página:</div>
@@ -308,22 +305,7 @@ export default {
                   <div class="col-12 m-0" style="border-bottom:2px solid #000; font-size:17px">1 de 11</div>
                   <div class="col-12 m-0" style=" font-size:17px">${this.fecha}</div>
                 </div>
-              </div>
-             <p class=" mt-3">CONTENIDO</p> 
-              `
-      )
-      console.log(this.content)
-    },
-    ...mapActions(['cargarDocumento']),
-    // Page overlays (headers, footers, page numbers)
-    overlay (page, total) {
-      // Add page numbers on each page
-      let html = '<div style="position: absolute; bottom: 8mm; ' + ((page % 2) ? 'right' : 'left') + ': 10mm">Page ' + page + ' of ' + total + '</div>';
-      // Add custom headers and footers from page 3
-      if(page >= 3) {
-        html += '<div style="position: absolute; left: 0; top: 0; right: 0; padding: 3mm 5mm; background: rgba(200, 220, 240, 0.5)"><strong>MYCOMPANY</strong> example.com /// This is a custom header overlay</div>';
-        html += '<div style="position: absolute; left: 10mm; right: 10mm; bottom: 5mm; text-align:center; font-size:10pt">Copyright (c) 2020 Romain Lamothe, MIT License /// This is a custom footer overlay</div>';
-      }
+              </div> `
       return html;
     },
     // Undo / redo functions examples
@@ -414,6 +396,9 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.8);
+}
+.page {
+  padding-top:216px!important;
 }
 </style>
 

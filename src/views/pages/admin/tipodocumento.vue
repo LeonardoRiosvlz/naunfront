@@ -164,6 +164,8 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      
+      fecha:'12/08/21',
       ver:false,
       url:"",
       url_perfil:"",
@@ -264,7 +266,6 @@ export default {
           });
       },
   async agregarProceso(){
-     let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           if (key=='documento') {
@@ -331,10 +332,12 @@ export default {
         var formulario = this.form;
 
         for (var key in formulario) {
-           this.form[key]="";
+          if (key != 'documento') {
+             this.form[key]="";
+          } else {
+            this.form.documento = []
+          }
         }
-       this.form.actividades = [],
-       
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {

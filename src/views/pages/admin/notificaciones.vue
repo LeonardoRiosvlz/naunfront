@@ -1,18 +1,75 @@
 <template>
   <Layout>
-    <PageHeader :title="title" :items="items" /> 
-    
+    <PageHeader :title="title" :items="items" />
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body overflow-auto">
+            <div class="row" v-if="notificaciones.length<1">
+              <div class="col-lg-12">
+                <b-card no-body>
+                  <b-row no-gutters class="align-items-center">
 
+                    <b-col md="8">
+                      <b-card-body title="No tienes notificaciones">
+                      </b-card-body>
+                    </b-col>
+                    <b-col md="12">
+                      <b-card-img src="" class="rounded-0"></b-card-img>
+                    </b-col>
+                  </b-row>
+                </b-card>
+              </div>
+            </div> 
+          <simplebar style="min-height:530px; max-height:530px;" v-else>
+            <a v-for="(msg, index) in notificaciones" :key="index"  class="text-reset notification-item">
+              <div class="media">
+                <div class="avatar-xs mr-3">
+                  <span :class="msg.color">
+                    <i :class="msg.icon"></i>
+                  </span>
+                </div>
+                <div class="media-body">
+                  <h6 class="mt-0 mb-1">{{msg.titulo}}</h6>
+                  <div class="font-size-12 text-muted">
+                    <p class="mb-1">{{msg.descripcion}}</p>
+                    <p class="mb-0">
+                     Remitente: {{msg.remitente.nombre }} {{msg.remitente.apellido }}
+    
+                    </p>
+                    <p class="mb-0">
+                      <i class="mdi mdi-clock-outline"></i>
+                      {{msg.created_at | capitalize }}
+                    </p>
+                    <div class="row" style="margin-left:92%">
+                        <div class="col-6">
+                            <button class="btn btn-sm btn-success my-1" v-if="msg.status==='Pendiente'"  @click="editarNotificacion(msg.id)"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-sm btn-danger my-1"   @click="eliminarNotificacion(msg.id)"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </simplebar>
+          </div>
+        </div>
+      </div>
+    </div>
   </Layout>
 </template>
 
 <script>
 
 import vue2Dropzone from "vue2-dropzone";
+import simplebar from "simplebar-vue";
 import {mapState,mapMutations, mapActions} from 'vuex'
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
+import moment from 'moment';
 
 
 /**
@@ -24,15 +81,15 @@ export default {
     Layout,
     PageHeader,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    simplebar
   },
   data() {
     return {
-      title: "Administracion",
+      title: "Usuarios",
       items: [
         {
-          text: "Notificaciones",
-          active: true
+          text: "Notificaciones"
         }
       ],
      dropzoneOptions: {
@@ -56,17 +113,13 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["Nombre","Tipo de proceso", "Objetivo","Actions"],
-      cargos: [], 
+      fields: ["cargo","descripcion","actions"],
+      notificaciones: [], 
       editMode:false,
-  form:{
-          "id": 6,
-          "nombre": "",
-          "descripcion": "",
-          "status": null,
-          "created_at": "",
-          "updated_at": "",
-          "cliente_id": 1,
+      form:{
+          'id':'',
+          'cargo':'',
+          'descripcion':'',
       }
     }
   },
@@ -76,6 +129,23 @@ export default {
   created(){
     this.listarUsers();
   },
+      filters: {
+        capitalize: function (value) {
+          if (!value) return ''
+          let fecha = moment();
+            let dias =fecha.diff(value, 'days'); 
+            let horas =fecha.diff(value, 'hours'); 
+            let minutos =fecha.diff(value, 'minutes'); 
+          if (dias>1) {
+           return "hace " + dias + " dias."; 
+          } if (dias== 0 && horas>1) {
+               return "hace " + horas + " horas."; 
+          } else {
+               return "hace " + minutos + " minutos."; 
+          }
+
+        }
+    },
   methods: {
 
     onFiltered(filteredItems) {
@@ -88,7 +158,7 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarCliente();
+              this.agregarCargo();
             } else {}
           });        
         }else{
@@ -99,13 +169,13 @@ export default {
         }});
       }
     },
-   async editarCliente(){
-        let data = new FormData();
+   async agregarCargo(){
+     let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.post('api/cargos', data, {
+       await this.axios.post('api/cargos', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -126,30 +196,24 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarCliente(){
+    async editarNotificacion(id){
      let data = new FormData();
-       var formulario = this.form;
-        for (var key in formulario) {
-          data.append(key,formulario[key]);
-        }
-        await this.axios.put('api/cargos', data).then(response => {
+     data.append("id",id);
+   
+        await this.axios.put('api/notificacion', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarCargos();
+               this.listarNotificaciones();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-                for (var key in formulario) {
-                   this.form[key]="";
-                 }
               }
             }).catch(e => {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarCargos(id){
+     async eliminarNotificacions(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/cargos/delete',data, {
+        await this.axios.post('api/notificacion/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -159,16 +223,20 @@ export default {
                       '',
                       'success'
                 );
-                this.listarCargos();
+                this.listarNotificaciones();
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
+
+            this.$swal(
+                    'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
           });
       }, 
-      eliminarCargo(id){
+      eliminarNotificacion(id){
         this.$swal({
-          title: 'Desea borrar este cargo?',
+          title: 'Desea borrar?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -177,7 +245,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarCargos(id);
+            this.eliminarNotificacions(id);
           }
         })
       },
@@ -197,15 +265,6 @@ export default {
             return;
           }
         }
-      },
-    async  listarCargos(){
-       await this.axios.get('api/cargos')
-        .then((response) => {
-          this.cargos = response.data.rows;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
       },
       setEmail(){
         this.form.username=this.form.email;
@@ -232,6 +291,15 @@ export default {
       toggleModal () {
         this.modal = !this.modal
       },
+          async listarNotificaciones(index){
+      await this.axios.get('api/notificacion/todas').then(response => {
+        if (response.status==200) {
+            this.notificaciones=response.data.rows;
+          }
+
+        }).catch(e => { 
+    });
+    },
       session(){
         if (localStorage.getItem('token')) {
           const token=localStorage.getItem('token');
@@ -243,7 +311,7 @@ export default {
   },
     created(){
         this.session();
-        this.listarCargos();
+        this.listarNotificaciones();
 
       },
      mounted() {

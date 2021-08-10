@@ -54,6 +54,40 @@ export default [
         },
     },
     {
+        path: '/notificaciones',
+        name: 'Notificaciones',
+        component: () => import('../views/pages/admin/notificaciones'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/reset-password/:token',
+        name: 'reset-password',
+        component: () => import('../views/pages/account/reset-password'),
+        meta: {
+            beforeResolve(routeTo, routeFrom, next) {
+                // If the user is already logged in
+                if (store.getters['auth/loggedIn']) {
+                    // Redirect to the home page instead
+                    next({ name: 'home' })
+                } else {
+                    // Continue to the login page
+                    next()
+                }
+            },
+        },
+    },
+    {
         path: '/logout',
         name: 'logout',
         meta: {
