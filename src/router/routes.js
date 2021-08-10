@@ -433,6 +433,23 @@ export default [
         },
     },
     {
+        path: '/gestorformato',
+        name: 'gestorformato',
+        component: () => import('../views/pages/admin/gestorformato'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/plantillas',
         name: 'plantillas',
         component: () => import('../views/pages/admin/plantillas'),
@@ -552,6 +569,23 @@ export default [
         },
     },
     {
+        path: '/gestion-versiones-form/:id',
+        name: 'gestion-versiones-form',
+        component: () => import('../views/pages/admin/dashboardForm'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/notificaciones',
         name: 'notificaciones',
         component: () => import('../views/pages/admin/notificaciones'),
@@ -640,6 +674,23 @@ export default [
         path: '/documentos/:id',
         name: 'documentos',
         component: () => import('@/components/previewdocs'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/formatos/:id',
+        name: 'documentos',
+        component: () => import('@/components/previewform'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
