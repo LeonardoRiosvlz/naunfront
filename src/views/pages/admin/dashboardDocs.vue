@@ -255,6 +255,7 @@
             </div>
             <div class="px-lg-2 chat-users">
             <div class="chat-conversation p-3 flex-column row justify-content-center align-items-center ">
+            <Editor />
                 <VueDocPreview v-if="valorDoc != ''" :value="valorDoc" type="office" class="w-100"/>
                 <div v-else class="row justify-content-center align-items-center w-100 h-100">
                     <img src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
@@ -770,18 +771,6 @@
                           
                       </b-row>
                       </b-tab>
-                      <b-tab>
-                        <template v-slot:title>
-                          <span class="d-inline-block d-sm-none">
-                            <i class="far fa-user"></i>
-                          </span>
-                          <span class="d-none d-sm-inline-block">DOCUMENTO</span>
-                        </template>
-                        <b-row class="mt-3">
-                            <Editor/>
-                        </b-row>
-
-                    </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -790,7 +779,7 @@
                 <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
               </div>
               <div class="w-75 row justify-content-end">
-                <button @click="tabIndex++" class="btn btn-block float-right btn-success col-2" v-if="tabIndex !=3">Siguiente</button>
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success col-2" v-if="tabIndex !=2">Siguiente</button>
                 <div v-else class="row col-12 justify-content-end">
                   <button @click="switchLocDoc('En creación');" class="btn btn-block float-right btn-success col-2" v-if="!ver && !editMode && doc.status==='En creación'">Guardar</button>
                   <button @click="switchLocDoc('Habilitado');" class="btn btn-block float-right btn-info col-4 mt-0 ml-2" v-if="!ver && !editMode && doc.status==='En creación'">Guardar  y habilitar</button>
@@ -815,7 +804,7 @@
                         <span class="d-inline-block d-sm-none">
                           <i class="fas fa-home"></i>
                         </span>
-                        <span class="d-none d-sm-inline-block">INFORMACION GENERAL</span>
+                        <span class="d-none d-sm-inline-block">INFORMACION GENERALtt</span>
                       </template>
                       <b-row class="mt-3">
                       <b-col>
@@ -1529,17 +1518,16 @@
 
                     </b-tab>
                 </b-tabs>
-
+  <pre>{{nueva_version}}</pre>
             </ValidationObserver>
             <div class="row mx-0 mb-5 justify-content-between">
               <div class=" col-2">
                 <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
               </div>
               <div class="col-2">
-                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
                 <div v-else>
-                  <button class="btn btn-block float-right btn-success" @click="validarVersionNuevaHabilitada" v-if="!ver && !editMode">Editar</button>
-                  <!-- <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> -->
+                  <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button> 
                   <button class="btn btn-block float-right btn-success" @click="validarVersionNuevaHabilitada" v-if="!ver && editMode">Editar</button>
                 </div>
               </div>
@@ -2204,7 +2192,7 @@ import PageHeader from "@/components/page-header";
 import Chat from '@/components/chat'
 import moment from 'moment'
 import VueDocPreview from 'vue-doc-preview'
-import Editor from "@/components/editor";
+import Editor from "@/components/editorDoc";
 /**
  * Dashboard component
  */
@@ -2384,7 +2372,8 @@ export default {
                 'aprueba_id':'',
                 'revisa_id':'',
                 'habilita_id':'',
-                'documento_actual':''
+                'documento_actual':'',
+                'documento':''
           },
         doc:{
             'id': 6,
@@ -2495,10 +2484,9 @@ export default {
         data.append('id',this.$route.params.id);
          await this.axios.post('api/documentos/find',data)
            .then((response) => {
-             
               if (response.status==200) {
                 this.edit.documento_actual = response.data
-                console.log(this.edit)
+                console.log(response.data)
                 this.docs_Habilitados = this.edit.documento_actual.hdocumentos 
               }
            })
@@ -2973,6 +2961,7 @@ export default {
           'Content-Type': 'multipart/form-data'
           }}).then(response => {
             if (response.status==200) {
+              console.log(response)
                 this.$swal('Agregado exito!','','success');
                 this.listarDocumento();
                 this.listarDocumentosHabilitados();
@@ -3260,7 +3249,7 @@ export default {
       },
         async agregarversion(){
           let data = new FormData();
-            var formulario = this.edit;
+            var formulario = this.nueva_version;
               for (var key in formulario) {
                 if (key=='normativas') {
                     data.append(key,JSON.stringify(formulario[key]));
@@ -3443,12 +3432,13 @@ export default {
                 this.nueva_version.intervalo = response.data.intervalo;
                 this.nueva_version.status = response.data.status;
                 this.nueva_version.archivo = response.data.archivo;
+                this.nueva_version.documento = response.data.archivo;
                 this.nueva_version.observaciones_edicion = response.data.observaciones_edicion;
-                this.nueva_version.fecha_edicion = response.data.fecha_edicion 
+                this.nueva_version.fecha_edicion = response.data.fecha_edicion;
                 this.nueva_version.tipo_id = response.data.tipo_id;
                 this.nueva_version.proceso_id = response.data.proceso_id;
                 this.nueva_version.subproceso_id = response.data.subproceso_id;
-                this.nueva_version.cliente_id = response.data.cliente_id
+                this.nueva_version.cliente_id = response.data.cliente_id;
                 this.nueva_version.observaciones_revision = response.data.observaciones_revision;
                 this.nueva_version.observaciones_documentos = response.data.observaciones_documentos;
                 this.nueva_version.observaciones_diagramas = response.data.observaciones_diagramas;
