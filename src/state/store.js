@@ -17,7 +17,7 @@ const store = new Vuex.Store({
     usuarioDB:'',
     cliente:'',
     counter:'',
-    doc:[],
+    doctexto:[],
     load:false,
     archivo:''
 },
@@ -48,7 +48,7 @@ mutations:{
         state.load=!state.load;
     },
     cargarDocs(state,payload){
-        state.doc=payload;
+        state.doctexto=payload;
     },
     docs(state, value){
         state.archivo = value;

@@ -2,10 +2,9 @@
 <div>
     
     <div class="main">
-    
+   
     <!-- Top bar -->
     <vue-file-toolbar-menu :content="menu" class="bar" />
-
     <!-- Document editor -->
     <vue-document-editor class="editor" ref="editor"
       :content.sync="content"
@@ -25,7 +24,7 @@ import {mapState,mapMutations, mapActions} from 'vuex'
 import VueDocumentEditor from 'vue-document-editor'
 export default {
     props:{
-        val:Array
+        value:Array
     },
   components: { VueDocumentEditor, VueFileToolbarMenu },
   data () {
@@ -45,7 +44,6 @@ export default {
   },
   created () {
     // Initialize gesture flags
-    console.log(this.val)
     let start_zoom_gesture = false;
     let start_dist_touch = false;
     let start_zoom_touch = false;
@@ -111,7 +109,7 @@ export default {
     this.mounted = true; 
     },
   computed: {
-     ...mapState(['usuarioDB','cliente','doc']),
+     ...mapState(['usuarioDB','cliente','doctexto']),
     // This is the menu content
     menu () {
       return [
@@ -366,7 +364,7 @@ export default {
     },
     doc:function(){
 
-        this.content=this.doc;
+        this.content=this.doctexto;
       }
   },
 
@@ -426,6 +424,6 @@ body {
     --bar-button-open-bkg: #e6f4ea;
   }
   .ex1[data-v-3923ae0e]{
-    height:80vh!important;
+    height:60vh!important;
   }
 </style>

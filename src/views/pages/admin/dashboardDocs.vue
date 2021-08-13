@@ -243,7 +243,7 @@
                         <i class="mdi mdi-dots-horizontal font-size-20"></i>
                         </template>
                         <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal')">Editar</b-dropdown-item>
-                        <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_elaborar')">Elaborar </b-dropdown-item>
+                        <b-dropdown-item @click="editMode=true;ver=false;showEditor=true;">Elaborar </b-dropdown-item>
                         <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_revisar')">Revisar documento pendiente</b-dropdown-item>
                         <b-dropdown-item @click="editMode=true;ver=false;$bvModal.show('modal_aprobacion')">Aprobar documento pendiente</b-dropdown-item>
                         <b-dropdown-item @click="setHabilitar();editMode=true;ver=false;$bvModal.show('modal_hab')">Habilitar documento pendiente</b-dropdown-item>
@@ -255,10 +255,14 @@
             </div>
             <div class="px-lg-2 chat-users">
             <div class="chat-conversation p-3 flex-column row justify-content-center align-items-center ">
-            <Editor />
-                <VueDocPreview v-if="valorDoc != ''" :value="valorDoc" type="office" class="w-100"/>
-                <div v-else class="row justify-content-center align-items-center w-100 h-100">
-                    <img src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
+           
+                <div class="row justify-content-center align-items-center w-100 h-100" >
+                  <div v-if="showEditor">
+                    <button class="btn btn-success " @click="$bvModal.show('modal_elaborar')">Guardar</button>
+                    <Editor style="overflow:auto" class="ex1" @value="archivo_texto"/>
+                  </div>
+                    <img v-else src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
+                    <p>{{archivo_texto}}</p>
                 </div>  
             </div>
             </div>
@@ -1538,6 +1542,7 @@
           <div  class="row justify-content-center align-items-center position-absolute" style="z-index:0;     width: 100%;  padding-top: 3rem;"> 
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="20rem" height="20rem" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg); max-width:25rem; filter: opacity(0.3) grayscale(33) saturate(0.9);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 34 32"><g fill="#62626233"><path d="M1.512 28H19.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227L13.853.147a.507.507 0 0 0-.289-.135C13.543.01 13.523 0 13.5 0H1.506C.676 0 0 .673 0 1.5v25c0 .827.678 1.5 1.512 1.5zM14 1.707L19.293 7H14.5a.5.5 0 0 1-.5-.5V1.707zM1 1.5c0-.276.227-.5.506-.5H13v5.5c0 .827.673 1.5 1.5 1.5H20v18.5a.5.5 0 0 1-.5.5H1.512A.506.506 0 0 1 1 26.5v-25z"/><path d="M4.5 12h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 16h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 8h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0 0 1z"/><path d="M4.5 20h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M4.5 24h12a.5.5 0 0 0 0-1h-12a.5.5 0 0 0 0 1z"/><path d="M21.5 5H26v5.5c0 .827.673 1.5 1.5 1.5H33v18.5a.5.5 0 0 1-.5.5H14.512a.506.506 0 0 1-.512-.5v-1a.5.5 0 0 0-1 0v1c0 .827.678 1.5 1.512 1.5H32.5c.827 0 1.5-.673 1.5-1.5v-19c0-.023-.01-.043-.013-.065a.426.426 0 0 0-.013-.062a.488.488 0 0 0-.122-.227l-6.999-6.999a.491.491 0 0 0-.289-.134C26.543 4.01 26.523 4 26.5 4h-5a.5.5 0 0 0 0 1zm6 6a.5.5 0 0 1-.5-.5V5.707L32.293 11H27.5z"/><path d="M23.5 16h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 20h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 24h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/><path d="M23.5 28h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0 0 1z"/></g></svg>
           </div>
+          <ValidationObserver ref="form">
            <b-tabs v-model="tabIndex" content-class="p-3 text-muted" style="z-index:1; position: relative;">
               <b-tab  class="border-0">
                 <template v-slot:title>
@@ -1547,32 +1552,6 @@
                     <span class="d-none d-sm-inline-block">DATOS DE ELABORACIÓN</span>
                   </template>
                   <b-row class="mb-3">
-                    <div class="col-sm-12">
-                      <ValidationProvider name="documento" rules="required" v-slot="{ errors }">
-                      <span class="d-none d-sm-inline-block">DOCUMENTO WORD</span>
-                      <b-form-file
-                          v-model="archivo"
-                          :disabled="ver"
-                          placeholder="Seleccione su archivos..."
-                          drop-placeholder="Drop file here..."
-                      ></b-form-file>
-                        <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      
-                    </div>
-                    <div class="col-sm-12">
-                    <ValidationProvider name="diagramas" rules="required" v-slot="{ errors }">
-                      <span class="d-none d-sm-inline-block">DIAGRAMAS</span>
-                          <b-form-file
-                              v-model="diagrama"
-                              :disabled="ver"
-                              placeholder="Seleccione su archivos..."
-                              drop-placeholder="Drop file here..."
-                          ></b-form-file>
-                          <span style="color:red">{{ errors[0] }}</span>
-                      </ValidationProvider>
-                      
-                </div>
                   <div class="col-sm-12">
                         <div class="form-group ">
                           <label>Observaciones</label>
@@ -1621,13 +1600,8 @@
                   </div>
               </b-tab>
            </b-tabs>
-            <ValidationObserver ref="form">
-              
-              
-              
-              
           </ValidationObserver>
-              <button class="btn btn-block float-right btn-success mb-3 mt-2" @click="elaborar()">Elaborar</button>
+              <button class="btn btn-block float-right btn-success mb-3 mt-2"  style="    z-index: 99; position: relative;" @click="elaborar()">Elaborar</button>
         </b-modal>
 
         <b-modal id="modal_revisar" false size="lg"  title="REVISIÓN DE DOCUMENTOS" hide-footer>
@@ -2226,6 +2200,7 @@ export default {
         maxFilesize: 0.5,
         headers: { "My-Awesome-Header": "header value" }
       },
+      showEditor:false,
       fecha_actual:'',
       archivoapr:'',
       revisado:'',
@@ -2236,6 +2211,7 @@ export default {
       id_proc:4,
       url_logo:null,
       logo:null,
+      archivo_texto:null,
       archivo:null,
       diagrama:null,
       archivorev:null,
@@ -2312,6 +2288,7 @@ export default {
             'nombre_revisa': null,
             'nombre_aprueba': null,
             'archivo': '',
+            'archivo_texto':'',
             'firma_elabora':'',
             'firma_revisa':'',
             'firma_aprueba':'',
@@ -2756,17 +2733,14 @@ export default {
             data.append(key,formulario[key]);
         }
       }
-      if (this.archivo) {
-        data.append('filename',this.archivo);
-       }
-      if (this.diagrama) {
-        data.append('diagrama',this.diagrama);
+      if (this.doctexto) {
+        data.append('archivo_texto',this.doctexto);
        }
        await this.axios.post('api/documentos/versiones/elaborar', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
-            
+            console.log(data)
             if (response.status==200) {
                this.$swal(
                    'Agregado exito!',
@@ -3318,7 +3292,12 @@ export default {
          await this.axios.post('api/documentos/versiones/find',data)
            .then((response) => {
              console.log(response.data)
+             
               if (response.status==200) {
+
+                this.edit.archivo_texto = response.data.archivo_texto;
+                this.$store.commit('cargarDocs',  this.edit.archivo_texto)
+
                 this.edit.id = response.data.id;
                 this.edit.tipo_id = response.data.tipo_id;
                 this.edit.normativas = JSON.parse(response.data.normativas);
@@ -3356,6 +3335,7 @@ export default {
                 this.edit.elabora_v_id = response.data.elabora_v_id;
                 this.edit.aprueba_v_id = response.data.aprueba_v_id;
                 this.edit.revisa_v_id = response.data.revisa_v_id;
+                
                 if (this.edit.nombre_revisa == null || this.edit.nombre_revisa == "") {
                 this.edit.nombre_revisa = 'Por revisar'
               }
@@ -3692,7 +3672,7 @@ export default {
         });
     },
     computed: {
-     ...mapState(['usuarioDB','cliente']),
+     ...mapState(['usuarioDB','cliente', 'doctexto']),
 
     rows() {
       return this.documentos.length;

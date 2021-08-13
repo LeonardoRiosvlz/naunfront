@@ -29,6 +29,9 @@ export default {
 .bar{
   width:auto!important;
 }
+.dropdown-menu.show{
+  z-index:99999999999999;
+}
 @media (max-width: 769px){
   .bar{
     width:28rem!important;
