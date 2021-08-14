@@ -127,26 +127,31 @@ export const menuItems = [
         subItems: [
             {
                 id:  28,
+                label: 'Periodos',
+                link: '/periodos'
+            },
+            {
+                id:  29,
                 label: 'Grupos estandares de acreditacion',
                 link: '/gruposestandares'
             },
             {
-                id: 29,
+                id: 30,
                 label: 'Gestion de estandares de acreditacion',
                 link: '/estandares'
             },
             {
-                id: 30,
+                id: 31,
                 label: 'Base de auto evaluación',
                 link: '/baseautoevaluacion'
             },
             {
-                id: 23,
+                id: 32,
                 label: 'Autoevaluacion cualitativa',
-                link: ''
+                link: 'autoevaluacion'
             },
             {
-                id: 23,
+                id: 33,
                 label: 'Criterios de priorizacion, oportunidades de mejora',
                 link: ''
             },

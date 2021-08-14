@@ -61,6 +61,7 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"> Editar </b-dropdown-item-button>
+                    <b-dropdown-item-button v-if="data.item.id===1" @click="$bvModal.show('modal_subgrupo')">Subgrupos</b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarGrupoestandar(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
@@ -82,6 +83,101 @@
       </div>
     </div>
 
+
+
+        <b-modal id="modal_subgrupo" false size="xl"  title="Gestor de subgrupos de estandares" hide-footer>
+          <div class="clearfix mb-3">
+            <b-button class="float-right btn-info" left @click="$bvModal.show('modal_subgrupo_form');editMode=false" v-if="subgrupos.length<11">Agregar</b-button>
+          </div>
+          <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Sub Grupo</th>
+                  <th scope="col">Desde</th>
+                  <th scope="col">Hasta</th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="grupo in subgrupos" :key="grupo.id">
+                  <th scope="row">{{grupo.id}}</th>
+                  <td>{{grupo.nombre}}</td>
+                  <td>{{grupo.desde}}</td>
+                  <td>{{grupo.hasta}}</td>
+                  <td v-if="!ver">
+                        <a href="javascript:void(0);" @click="setearSub(grupo.id);editMode=true" class="text-info" v-b-tooltip.hover title="editar">
+                            <i class="mdi mdi-pencil font-size-18"></i>
+                        </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </b-modal>
+
+
+
+        <b-modal id="modal_subgrupo_form" false size="lg"  title="Gestor de subgrupos" hide-footer>
+          <ValidationObserver  ref="form">
+                <b-row>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Nombre del subgrupo de estandares</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Codigo</label>
+                            <ValidationProvider name="codigo" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.codigo"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>                    
+                    <b-col>
+                        <div class="form-group">
+                            <label>Desde</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.desde"   type="number" id="quantity" name="quantity" min="1" max="5" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
+                        <div class="form-group">
+                            <label>Hasta</label>
+                            <ValidationProvider name="codigo" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.hasta"  type="number" id="quantity" name="quantity" min="1" max="5" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col class="form-group">
+                        <label>Descripcion</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                              <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                              <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-col>
+                  </b-row>
+                
+               
+          </ValidationObserver>
+        
+        <button class="btn btn-block float-right btn-success" @click="switchLocsub" v-if="!ver && !editMode">Guardar</button>
+        <button class="btn btn-block float-right btn-success" @click="switchLocsub" v-if="!ver && editMode">Editar</button>
+     </b-modal>
+
+
         <b-modal id="modal" false size="lg"  title="Gestor de grupos estandares" hide-footer>
           <ValidationObserver  ref="form">
                 <b-row>
@@ -94,6 +190,8 @@
                             </ValidationProvider>
                         </div>
                     </b-col>
+                  </b-row>
+                  <b-row>
                     <b-col>
                         <div class="form-group">
                             <label>Codigo</label>
@@ -102,52 +200,25 @@
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
+                    </b-col>                    
+                    <b-col>
+                        <div class="form-group">
+                            <label>Desde</label>
+                            <ValidationProvider name="nombre" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.desde"   type="number" id="quantity" name="quantity" min="1" max="5" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
                     </b-col>
-                  </b-row>
-                  <b-row>
-                    <div class="col-sm-6">
-                      <template>
+                    <b-col>
                         <div class="form-group">
-                                <label>Grupos de Estandares</label>
-                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.gruposestandares" name="tipo" class="form-control " :disabled="ver">
-                                        <option value="1">Grupo de estandares del proceso de atencion al cliente asistencial</option>
-                                        <option value="2">Grupo de estandares de direccionamiento</option>
-                                        <option value="3">Grupo de estandares de gerencia</option>
-                                        <option value="4">Grupo de estandares de gerencia de talento humano</option>
-                                        <option value="5">Grupo de estandares de gerencia del ambiente fisico</option>
-                                        <option value="6">Grupo de estandares de gestion de tecnologia</option>
-                                        <option value="7">Grupo de estandares de gestion de tecnologia</option>
-                                        <option value="8">Grupo de estandares de mejoramiento de la calidad</option>
-                                      </select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                              </div>
-                      </template>
-                    </div>
-                    <div class="col-sm-6" v-if="form.gruposestandares == 1">
-                      <template>
-                        <div class="form-group">
-                                <label>Subgrupos de estandares</label>
-                                  <ValidationProvider name="tiempos de alerta" rules="required" v-slot="{ errors }">
-                                      <select @change="suma" v-model="form.subgruposestandares" name="tipo" class="form-control " :disabled="ver">
-                                        <option value="1 mes">Derechos de los paciente</option>
-                                        <option value="2 meses">Seguridad del paciente </option>
-                                        <option value="4 meses">Acceso</option>
-                                        <option value="6 meses">Registro e ingreso </option>
-                                        <option value="12 meses">Evaluación de necesidades al ingreso</option>
-                                        <option value="12 meses">Planeación de la atención</option>
-                                        <option value="12 meses">Ejecución del tratamiento</option>
-                                        <option value="12 meses">Evaluación de la atención</option>
-                                        <option value="12 meses">Salida y seguimiento</option>
-                                        <option value="12 meses">Referencia y contrarreferencia</option>
-                                        <option value="12 meses">Redes integradas en salud</option>
-                                      </select>
-                                      <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                              </div>
-                      </template>
-                    </div>
+                            <label>Hasta</label>
+                            <ValidationProvider name="codigo" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.hasta"  type="number" id="quantity" name="quantity" min="1" max="5" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
                   </b-row>
                   <b-row>
                     <b-col class="form-group">
@@ -244,84 +315,19 @@ export default {
       sedes:"",
       fecha_suma:'',
       grupos: [],
-      
+      subgrupos: [],
       form:{
-            'id': 6,
+            'id':'',
             'nombre':'',
             'descripcion':'',
-            'codigo':'',
-            'cliente_id':'',
-            'gruposestandares':0,
-            'subgruposestandares':0     
+            'codigo':'',  
+            'desde':'',  
+            'desde':'',  
           }
         }
   },
 
   methods: {
-    suma(){
-    },
-    capSubproceso(proceso){
-      for (let index = 0; index < this.procesos.length; index++) {
-       if(this.procesos[index].id == this.form.proceso){
-         this.subproceso = this.procesos[index].subprocesos
-         console.log(this.subproceso)
-       }
-        
-      }
-    },
-    cargarNorma(){
-      this.form.normativas.push({
-        id : this.titulo.id,
-        nombre : this.titulo.nombre,
-        texto : ''
-      });
-    },
-   async listarperfil(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/perfil/lista',data)
-        .then((response) => {
-          this.usuarios = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
-      async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/normatividad/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
-        async listarCargos(){
-      let data = new FormData();
-      data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/cargos/listar',data)
-          .then((response) => {
-            this.cargos = response.data;
-            this.listarperfil();
-          })
-          .catch((e)=>{
-            console.log('error' + e);
-          })
-      },
-      async listardocscreados(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/documentos/listar',data)
-            .then((response) => {
-              this.documentos = response.data;
-              console.log(response)
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -339,6 +345,21 @@ export default {
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
             this.editarGrupoestandar();
+          } else {
+        }});
+      }
+    },
+   switchLocsub(){
+      if (!this.editMode) {
+        this.$refs.form.validate().then(esValido => {
+            if (esValido) {
+              this.agregarGrupoestandarsub();
+            } else {}
+          });        
+        }else{
+          this.$refs.form.validate().then(esValido => {
+          if (esValido) {
+            this.editarGrupoestandarsub();
           } else {
         }});
       }
@@ -398,9 +419,69 @@ export default {
               this.$swal(e.response.data);
           });
       },
+    async editarGrupoestandarsub(){
+        let data = new FormData();
+      
+      var formulario = this.form;
+        
+        for (var key in formulario) {
+          data.append(key,formulario[key]);
+      }
+      console.log(formulario);
+        await this.axios.put('api/estandares/subgrupos', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+              console.log(response)
+               this.$swal(
+                   'Agregado exito!',
+                    '',
+                    'success');
+               this.listargruposestandares();
+               this.$root.$emit("bv::hide::modal", "modal_subgrupo_form", "#btnShow");
+               ///limpiar el formulario
+                this.resete();
+              }
+            }).catch(e => {
+               this.$swal(
+                   'Ocurrió un problema!',
+                    '',
+                    'warning');
+          });
+      },
+      async agregarGrupoestandarsub(){
+        let data = new FormData();
+          var formulario = this.form;
+            for (var key in formulario) {
+              data.append(key,formulario[key]);
+            }
+          console.log(formulario)
+          await this.axios.post('api/estandares/subgrupos', data, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }}).then(response => {
+                if (response.status==200) {
+                  this.$swal(
+                      'Agregado exito!',
+                        '',
+                        'success');
+                  this.listargruposestandares();
+                  this.$root.$emit("bv::hide::modal", "modal_subgrupo_form", "#btnShow");
+                  ///limpiar el formulario   
+                  this.resete();
+                  }
+                }).catch(e => {
+               this.$swal(
+                   'Ocurrió un problema!',
+                    '',
+                    'warning');
+              });
+          },
      async eliminarGrupoestandares(id){
         let data = new FormData();
         data.append('id',id);
+        console.log(id);
         await this.axios.post('api/estandares/grupos/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -445,14 +526,31 @@ export default {
           if (this.grupos[index].id===id) {
               this.form.id = this.grupos[index].id;
               this.form.nombre = this.grupos[index].nombre;
-              this.form.descripcion = this.grupos[index].descripcion;
               this.form.codigo = this.grupos[index].codigo;
+              this.form.desde = this.grupos[index].desde;
+              this.form.hasta = this.grupos[index].hasta;
+              this.form.descripcion = this.grupos[index].descripcion;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
+        
       },
-
+      setearSub(id) {
+        for (let index = 0; index < this.subgrupos.length; index++) {
+          if (this.subgrupos[index].id===id) {
+              this.form.id = this.subgrupos[index].id;
+              this.form.nombre = this.subgrupos[index].nombre;
+              this.form.codigo = this.subgrupos[index].codigo;
+              this.form.desde = this.subgrupos[index].desde;
+              this.form.hasta = this.subgrupos[index].hasta;
+              this.form.descripcion = this.subgrupos[index].descripcion;
+            this.$root.$emit("bv::show::modal", "modal_subgrupo_form", "#btnShow");
+            return;
+          }
+        }
+        
+      },
        async  listarSedes(){
         let data = new FormData();
           data.append("cliente_id",this.cliente.id);
@@ -469,62 +567,20 @@ export default {
             });
       },
         async  listargruposestandares(){
-            let data = new FormData();
-            data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/estandares/grupos/listar',data)
+            await this.axios.get('api/estandares/grupos/listar')
             .then((response) => {
                 console.log(response.data)
                 this.grupos = response.data;
+                for (let index = 0; index < this.grupos.length; index++) {
+                  if (this.grupos[index].id==1) {
+                     this.subgrupos=this.grupos[index].subgrupo_estandares;
+                  } 
+                }
             })
             .catch((e)=>{
                 console.log('error' + e);
             })
         },
-        async  listarProceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/procesos/listar',data)
-            .then((response) => {
-                this.procesos = response.data.rows;
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-      },
-        async  listarSubproceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/subprocesos/listar',data)
-            .then((response) => {
-                this.subprocesos = response.data.rows;
-                console.log(response.data)
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-      },
-        async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/tipo_procesos/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
-      async listarNormatividad(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/normatividad/listar',data)
-            .then((response) => {
-              this.normativas = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -565,15 +621,7 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarperfil();
-        this.listartipos();
-        this.listarProceso();
-        this.listarSubproceso();
         this.listargruposestandares();
-        this.listarNormatividad();
-        this.listardocscreados();
-        this.listarCargos();
-        this.listarSedes();
         this.title=this.cliente.nombre_prestador;
       },
     },

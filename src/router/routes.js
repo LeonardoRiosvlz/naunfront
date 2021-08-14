@@ -518,6 +518,57 @@ export default [
         },
     },
     {
+        path: '/periodos',
+        name: 'periodos',
+        component: () => import('../views/pages/procesos/periodos'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/autoevaluacion/:id',
+        name: 'autoevaluacion',
+        component: () => import('../views/pages/procesos/autoevaluacion'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/mejoras/:id',
+        name: 'autoevaluacion',
+        component: () => import('../views/pages/procesos/mejoras'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/detalles-procesos/:id',
         name: 'detallesprocesos',
         component: () => import('../views/pages/admin/detallesprocesos'),

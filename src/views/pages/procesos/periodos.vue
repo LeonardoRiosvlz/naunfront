@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear bases</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear periodo</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -37,7 +37,7 @@
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
-                :items="bases"
+                :items="periodos"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -48,9 +48,6 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
-                <template v-slot:cell(periodo)="data">
-                  {{data.item.periodo.nombre}}
-                </template>
                 <template v-slot:cell(actions)="data">
 
                 <b-dropdown size="sm" class="">
@@ -59,8 +56,8 @@
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon><a :href="'autoevaluacion/'+data.item.id" style="color:#000">Auto Evaluacion</a></b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarperiodos(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -83,32 +80,31 @@
 
 
 
-    <b-modal id="modal" false size="lg"  title="Gestión de bases de autoevaluación" hide-footer>
+    <b-modal id="modal" false size="lg"  title="Gestión de periodos" hide-footer>
           <ValidationObserver ref="form">
             <b-row>
               <b-col>
                 <div class="form-group">
-                  <label>Nombre</label>
+                  <label>AÑO</label>
                   <ValidationProvider name="nombre" rules="required" v-slot="{ errors }">
                         <input v-model="form.nombre"  type="text" class="form-control" placeholder=" " :disabled="ver">
                         <span style="color:red">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </b-col>
+                <b-col>
+                  <div class="form-group">
+                    <label>Estatus</label>
+                    <ValidationProvider name="status" rules="required" v-slot="{ errors }">
+                          <select v-model="form.status"  name="tipo" class="form-control form-control-lg" >
+                              <option value="Abierto">Abierto</option>
+                              <option value="Cerrado">Cerrado</option>
+                          </select>
+                          <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </div>
+                </b-col>
               </b-row>
-              <b-row class="">
-                    <b-col>
-                        <div class="form-group">
-                        <label>Periodo</label>
-                        <ValidationProvider name="periodo" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.periodo_id"  name="periodo" class="form-control " :disabled="ver">
-                                <option :value="periodo.id" v-for="(periodo,index) in periodos" :key="index">{{periodo.nombre}}</option>
-                            </select>
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                        </div>
-                    </b-col>
-                </b-row> 
               <b-row>
               <b-col>
                 <div class="form-group">
@@ -153,10 +149,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Sistema de gestión de calidad"
         },
         {
-          text: "bases",
+          text: "Periodos",
           active: true
         }
       ],
@@ -181,14 +177,13 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","periodo","actions"],
-      bases: [], 
+      fields: ["nombre","descripcion","status","actions"],
       periodos: [], 
       editMode:false,
       form:{
         'id': '',
         'nombre':'',
-        'periodo_id':'',
+        'color':'',
         'descripcion':'',
         'cliente_id':'',
         'created_at':'',
@@ -211,24 +206,24 @@ export default {
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
             if (esValido) {
-              this.agregarbases();
+              this.agregarperiodos();
             } else {}
           });        
         }else{
           this.$refs.form.validate().then(esValido => {
           if (esValido) {
-            this.editarbases();
+            this.editarperiodos();
           } else {
         }});
       }
     },
-   async agregarbases(){
+   async agregarperiodos(){
      let data = new FormData();
       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/basesau', data, {
+       await this.axios.post('api/periodo', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -237,7 +232,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.listarbases();
+               this.listarperiodos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
               this.resete();
@@ -247,16 +242,16 @@ export default {
               this.$swal(e.response.data);
           });
       },
-    async editarbases(){
+    async editarperiodos(){
      let data = new FormData();
        var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/basesau', data).then(response => {
+        await this.axios.put('api/periodo', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
-               this.listarbases();
+               this.listarperiodos();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
                ///limpiar el formulario
               this.resete();
@@ -265,10 +260,10 @@ export default {
                 this.$swal('ocurrio un problema','','warning');
             });
      },
-     async eliminarbasess(id){
+     async eliminarperiodoss(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/basesau/delete',data, {
+        await this.axios.post('api/periodo/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -278,14 +273,14 @@ export default {
                       '',
                       'success'
                 );
-                this.listarbases();
+                this.listarperiodos();
                 }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       }, 
-      eliminarbases(id){
+      eliminarperiodos(id){
         this.$swal({
           title: 'Desea borrar este registro?',
           icon: 'question',
@@ -296,7 +291,7 @@ export default {
           showCloseButton: true
         }).then((result) => {
           if (result.isConfirmed) {
-            this.eliminarbasess(id);
+            this.eliminarperiodoss(id);
           }
         })
       },
@@ -308,39 +303,46 @@ export default {
        this.form.cliente_id=this.cliente.id;
       },
       setear(id) {
-        for (let index = 0; index < this.bases.length; index++) {
-          if (this.bases[index].id===id) {
-            this.form.id=this.bases[index].id;
-            this.form.nombre=this.bases[index].nombre;
-            this.form.descripcion=this.bases[index].descripcion;
-            this.form.periodo_id=this.bases[index].periodo_id;
+        for (let index = 0; index < this.periodos.length; index++) {
+          if (this.periodos[index].id===id) {
+            this.form.id=this.periodos[index].id;
+            this.form.nombre=this.periodos[index].nombre;
+            this.form.descripcion=this.periodos[index].descripcion;
+            this.form.status=this.periodos[index].status;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-    async listarbases(){
+    async listarperiodos(){
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/basesau/listar',data)
+       await this.axios.post('api/periodo/listar',data)
         .then((response) => {
-          this.bases = response.data;
+          this.periodos = response.data;
         })
         .catch((e)=>{
           console.log('error' + e);
         })
       },
-      async listarperiodos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/periodo/listar',data)
-            .then((response) => {
-            this.periodos = response.data;
-            })
-            .catch((e)=>{
-            console.log('error' + e);
-            })
-        },
+      setEmail(){
+        this.form.username=this.form.email;
+        console.log("holas");
+      },
+      setRoles(){
+        if (this.form.tipo==="Administrador") {
+            this.form.codigo="";
+            this.form.entidad="No";
+            this.form.cargo=""
+            this.form.roles="3"
+        } else if(this.form.tipo==="Coordinador") {
+            this.form.entidad="No";
+            this.form.cargo="";
+            this.form.roles="2"
+        }else{
+            this.form.roles="1"
+        }
+      },
       onFileChange(e) {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
@@ -357,16 +359,14 @@ export default {
           }
         }
   },
-    created(){ 
+    created(){
         this.session();
-        this.listarbases();
         this.listarperiodos();
       },
    watch: {
       cliente: function () {
-        this.listarperiodos();
-         this.listarbases();
-         this.form.cliente_id=this.cliente.id;
+       this.listarperiodos();
+       this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.c
       },
@@ -374,7 +374,7 @@ export default {
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.bases.length;
+      return this.periodos.length;
     },
   },
 }

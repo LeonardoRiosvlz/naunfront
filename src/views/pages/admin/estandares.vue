@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label>Numero del estandar</label>
                             <ValidationProvider name="numero" rules="required" v-slot="{ errors }" >
-                                <input v-model="form.numero"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <input v-model="form.numero" @change="buscarGrupos()"  type="text" class="form-control" placeholder=" " :disabled="ver">
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -103,12 +103,25 @@
                             </ValidationProvider>
                         </div>
                     </b-col>
+                  </b-row>
+                  <b-row>
                     <b-col>
                     <div class="form-group">
                       <label> Grupo de estandares</label>
                       <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.grupo_id"  name="tipo" class="form-control form-control-lg" :disabled="ver">
+                        <select v-model="form.grupo_id"  name="tipo" class="form-control form-control-lg" disabled>
                             <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                   <b-col v-if="form.subgrupo_id">
+                    <div class="form-group">
+                      <label> Sub grupo</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.subgrupo_id"  name="tipo" class="form-control form-control-lg" disabled>
+                            <option :value="grupo.id" v-for="(grupo,index) in subgrupos" :key="index">{{grupo.nombre}} {{grupo.desde}}-{{grupo.hasta}}</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
                     </ValidationProvider>
@@ -217,14 +230,15 @@ export default {
       sedes:"",
       fecha_suma:'',
       estandares: [],
-      grupos:[],
+      grupos: [],
+      subgrupos: [],
       form:{
             'id': 6,
             'numero':'',
             'descripcion':'',
             'criterios':'',
             'codigo':'',
-            'cliente_id':'',
+            'subgrupo_id':'',
             'grupo_id':'',     
           }
         }
@@ -241,6 +255,28 @@ export default {
        }
         
       }
+    },
+    buscarGrupos(){
+
+        if (this.form.numero<75) {
+            this.form.grupo_id=1;
+              for (let index = 0; index < this.subgrupos.length; index++) {
+                if ( parseInt(this.subgrupos[index].desde)<=parseInt(this.form.numero)) {
+                      console.log(this.subgrupos[index].desde);
+                      console.log(this.subgrupos[index].hasta);
+                    this.form.subgrupo_id= this.subgrupos[index].id;
+                }
+            }
+         }else{
+            for (let index = 0; index < this.grupos.length; index++) {
+                if ( parseInt(this.grupos[index].desde)<=parseInt(this.form.numero)) {
+                      console.log(this.grupos[index].desde);
+                      console.log(this.grupos[index].hasta);
+                    this.form.grupo_id= this.grupos[index].id;
+                    this.form.subgrupo_id="";
+                }
+            }
+         }
     },
     cargarNorma(){
       this.form.normativas.push({
@@ -417,101 +453,52 @@ export default {
           }
         })
       },
-        resete(){
+      resete(){
           var formulario = this.form;
           for (var key in formulario) {
             this.form[key]="";
         }
        this.form.cliente_id=this.cliente.id;
-        
       },
       setear(id) {
         for (let index = 0; index < this.estandares.length; index++) {
           if (this.estandares[index].id===id) {
-              this.form.id=this.estandares[index].id,
-              this.form.numero=this.estandares[index].numero,
-              this.form.descripcion=this.estandares[index].descripcion,
-              this.form.criterios=this.estandares[index].criterios,
-              this.form.codigo=this.estandares[index].codigo,
-              this.form.grupo_id=this.estandares[index].grupo_id,    
+              this.form.id=this.estandares[index].id;
+              this.form.numero=this.estandares[index].numero;
+              this.form.descripcion=this.estandares[index].descripcion;
+              this.form.criterios=this.estandares[index].criterios;
+              this.form.codigo=this.estandares[index].codigo;
+              this.form.grupo_id=this.estandares[index].grupo_id;  
+              this.buscarGrupos();  
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
         }
       },
-
-       async  listarSedes(){
-        let data = new FormData();
-          data.append("cliente_id",this.cliente.id);
-          await this.axios.post('api/sedes/listar',data, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }}).then(response => {
-                if (response.status==200) {
-                    this.sedes = response.data.rows
-                  }
-                }).catch(e => {
-                  console.log(e.response.data.menssage);
-                  this.$swal(e.response.data);
-            });
-      },
         async  listarestandares(){
-            let data = new FormData();
-            data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/estandares/listar',data)
+            await this.axios.get('api/estandares/listar')
             .then((response) => {
-                console.log(response.data)
                 this.estandares = response.data;
             })
             .catch((e)=>{
                 console.log('error' + e);
             })
         },
-        async  listarProceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/procesos/listar',data)
+        async  listargruposestandares(){
+            await this.axios.get('api/estandares/grupos/listar')
             .then((response) => {
-                this.procesos = response.data.rows;
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-      },
-        async  listarSubproceso(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-            await this.axios.post('api/subprocesos/listar',data)
-            .then((response) => {
-                this.subprocesos = response.data.rows;
                 console.log(response.data)
+                this.grupos = response.data;
+                for (let index = 0; index < this.grupos.length; index++) {
+                  if (this.grupos[index].id==1) {
+                     this.subgrupos=this.grupos[index].subgrupo_estandares;
+                  } 
+                }
             })
             .catch((e)=>{
                 console.log('error' + e);
             })
-      },
-        async listartipos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/tipo_procesos/listar',data)
-            .then((response) => {
-              this.tipos = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
-      async listarNormatividad(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-          await this.axios.post('api/normatividad/listar',data)
-            .then((response) => {
-              this.normativas = response.data.rows;
-            })
-            .catch((e)=>{
-              console.log('error' + e);
-            })
-      },
+        },
       setEmail(){
         this.form.username=this.form.email;
         console.log("holas");
@@ -552,16 +539,9 @@ export default {
   },
     watch: {
       cliente: function () {
-        this.listarperfil();
-        this.listartipos();
-        this.listarProceso();
-        this.listarSubproceso();
-        this.listarestandares();
-        this.listarNormatividad();
-        this.listardocscreados();
-        this.listarCargos();
-        this.listarSedes();
+        this.session();
         this.listargruposestandares();
+        this.listarestandares();
         this.title=this.cliente.nombre_prestador;
       },
     },

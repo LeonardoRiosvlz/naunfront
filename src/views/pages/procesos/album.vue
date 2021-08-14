@@ -1,7 +1,5 @@
 <template>
   <div class="card">
-
-
         <div class="card" v-show="!modoTable" >
           <div class="card-body">
                 <b-dropdown right toggle-class="arrow-none card-drop" class="float-right" variant="white">
