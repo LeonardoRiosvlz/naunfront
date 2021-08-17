@@ -4,10 +4,72 @@
     <div class="clearfix mb-3">
       <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Agregar Estandar Para Evaluacion</b-button>
     </div>
+      <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                <div class="media">
+                    <div class="media-body overflow-hidden">
+                    <p class="text-truncate font-size-14 mb-2"></p>
+                    <h4 class="mb-0 text-center">SIN PRIORIZAR <span class="badge badge-danger" style="font-size">{{sinpriorizar}}/{{todas.length}}</span></h4>
+                    </div>
+                    <div class="text-primary">
+                    <i class="ri-align-bottom font-size-24"></i>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+         <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                <div class="media">
+                    <div class="media-body overflow-hidden">
+                    <p class="text-truncate font-size-14 mb-2"></p>
+                    <h4 class="mb-0 text-center">PRIORIZADAS <span class="badge badge-success" style="font-size">{{priorizada}}/{{todas.length}}</span></h4>
+                    </div>
+                    <div class="text-primary">
+                    <i class="ri-align-top font-size-24"></i>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                <div class="media">
+                    <div class="media-body overflow-hidden">
+                    <p class="text-truncate font-size-14 mb-2"></p>
+                    <h4 class="mb-0 text-center">PROGRAMADAS <span class="badge badge-dark" style="font-size">{{programadas}}/{{todas.length}}</span></h4>
+                    </div>
+                    <div class="text-primary">
+                    <i class="ri-time-line font-size-24"></i>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                <div class="media">
+                    <div class="media-body overflow-hidden">
+                    <p class="text-truncate font-size-14 mb-2"></p>
+                    <h4 class="mb-0 text-center">TOTAL <span class="badge badge-info" style="font-size">{{todas.length}}</span></h4>
+                    </div>
+                    <div class="text-primary">
+                    <i class="ri-clipboard-line font-size-24"></i>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
       <div class="col-12">
         <div class="card">
-            <h4 class="text-center my-4 text-info">{{base.nombre}}-{{base.periodo.nombre}}</h4>
+            <h4 class="text-center my-4 text-info"></h4>
           <div class="card-body">
             <h2 class="card-title text-center" style="font-size:30!important"></h2>
             <div class="row mt-4">
@@ -36,9 +98,9 @@
               <!-- End search -->
             </div>
             <!-- Table -->
-            <div class="table-responsive mb-0" style="min-height:550px!important">
+            <div class="table-responsive mb-0">
               <b-table
-                :items="autoevaluaciones"
+                :items="todas"
                 :fields="fields"
                 responsive="sm"
                 :per-page="perPage"
@@ -50,22 +112,17 @@
                 @filtered="onFiltered"
               >
               
-            <template v-slot:cell(base_de_autoevaluacion)="data">
-                  {{data.item.bases_autoevaluacion.nombre}}
-              </template>
-              <template v-slot:cell(periodo)="data">
-                  {{data.item.periodo.nombre}}
-              </template>
-              <template v-slot:cell(codigo)="data">
-                  {{data.item.estandare.codigo}}
-              </template>
-              <template v-slot:cell(numero)="data">
-                  {{data.item.estandare.numero}}
-              </template>
-              <template v-slot:cell(oportunidad_de_mejoras)="data">
-                  {{data.item.mejoras.length}}
-              </template>
-              oportunidad_de_mejoras
+                <template v-slot:cell(grupo_de_estandares)="data">
+                    {{data.item.autoevaluacion.grupo_estandare.nombre}}
+                </template>
+                 <template v-slot:cell(numero_de_estandar)="data">
+                    {{data.item.autoevaluacion.estandare.numero}}
+                </template> 
+                <template v-slot:cell(status)="data">
+                    <span v-if="data.item.status==='SIN PRIORIZAR'" class="badge badge-danger">SIN PRIORIZAR</span>
+                    <span v-if="data.item.status==='PRIORIZADA'" class="badge badge-success">PRIORIZADA</span>
+                    <span v-if="data.item.status==='PROGRAMADA'" class="badge badge-info">PROGRAMADA</span>
+                </template>              
                 <template v-slot:cell(actions)="data">
 
                 <b-dropdown size="sm" class="">
@@ -75,7 +132,7 @@
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar</b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button ><a :href="'/historial_autoevaluacion/'+data.item.base_id" style="color:#000">Ir a historial</a></b-dropdown-item-button>
+                    <b-dropdown-item-button @click="setear_mejoras(data.item.id)"><b-icon icon="trash" class=""></b-icon> Oportuniad de merjoar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
@@ -514,7 +571,7 @@
             <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
         
         </b-modal>
-       
+       <pre>{{todas}}</pre>
   </Layout>
 </template>
 
@@ -572,9 +629,10 @@ export default {
       periodos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["Base_de_autoevaluacion","periodo","numero","codigo","oportunidad_de_mejoras","actions"],
+      fields: ["id","grupo_de_estandares","numero_de_estandar","status","actions"],
       bases: [], 
       base: [], 
+      todas: [],
       mejoras: [], 
       estandares:[], 
       autoevaluaciones:[],
@@ -582,6 +640,9 @@ export default {
       subgrupos:[], 
       editMode:false,
       editModeMejora:false,
+      priorizada:0,
+      sinpriorizar:0,
+      programadas:0,
       form:{
             'id': '',
             'periodo':'',
@@ -631,6 +692,15 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     }, 
+    buscarEstandar(){
+        for (let index = 0; index < this.estandares.length; index++) {
+            this.estandares[index];
+            if (condition) {
+                
+            }
+            
+        }
+    },
     buscarGrupos(){
         if (this.form.numero<75) {
             this.form.grupo_id=1;
@@ -1098,13 +1168,13 @@ export default {
       toggleModal () {
         this.modal = !this.modal
       },
-      async listarBase(){
+      async listarMejoras(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
-        await this.axios.post('api/basesau/find',data)
+        await this.axios.post('api/mejoras/todas',data)
           .then((response) => {
              if (response.status==200) {
-                 this.base=response.data;
+                 this.todas=response.data;
                  this.form.periodo_id=this.base.periodo.id;
              }
           })
@@ -1137,7 +1207,7 @@ export default {
          this.listarAutoevaluacion();
         this.session();
         this.listarbases();
-        this.listarBase();
+        this.listarMejoras();
         this.listargruposestandares();
         this.listarestandares();
        
@@ -1146,7 +1216,7 @@ export default {
       cliente: function () {
        this.listarbases();
        this.listarperiodos();
-      this.listarBase();
+      this.listarMejoras();
        this.listargruposestandares();
         this.listarestandares();
         this.listarAutoevaluacion();
@@ -1158,7 +1228,7 @@ export default {
     computed: {
       ...mapState(['usuarioDB','cliente']),
     rows() {
-      return this.autoevaluaciones.length;
+      return this.todas.length;
     },
   },
 }

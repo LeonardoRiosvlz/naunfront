@@ -518,6 +518,23 @@ export default [
         },
     },
     {
+        path: '/historial_autoevaluacion/:id',
+        name: 'baseautoevaluacion',
+        component: () => import('../views/pages/procesos/historialAutoevaluacion'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/periodos',
         name: 'periodos',
         component: () => import('../views/pages/procesos/periodos'),
