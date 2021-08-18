@@ -2,7 +2,7 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear bases</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear plan</b-button>
     </div>
     <div class="row">
       <div class="col-12">
@@ -35,7 +35,7 @@
               <!-- End search -->
             </div>
             <!-- Table -->
-            <div class="table-responsive mb-0">
+            <div class="table-responsive mb-0" style="min-heigth:500px">
               <b-table
                 :items="bases"
                 :fields="fields"
@@ -60,8 +60,7 @@
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/autoevaluacion/'+data.item.id" style="color:#000">Ir por estandar evaluados</a></b-dropdown-item-button>
-                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/historial_autoevaluacion/'+data.item.id" style="color:#000">Ir por O.M.</a></b-dropdown-item-button>
+                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/plan-accion/'+data.item.id" style="color:#000">Gestionar</a></b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -85,6 +84,7 @@
 
 
     <b-modal id="modal" false size="lg"  title="Gestión de bases de autoevaluación" hide-footer>
+
           <ValidationObserver ref="form">
             <b-row>
               <b-col>
@@ -97,6 +97,19 @@
                 </div>
               </b-col>
               </b-row>
+              <b-row class="">
+                    <b-col>
+                        <div class="form-group">
+                        <label>Clasificación</label>
+                        <ValidationProvider name="periodo" rules="required" v-slot="{ errors }" >
+                            <select v-model="form.clasificacion_id"  name="periodo" class="form-control " :disabled="ver">
+                                <option :value="clasificacion.id" v-for="(clasificacion,index) in clasificacion" :key="index">{{clasificacion.nombre}}</option>
+                            </select>
+                            <span style="color:red">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                        </div>
+                    </b-col>
+                </b-row> 
               <b-row class="">
                     <b-col>
                         <div class="form-group">
@@ -154,10 +167,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de clientes"
+          text: "Plan de accion"
         },
         {
-          text: "bases",
+          text: "gestion",
           active: true
         }
       ],
@@ -182,9 +195,10 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","descripcion","periodo","actions"],
-      bases: [], 
-      periodos: [], 
+      fields: ["id","nombre","actions"],
+      bases:[], 
+      periodos: [],
+      clasificacion: [],  
       editMode:false,
       form:{
         'id': '',
@@ -192,6 +206,7 @@ export default {
         'periodo_id':'',
         'descripcion':'',
         'cliente_id':'',
+        'clasificacion_id':'',
         'created_at':'',
         'updated_at':'',
       }
@@ -229,7 +244,7 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/basesau', data, {
+       await this.axios.post('api/planes/accion', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -244,8 +259,10 @@ export default {
               this.resete();
               }
             }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
+               this.$swal(
+                   'No se pudo agregar!',
+                    '',
+                    'warning');
           });
       },
     async editarbases(){
@@ -254,7 +271,7 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-        await this.axios.put('api/basesau', data).then(response => {
+        await this.axios.put('api/planes/accion', data).then(response => {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarbases();
@@ -269,7 +286,7 @@ export default {
      async eliminarbasess(id){
         let data = new FormData();
         data.append('id',id);
-        await this.axios.post('api/basesau/delete',data, {
+        await this.axios.post('api/planes/accion/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -282,8 +299,11 @@ export default {
                 this.listarbases();
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
+                this.$swal(
+                    'No se pudo editar!',
+                      '',
+                      'warning'
+                );
           });
       }, 
       eliminarbases(id){
@@ -315,6 +335,7 @@ export default {
             this.form.nombre=this.bases[index].nombre;
             this.form.descripcion=this.bases[index].descripcion;
             this.form.periodo_id=this.bases[index].periodo_id;
+            this.form.clasificacion_id=this.bases[index].clasificacion_id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
           }
@@ -323,9 +344,10 @@ export default {
     async listarbases(){
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/basesau/listar',data)
+       await this.axios.post('api/planes/accion/listar',data)
         .then((response) => {
           this.bases = response.data;
+          console.log(bases);
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -341,6 +363,17 @@ export default {
             .catch((e)=>{
             console.log('error' + e);
             })
+        },
+      async listarclasificacion(){
+      let data = new FormData();
+      data.append('cliente_id',this.cliente.id);
+        await this.axios.post('api/planes/calisficacion/listar',data)
+          .then((response) => {
+            this.clasificacion = response.data;
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
         },
       onFileChange(e) {
         const file = e.target.files[0];
@@ -362,12 +395,14 @@ export default {
         this.session();
         this.listarbases();
         this.listarperiodos();
+         this.listarclasificacion();
       },
    watch: {
       cliente: function () {
         this.listarperiodos();
-         this.listarbases();
-         this.form.cliente_id=this.cliente.id;
+        this.listarbases();
+        this.listarclasificacion();
+        this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.c
       },

@@ -67,6 +67,43 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                   
+                    <div class="row">
+                      <div class="col-md-12">
+                         <h5 class="text-LEFT">Programación Masiva</h5>
+                      </div>
+                      <div class="col-md-1">
+                        <div class="form-group">
+                          <input type="number" min="1" max="124" class="form-control" id="formGroupExampleInput" placeholder="entre">
+                        </div>
+                      </div>
+                      <div class="col-md-1">
+                        <div class="form-group">
+                          <input type="number" min="2" max="125" class="form-control" id="formGroupExampleInput" placeholder="hasta">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                          <button class="btn btn-success btn-block"> PROGRAMAR </button>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                                <select  v-model="grupoid"  name="tipo" class="form-control" >
+                                    <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
+                                </select>
+                        </div>
+                      </div>
+                    <div class="col-md-2">
+                          <button class="btn btn-success btn-block" @click="filtrar()"> BUSCAR </button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
       <div class="col-12">
         <div class="card">
             <h4 class="text-center my-4 text-info"></h4>
@@ -130,10 +167,9 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar</b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="setear_mejoras(data.item.id)"><b-icon icon="trash" class=""></b-icon> Oportuniad de merjoar </b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="setear_mejora(data.item.id);editMode=true;ver=false;">Priorizar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear_mejora(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -168,7 +204,7 @@
               <div class="form-group">
               <label>Oportunidad de mejora</label>
               <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                  <input v-model="mejora.oportunidad_mejoras"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                  <input v-model="mejora.oportunidad_mejoras"  type="text" class="form-control" placeholder=" " disabled>
                   <span style="color:red">{{ errors[0] }}</span>
               </ValidationProvider>
               </div>
@@ -571,7 +607,7 @@
             <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
         
         </b-modal>
-       <pre>{{todas}}</pre>
+  
   </Layout>
 </template>
 
@@ -619,7 +655,7 @@ export default {
       file:null,
       firma:null,
       email: "",
-      password: "",
+      grupoid: "",
       totalRows: 1,
       currentPage: 1,
       perPage: 10,
@@ -629,7 +665,7 @@ export default {
       periodos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["id","grupo_de_estandares","numero_de_estandar","status","actions"],
+      fields: ["id","grupo_de_estandares","numero_de_estandar","total","status","actions"],
       bases: [], 
       base: [], 
       todas: [],
@@ -935,7 +971,7 @@ export default {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarAutoevaluacion();
-               this.setear_mejoras();
+               this.listarMejoras();
                this.$root.$emit("bv::hide::modal", "modal_mejora", "#btnShow");
                ///limpiar el formulario
               }
@@ -1176,6 +1212,28 @@ export default {
              if (response.status==200) {
                  this.todas=response.data;
                  this.form.periodo_id=this.base.periodo.id;
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      }, 
+      async filtrar(){
+      let data = new FormData();
+      data.append('id',this.$route.params.id);
+      data.append('grupo_id',this.grupoid);
+        await this.axios.post('api/mejoras/filtrar',data)
+          .then((response) => {
+             if (response.status==200) {
+                 this.todas=response.data;
+                 console.log(this.todas.length);
+                 if (this.todas.length<1) {
+                  this.$swal(
+                    'No existen oprutnidades de mejoras para este grupo!',
+                      '',
+                      'warning'
+                    );
+                 }
              }
           })
           .catch((e)=>{

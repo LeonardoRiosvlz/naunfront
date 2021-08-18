@@ -165,12 +165,12 @@ export const menuItems = [
             {
                 id:  21,
                 label: 'Categorías planes de acción',
-                link: ''
+                link: '/clasificacion-planes-accion'
             },
             {
                 id: 22,
                 label: 'Gestion de planes de acción',
-                link: ''
+                link: 'planes-accion'
             },
             {
                 id: 23,

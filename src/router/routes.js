@@ -295,6 +295,57 @@ export default [
         },
     },
     {
+        path: '/clasificacion-planes-accion',
+        name: 'clasificacion-planes-accion',
+        component: () => import('../views/pages/planes_accion/clasificacion'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/plan-accion/:id',
+        name: 'plan-accion',
+        component: () => import('../views/pages/planes_accion/index'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/planes-accion',
+        name: 'planes-accion',
+        component: () => import('../views/pages/planes_accion/planes'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/consultor',
         name: 'consultor',
         component: () => import('../views/pages/admin/consultor'),

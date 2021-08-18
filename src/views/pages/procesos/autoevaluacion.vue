@@ -73,10 +73,10 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
-                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar</b-dropdown-item-button>
-                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)">Editar</b-dropdown-item-button>
+                    <b-dropdown-item-button @click="eliminarbases(data.item.id)"> Eliminar </b-dropdown-item-button>
                     <b-dropdown-item-button ><a :href="'/historial_autoevaluacion/'+data.item.base_id" style="color:#000">Ir a historial</a></b-dropdown-item-button>
-                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"><b-icon icon="eye" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -288,13 +288,7 @@
                           efectúa la acción de mejoramiento.
                         </li>
                       </ul>
-                    </b-card>
-                    <b-card>
-
-                    </b-card>
-                     <b-card>
-
-                    </b-card>          
+                    </b-card>         
               </b-collapse>
             </div>
           </div>
@@ -499,7 +493,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="javascript:void(0);" @click="setear_mejora(mejora.id)" class="text-success" v-b-tooltip.hover title="eliminar">
+                                    <a href="javascript:void(0);" @click="setear_mejora(mejora.id)" class="text-success" v-b-tooltip.hover title="edit<r">
                                         <i class="mdi mdi-pencil font-size-18"></i>
                                     </a>
                                 </td>      
@@ -572,7 +566,7 @@ export default {
       periodos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["Base_de_autoevaluacion","periodo","numero","codigo","oportunidad_de_mejoras","actions"],
+      fields: ["numero","periodo","codigo","oportunidad_de_mejoras","actions"],
       bases: [], 
       base: [], 
       mejoras: [], 
@@ -618,6 +612,15 @@ export default {
     calculo(){
       this.mejora.total=this.mejora.puntaje_riesgo*this.mejora.puntaje_costo*this.mejora.puntaje_volumen;
     },
+    estandaresEvauluados(){
+      for (let index = 0; index < this.autoevaluaciones.length; index++) {
+       if (this.autoevaluaciones[index].estandar_id===this.form.estandar_id) {
+          this.$swal('Estandar evaluado!','este estandar ya fue evaulado para este periodo','success');
+          this.form.numero="";
+       }
+        
+      }
+    },
     cargarPromotor(){
       this.form.fortalezas.push({
        nombre:this.form.fortaleza,
@@ -632,6 +635,7 @@ export default {
       this.currentPage = 1;
     }, 
     buscarGrupos(){
+      
         if (this.form.numero<75) {
             this.form.grupo_id=1;
               for (let index = 0; index < this.subgrupos.length; index++) {
@@ -640,6 +644,9 @@ export default {
                       console.log(this.subgrupos[index].hasta);
                     this.form.subgrupo_id= this.subgrupos[index].id;
                     this.setearCriterios();
+                     if (!this.editMode) {
+                      this.estandaresEvauluados();
+                    }
                 }
             }
          }else{
@@ -650,6 +657,10 @@ export default {
                     this.form.grupo_id= this.grupos[index].id;
                     this.form.subgrupo_id="";
                     this.setearCriterios();
+                    if (!this.editMode) {
+                      this.estandaresEvauluados();
+                    }
+                    
                 }
             }
          }
@@ -720,7 +731,6 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
-               this.AgregarMejoraC();
                this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
               this.setear(response.data.id);
               }
@@ -810,7 +820,7 @@ export default {
           }
         })
       },
-      async agregarMejora(){
+    async agregarMejora(){
      let data = new FormData();
       var formulario = this.mejora;
         for (var key in formulario) {
@@ -830,6 +840,7 @@ export default {
                    'Agregado exito!',
                     '',
                     'success');
+              this.$root.$emit("bv::hide::modal", "modal_mejora", "#btnShow");
               this.setear_mejoras(this.form.id);
               }
             }).catch(e => {
@@ -1030,7 +1041,7 @@ export default {
    async listarAutoevaluacion(){
        console.log("hey");
      let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
+     data.append('id',this.$route.params.id);
        await this.axios.post('api/autoevaluacion/listar',data)
         .then((response) => {
           this.autoevaluaciones = response.data;
