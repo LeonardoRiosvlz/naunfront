@@ -842,6 +842,7 @@ export default {
                     'success');
               this.$root.$emit("bv::hide::modal", "modal_mejora", "#btnShow");
               this.setear_mejoras(this.form.id);
+               this.listarAutoevaluacion();
               }
             }).catch(e => {
                this.$swal('No se pudo agregar!','','warning');
@@ -876,7 +877,7 @@ export default {
             if (response.status==200) {
                this.$swal('Editado con exito','','success');
                this.listarAutoevaluacion();
-               this.setear_mejoras();
+               this.setear_mejoras(this.form.id);
                this.$root.$emit("bv::hide::modal", "modal_mejora", "#btnShow");
                ///limpiar el formulario
               }

@@ -106,17 +106,17 @@ export const menuItems = [
             {
                 id:  21,
                 label: 'Cronograma',
-                link: 'cronograma'
+                link: '/cronograma'
             },
             {
                 id: 22,
                 label: 'Clasificación de eventos',
-                link: 'clasificacion-actividades'
+                link: '/clasificacion-actividades'
             },
             {
                 id: 23,
                 label: 'Eventos o actividades',
-                link: 'actividades'
+                link: '/actividades'
             },
         ]
     },
@@ -148,7 +148,7 @@ export const menuItems = [
             {
                 id: 32,
                 label: 'Autoevaluacion cualitativa',
-                link: 'autoevaluacion'
+                link: '/autoevaluacion'
             },
             {
                 id: 33,
@@ -170,7 +170,7 @@ export const menuItems = [
             {
                 id: 22,
                 label: 'Gestion de planes de acción',
-                link: 'planes-accion'
+                link: '/planes-accion'
             },
             {
                 id: 23,

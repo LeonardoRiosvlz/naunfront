@@ -48,8 +48,11 @@
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
               >
+                <template v-slot:cell(autoevaluacion)="data">
+                  {{data.item.bases_autoevaluacion.nombre}}
+                </template>
                 <template v-slot:cell(periodo)="data">
-                  {{data.item.periodo.nombre}}
+                  {{data.item.bases_autoevaluacion.periodo.nombre}}
                 </template>
                 <template v-slot:cell(actions)="data">
 
@@ -110,13 +113,13 @@
                         </div>
                     </b-col>
                 </b-row> 
-              <b-row class="">
+                <b-row class="">
                     <b-col>
                         <div class="form-group">
-                        <label>Periodo</label>
+                        <label>Base de auto evaluación</label>
                         <ValidationProvider name="periodo" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.periodo_id"  name="periodo" class="form-control " :disabled="ver">
-                                <option :value="periodo.id" v-for="(periodo,index) in periodos" :key="index">{{periodo.nombre}}</option>
+                            <select v-model="form.base_id"  name="periodo" class="form-control " :disabled="ver">
+                                <option :value="periodo.id" v-for="(periodo,index) in auto" :key="index">{{periodo.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
@@ -195,15 +198,16 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["id","nombre","actions"],
+      fields: ["nombre","autoevaluacion","periodo","actions"],
       bases:[], 
+      auto:[], 
       periodos: [],
       clasificacion: [],  
       editMode:false,
       form:{
         'id': '',
         'nombre':'',
-        'periodo_id':'',
+        'base_id':'',
         'descripcion':'',
         'cliente_id':'',
         'clasificacion_id':'',
@@ -334,7 +338,7 @@ export default {
             this.form.id=this.bases[index].id;
             this.form.nombre=this.bases[index].nombre;
             this.form.descripcion=this.bases[index].descripcion;
-            this.form.periodo_id=this.bases[index].periodo_id;
+            this.form.base_id=this.bases[index].base_id;
             this.form.clasificacion_id=this.bases[index].clasificacion_id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
@@ -342,12 +346,24 @@ export default {
         }
       },
     async listarbases(){
+      console.log("hola");
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
        await this.axios.post('api/planes/accion/listar',data)
         .then((response) => {
           this.bases = response.data;
           console.log(bases);
+        })
+        .catch((e)=>{
+          console.log('error' + e);
+        })
+      },
+    async listarAutoevaluacion(){
+     let data = new FormData();
+     data.append('cliente_id',this.cliente.id);
+       await this.axios.post('api/basesau/listar',data)
+        .then((response) => {
+          this.auto = response.data;
         })
         .catch((e)=>{
           console.log('error' + e);
@@ -396,9 +412,11 @@ export default {
         this.listarbases();
         this.listarperiodos();
          this.listarclasificacion();
+         this.listarAutoevaluacion();
       },
    watch: {
       cliente: function () {
+        this.listarAutoevaluacion();
         this.listarperiodos();
         this.listarbases();
         this.listarclasificacion();

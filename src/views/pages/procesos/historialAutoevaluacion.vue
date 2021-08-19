@@ -72,22 +72,6 @@
                 <div class="card-body">
                    
                     <div class="row">
-                      <div class="col-md-12">
-                         <h5 class="text-LEFT">Programación Masiva</h5>
-                      </div>
-                      <div class="col-md-1">
-                        <div class="form-group">
-                          <input type="number" min="1" max="124" class="form-control" id="formGroupExampleInput" placeholder="entre">
-                        </div>
-                      </div>
-                      <div class="col-md-1">
-                        <div class="form-group">
-                          <input type="number" min="2" max="125" class="form-control" id="formGroupExampleInput" placeholder="hasta">
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                          <button class="btn btn-success btn-block"> PROGRAMAR </button>
-                      </div>
                       <div class="col-md-4">
                         <div class="form-group">
                                 <select  v-model="grupoid"  name="tipo" class="form-control" >
@@ -1136,6 +1120,7 @@ export default {
    async listarAutoevaluacion(){
        console.log("hey");
      let data = new FormData();
+     data.append('id',this.$route.params.id);
      data.append('cliente_id',this.cliente.id);
        await this.axios.post('api/autoevaluacion/listar',data)
         .then((response) => {
