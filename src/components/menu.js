@@ -175,7 +175,7 @@ export const menuItems = [
             {
                 id: 23,
                 label: 'Autoevaluacion cuantitativa',
-                link: ''
+                link: '/evaluacion-cuantitativa'
             },
             {
                 id: 23,

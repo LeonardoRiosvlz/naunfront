@@ -329,9 +329,43 @@ export default [
         },
     },
     {
+        path: '/avances-planes-accion/:id',
+        name: 'plan-accion',
+        component: () => import('../views/pages/planes_accion/avances'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/planes-accion',
         name: 'planes-accion',
         component: () => import('../views/pages/planes_accion/planes'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
+        path: '/evaluacion-cuantitativa',
+        name: 'planes-accion',
+        component: () => import('../views/pages/cuantitativa/planes'),
         meta: {
             beforeEnter: (to, from, next) => {
                 if (!store.state.usuarioDB) {
