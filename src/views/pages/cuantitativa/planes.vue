@@ -2,12 +2,12 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear Evaluacion Cuantitativa</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();ver=false;">Crear Evaluacion Cuantitativa</b-button>
     </div>
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <div class="card-body">
+          <div class="card-body" style="min-heigth:500px">
             <h4 class="card-title"></h4>
             <div class="row mt-4">
               <div class="col-sm-12 col-md-6">
@@ -35,7 +35,7 @@
               <!-- End search -->
             </div>
             <!-- Table -->
-            <div class="table-responsive mb-0" style="min-heigth:500px">
+            <div class="table-responsive mb-0" >
               <b-table
                 :items="bases"
                 :fields="fields"
@@ -47,12 +47,10 @@
                 :filter="filter"
                 :filter-included-fields="filterOn"
                 @filtered="onFiltered"
+                
               >
-                <template v-slot:cell(autoevaluacion)="data">
-                  {{data.item.bases_autoevaluacion.nombre}}
-                </template>
                 <template v-slot:cell(periodo)="data">
-                  {{data.item.bases_autoevaluacion.periodo.nombre}}
+                  {{data.item.periodo.nombre}}
                 </template>
                 <template v-slot:cell(actions)="data">
 
@@ -63,7 +61,8 @@
                   </template>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/plan-accion/'+data.item.id" style="color:#000">Gestionar</a></b-dropdown-item-button>
+                     <b-dropdown-item-button @click="setear(data.item.id);ver=true;"><b-icon icon="trash" class=""></b-icon> Ver </b-dropdown-item-button>
+                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/panel-evaluacion-cuantitativa/'+data.item.id" style="color:#000">Gestionar</a></b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
@@ -105,7 +104,7 @@
                         <div class="form-group">
                         <label>Periodo</label>
                         <ValidationProvider name="periodo" rules="required" v-slot="{ errors }" >
-                            <select v-model="form.clasificacion_id"  name="periodo" class="form-control " :disabled="ver">
+                            <select v-model="form.periodo_id"  name="periodo" class="form-control " :disabled="ver">
                                 <option :value="periodo.id" v-for="(periodo,index) in periodos" :key="index">{{periodo.nombre}}</option>
                             </select>
                             <span style="color:red">{{ errors[0] }}</span>
@@ -185,9 +184,11 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","autoevaluacion","periodo","actions"],
+      fields: ["nombre","periodo","actions"],
       bases:[], 
       auto:[], 
+      grupos:[], 
+      subgrupos:[], 
       periodos: [],
       clasificacion: [],  
       editMode:false,
@@ -326,7 +327,7 @@ export default {
             this.form.id=this.bases[index].id;
             this.form.nombre=this.bases[index].nombre;
             this.form.descripcion=this.bases[index].descripcion;
-            this.form.base_id=this.bases[index].base_id;
+            this.form.periodo_id=this.bases[index].periodo_id;
             this.form.clasificacion_id=this.bases[index].clasificacion_id;
             this.$root.$emit("bv::show::modal", "modal", "#btnShow");
             return;
@@ -356,6 +357,30 @@ export default {
             console.log('error' + e);
             })
         },
+                async  listarestandares(){
+            await this.axios.get('api/estandares/listar')
+            .then((response) => {
+                this.estandares = response.data;
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
+        async  listargruposestandares(){
+            await this.axios.get('api/estandares/grupos/listar')
+            .then((response) => {
+                console.log(response.data)
+                this.grupos = response.data;
+                for (let index = 0; index < this.grupos.length; index++) {
+                  if (this.grupos[index].id==1) {
+                     this.subgrupos=this.grupos[index].subgrupo_estandares;
+                  } 
+                }
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
       onFileChange(e) {
         const file = e.target.files[0];
         this.url = URL.createObjectURL(file);
@@ -376,11 +401,15 @@ export default {
         this.session();
         this.listarbases();
         this.listarperiodos();
+        this.listargruposestandares();
+        this.listarestandares();
       },
    watch: {
       cliente: function () {
-        this.listarAutoevaluacion();
+        this.listarbases();
         this.listarperiodos();
+        this.listargruposestandares();
+        this.listarestandares();
         this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.c

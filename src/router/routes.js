@@ -380,6 +380,23 @@ export default [
         },
     },
     {
+        path: '/panel-evaluacion-cuantitativa/:id',
+        name: 'plan-accion',
+        component: () => import('../views/pages/cuantitativa/index'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/consultor',
         name: 'consultor',
         component: () => import('../views/pages/admin/consultor'),

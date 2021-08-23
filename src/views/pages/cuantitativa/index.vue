@@ -8,6 +8,7 @@
 
             <div class="media-body">
               <h5 class="font-size-15 mt-0 mb-1">{{form.nombre}}</h5>
+              <h6 class="font-size-15 mt-0 mb-1">Periodo: {{form.periodo}}</h6>
             </div>
             <div>
               <b-dropdown class="chat-noti-dropdown" right variant="white">
@@ -101,9 +102,9 @@
         <div class="p-3 px-lg-4 user-chat-border">
           <div class="row">
             <div class="col-md-4 col-6">
-              <h5 class="font-size-15 mb-1 text-truncate">Plan de accion </h5>
+              <h5 class="font-size-15 mb-1 text-truncate">AUTO EVALUACION CUANTITATIVA</h5>
               <p class="text-muted text-truncate mb-0">
-                Periodo: 2020
+                Periodo: {{form.periodo}}
               </p>
             </div>
           </div>
@@ -116,6 +117,9 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title"></h4>
+                    <div class="clearfix mb-3">
+                      <b-button class="float-right btn-info" left @click="$bvModal.show('modal_acciones');editMode=false;resete();ver=false;">Crear Evaluacion Cuantitativa</b-button>
+                    </div>
                     <div class="row mt-4" style="min-heigth:500px">
                       <div class="col-sm-12 col-md-6">
                         <div id="tickets-table_length" class="dataTables_length">
@@ -259,108 +263,822 @@
 
 
       <b-modal id="modal_acciones" false size="lg"  title="Programar acciones" hide-footer>
-        <div class="card">
-          <h6 class="text-center"> OPORTUNIDAD DE MEJORA </h6>
-          <p class="p-2">{{mejora.oportunidad_mejoras}}</p>
-        </div>
                 <ValidationObserver  ref="form">
-                  <div class="row">
-                        <div class="col-md-12">
-                            <h5 class="font-size-14 mb-4">Clasificación de actividades</h5>
-                            <div class="row">
-                                <div class="col-3" v-for="(clasificacion, index) in clasificacion" :key="index">
-                                            
-                                    <div class="form-check mb-3">
-                                        <input
-                                        v-model="accion.clasificacion_id"
-                                        class="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        :id="'exampleRadios1'+index"
-                                        :value="clasificacion.id"
-                                        checked
-                                        />
-                                        <label class="form-check-label " for="exampleRadios1" :style="'color:'+clasificacion.color">{{clasificacion.nombre}}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <b-row>
-                      <b-col>
+                  <b-row>
+                    <b-col>
                         <div class="form-group">
-                          <label>Proceso</label>
-                          <ValidationProvider name="proceso" rules="required" v-slot="{ errors }" >
-                            <select v-model="accion.proceso_id"  name="tipo" class="form-control " :disabled="ver"  @change="capSubproceso()">
-                              <option :value="proceso.id" v-for="(proceso,index) in procesos" :key="index" >{{proceso.nombre}}</option>
-                            </select>
-                            <span style="color:red">{{ errors[0] }}</span>
+                            <label>Numero del estandar</label>
+                            <ValidationProvider name="numero" rules="required" v-slot="{ errors }" >
+                                <input v-model="form.numero" @change="buscarGrupos()"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <span style="color:red">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                        </div>
+                    </b-col>
+                    <b-col>
+                    <div class="form-group">
+                      <label> Codigo del estandar</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.numero"  @change="buscarGrupos()"  name="tipo" class="form-control " :disabled="ver">
+                            <option :value="estandar.numero" v-for="(estandar,index) in estandares" :key="index">{{estandar.codigo}}</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                   </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col>
+                    <div class="form-group">
+                      <label> Grupo de estandares</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.grupo_id"  name="tipo" class="form-control " disabled>
+                            <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                   </b-col>
+                   <b-col v-if="form.subgrupo_id">
+                    <div class="form-group">
+                      <label> Sub grupo</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.subgrupo_id"  name="tipo" class="form-control " disabled>
+                            <option :value="grupo.id" v-for="(grupo,index) in subgrupos" :key="index">{{grupo.nombre}} {{grupo.desde}}-{{grupo.hasta}}</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                  </b-col>
+                  </b-row>
+                   <b-row>
+                    <b-col>
+                        <div class="form-group">
+                        <label>Descripción</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " disabled></textarea>
+                                <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
-                      </b-col>
-                      <b-col>
+                    </b-col>
+                     <b-col>
                         <div class="form-group">
-                          <label>Subproceso</label>
-                          <ValidationProvider name="subproceso" rules="required" v-slot="{ errors }">
-                            <select v-model="accion.subproceso_id"  name="tipo" class="form-control " :disabled="ver" >
-                               <option value="NA">NA</option>
-                              <option :value="subprocesos.id" v-for="(subprocesos,index) in subproceso" :key="index" >{{subprocesos.nombre}}</option>
-                            </select>
-                            <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Descripción de las acciones a realizar</label>
-                          <ValidationProvider name="descripcion de la accion" rules="required" v-slot="{ errors }">
-                                <textarea v-model="accion.descripcion_accion"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                        <label>Criterios</label>
+                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
+                                <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " disabled></textarea>
                                 <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
+                        </ValidationProvider>
                         </div>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col>
-                        <div class="form-group">
-                          <label>Evidencia solicitada</label>
-                          <ValidationProvider name="evidencias solicitada" rules="required" v-slot="{ errors }">
-                                <textarea v-model="accion.evidencia_solicitada"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                                <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>
-                    <b-row> 
-                      <b-col>
-                        <div class="form-group">
-                          <label >Fecha de planeación </label>
-                          <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
-                            <b-form-input id="date-time" v-model="accion.fecha_programada"  type="datetime-local"></b-form-input>
-                            <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <b-col>
-                        <div class="form-group">
-                          <label >Fecha de cumplimiento </label>
-                          <ValidationProvider name="fecha llamada" rules="required" v-slot="{ errors }">
-                            <b-form-input id="date-time" v-model="accion.fecha_ejecucion"  type="datetime-local"></b-form-input>
-                            <span style="color:red">{{ errors[0] }}</span>
-                          </ValidationProvider>
-                        </div>
-                      </b-col>
-                    </b-row>  
-                    <b-row>
-                      <div class="col-12">
-                        <div class="form-group">
-                          <label>Responsable</label>
-                              <v-select  v-model="accion.responsable_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
-                        </div>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col>
+                    <div class="form-group">
+                      <label> Aplicabilidad</label>
+                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                        <select v-model="form.aplicabilidad" name="tipo" class="form-control " :disabled="ver">
+                            <option value="APLICA">APLICA</option>
+                            <option value="NO APLICA">NO APLICA</option>
+                        </select>
+                        <span style="color:red">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    </div>
+                   </b-col>
+                  </b-row>
+                  <pre>
+                    {{form}}
+                  </pre>
+                  <b-row>
+                    <b-col>
+                      <div class="accordion" role="tablist">
+                        <b-card no-body class="mb-1">
+                          <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block v-b-toggle.accordion-1 variant="dark">ENFOQUE</b-button>
+                          </b-card-header>
+                          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                              <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Enfoque sistémico</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.enfoque_sistematico" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                          Ejercicio de aplicación disciplinado que 
+                                          abarca todos los procesos y el contenido del 
+                                          estándar; que hace una visión de conjunto de 
+                                          la institución; que contempla un ciclo PHVA
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='1'">
+                                          Ejercicio de aplicación disciplinado que 
+                                          abarca todos los procesos y el contenido del 
+                                          estándar; que hace una visión de conjunto de 
+                                          la institución; que contempla un ciclo PHVA.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='2'">
+                                          Comienzo de un enfoque sistémico 
+                                          para los propósitos básicos del 
+                                          estándar y empieza a estar presente 
+                                          en algunos servicios o procesos. El 
+                                          enfoque y los procesos a través de los 
+                                          cuales se despliega está documentado.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='3'">
+                                          El enfoque es sistémico, alcanzable 
+                                          para lograr los propósitos del estándar 
+                                          que se desea evaluar en procesos 
+                                          clave.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='4'">
+                                          El enfoque es sistémico tiene buen 
+                                          grado de integración que responde a 
+                                          todos los propósitos del estándar en la 
+                                          mayoría de los procesos. Relacionado 
+                                          con el direccionamiento estratégico.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='5'">
+                                          El enfoque es explícito y se aplica de 
+                                          manera organizada en todos los 
+                                          procesos, responde a los distintos 
+                                          criterios del estándar y está relacionado 
+                                          con el direccionamiento estratégico.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Enfoque proactivo</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.enfoque_proactivo" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Grado en que el enfoque es preventivo y se 
+                                            adelanta a la
+                                            ocurrencia del problema de calidad, a partir 
+                                            de la gestión del riesgo
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='1'">
+                                          Los enfoques son 
+                                          mayoritariamente reactivos, la 
+                                          información presentada es 
+                                          anecdótica y desarticulada, sin 
+                                          evidencia de la gestión del 
+                                          riesgo.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='2'">
+                                          Etapas iniciales de transición de la 
+                                          reacción a la prevención de 
+                                          problemas. Etapas iniciales de la 
+                                          gestión del riesgo.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='3'">
+                                          Enfoque mayoritariamente preventivo 
+                                          hacia el manejo y control de los 
+                                          procesos aun cuando existen algunos 
+                                          en donde se actúa reactivamente. Se 
+                                          identifican herramientas de la gestión 
+                                          del riesgo.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='4'">
+                                          El enfoque es mayoritariamente 
+                                          proactivo y preventivo en todos los 
+                                          procesos y se evidencian resultados 
+                                          parciales de la gestión del riesgo.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='5'">
+                                          El enfoque es proactivo y preventivo en 
+                                          todos los procesos. Hay evidencia de la 
+                                          gestión del riesgo.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Enfoque evaluado y mejorado</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.enfoque_em" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Forma en que se evalúa y mejora el enfoque 
+                                            y su asimilación.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='1'">
+                                            La información presentada es 
+                                            anecdótica y desarticulada, no 
+                                            hay evidencias (hechos y datos).
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='2'">
+                                            La evidencia de un proceso de 
+                                            evaluación y mejoramiento del 
+                                            enfoque es limitada. Esbozo de 
+                                            algunos hechos y datos, 
+                                            desarticulados.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='3'">
+                                            El proceso de mejoramiento está 
+                                            basado en hechos y datos (acciones 
+                                            específicas realizadas y registradas) 
+                                            sobre procesos claves que abarcan la 
+                                            mayoría de productos y servicios.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='4'">
+                                          Existe un proceso de mejoramiento 
+                                          basado en hechos y datos como 
+                                          herramienta básica de dirección.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='5'">
+                                          Existen ciclos sistemáticos de 
+                                          evaluación, la información recogida es 
+                                          consistente y válida, oportuna y se 
+                                          emplea para la evaluación y definir 
+                                          acciones de mejoramiento.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          
+                            </b-card-body>
+                          </b-collapse>
+                        </b-card>
+
+                        <b-card no-body class="mb-1">
+                          <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block v-b-toggle.accordion-2 variant="dark">IMPLEMENTACION</b-button>
+                          </b-card-header>
+                          <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                               <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Despliegue en la institución</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.despliegue_institucional" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Grado en que se ha implementado el enfoque 
+                                            y es consistente en los distintos servicios o 
+                                            procesos de la organización.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='1'">
+                                            El enfoque se ha implementado 
+                                            en algunos servicios o procesos 
+                                            pero se refleja su debilidad.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='2'">
+                                            La implementación del enfoque se da 
+                                            en algunos servicios o procesos 
+                                            operativos principales y existen 
+                                            brechas muy significativas en procesos 
+                                            importantes.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='3'">
+                                            La implementación está más avanzada 
+                                            en servicios o procesos claves y no 
+                                            existen grandes brechas con respec-to 
+                                            a otros servicios o procesos.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='4'">
+                                          Existe un enfoque bien desplegado en 
+                                          todos los servicios o procesos, con 
+                                          brechas no significativas en aquellos de 
+                                          sop.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='5'">
+                                          La implementación del enfoque se 
+                                          amplía continuamente para cubrir 
+                                          nuevos servicios o procesos en forma 
+                                          integral y responde al enfoque definido 
+                                          en todos los servicios o procesos 
+                                          claves.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                              <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Apropiación por el cliente interno y/o externo</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.apropiacion_cie" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Grado en que el cliente del despliegue 
+                                            (cliente interno y/o externo) entiende y aplica 
+                                            el enfoque, según la naturaleza y propósitos 
+                                            del estándar.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='1'">
+                                            El enfoque no lo apropian los 
+                                            clientes.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='2'">
+                                            Hay evidencias de apropiación en unos 
+                                            pocos clientes internos o externos, 
+                                            pero este no es consistente.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='3'">
+                                            Hay evidencias de apropiación parcial 
+                                            del enfoque en los principales clientes 
+                                            con un grado mínimo de consistencia.
+
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='4'">
+                                            El enfoque lo apropian la mayoría de 
+                                            los usuarios y es medianamente 
+                                            consistente.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='5'">
+                                          El enfoque está apropiado en la 
+                                          totalidad de los usuarios y es 
+                                          totalmente consistente.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                            </b-card-body>
+                          </b-collapse>
+                        </b-card>
+
+                        <b-card no-body class="mb-1">
+                          <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block v-b-toggle.accordion-3 variant="dark">RESULTADOS</b-button>
+                          </b-card-header>
+                          <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                              <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Pertinencia</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.pertinencia" name="pertinencia" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                          Grado en que los resultados referidos 
+                                          (hechos, datos e indicadores) se relacionan 
+                                          los criterios y requisitos del estándar 
+                                          evaluado.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='1'">
+                                            Los datos presentados no 
+                                            responden a los factores, 
+                                            productos o servicios claves del 
+                                            estándar.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='2'">
+                                            Los datos presentados son parciales y 
+                                            se refieren a unos pocos factores, 
+                                            productos o servicios claves solicitados 
+                                            en el estándar.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='3'">
+                                            Los datos presentados se refieren al 
+                                            desempeño de algunos servicios o 
+                                            procesos claves, factores, productos 
+                                            y/o servicios solicitados.
+
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='4'">
+                                            La mayoría de los resultados referidos 
+                                            se relacionan con el servicio o proceso, 
+                                            factores, productos y/o servicios 
+                                            solicitados en el estándar, alcanzando 
+                                            los objetivos y metas propuestas.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='5'">
+                                            Todos los resultados se relacionan con 
+                                            el servicio o proceso o el punto del 
+                                            estándar a evaluar y alcanzan los 
+                                            objetivos y metas propuestas.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Consistencia</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.consistencias" name="pertinencia" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                          Relación de los resultados como producto de 
+                                          la implementación
+                                          del enfoque.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.consistencias==='1'">
+                                            Solo existen ejemplos 
+                                            anecdóticos de aspectos poco 
+                                            relevantes y no hay evidencia de 
+                                            que sean resultado de la 
+                                            implementación del enfoque.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.consistencias==='2'">
+                                            Se comienzan a obtener resultados 
+                                            todavía incipientes de la aplicación del 
+                                            enfoque.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.consistencias==='3'">
+                                            Existe evidencia que algunos logros 
+                                            son causados por el enfoque 
+                                            implementado y por las acciones de 
+                                            mejoramiento.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.consistencias==='4'">
+                                            La mayoría de los resultados responden 
+                                            a la implementación del enfoque y a las 
+                                            acciones de mejoramiento.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.consistencias==='5'">
+                                            Todos los resultados son causados por 
+                                            la implementación de enfoques y las 
+                                            acciones sistemáticas de mejoramiento.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Avance de la medición</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.avance_mediacion" name="pertinencia" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                          Grado en que la medición responde a una 
+                                          práctica sistémica de la organización en un 
+                                          período de tiempo que le permita su
+                                          Consolidación y existen indicadores definidos 
+                                          para la medición del estándar evaluado, 
+                                          calidad y pertinencia de los mismos.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='1'">
+                                          No existen indicadores que 
+                                          muestren tendencias en la 
+                                          calidad y el desempeño de los 
+                                          procesos. La organización se 
+                                          encuentra en una etapa muy 
+                                          temprana de medición.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='2'">
+                                          Existen algunos indicadores que 
+                                          muestran el desempeño de procesos. 
+                                          La organización se encuentra en una 
+                                          etapa media del desarrollo de la 
+                                          medición.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='3'">
+                                          Existen indicadores que monitorean los 
+                                          procesos y muestran ya tendencias 
+                                          positivas de mejoramiento en algunos 
+                                          servicios o procesos claves, factores, 
+                                          productos y/o servicios solicitados en el 
+                                          estándar. Algunos servicios o procesos 
+                                          reportados pueden estar en etapas 
+                                          recientes de medición.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='4'">
+                                          Existen procesos de medición 
+                                          sistémicos para la mayoría de los 
+                                          servicios o procesos y factores claves 
+                                          de éxito solicitados en el estándar.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='5'">
+                                          Los resultados son monitoreados 
+                                          directamente por los líderes de todos 
+                                          los niveles de la organización y la 
+                                          información se utiliza para la toma de 
+                                          decisiones y el mejoramiento de los 
+                                          procesos.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Tendencia</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.tendencia" name="pertinencia" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Desempeño de los indicadores en el tiempo. 
+                                            Puede ser positiva
+                                            cuando los datos muestran una mejoría 
+                                            general a lo largo del tiempo.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia==='1'">
+                                            El estadio de la medición y por lo 
+                                            tanto de los resultados, no 
+                                            garantizan tendencias confiables.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia==='2'">
+                                            Se muestran resultados muy recientes 
+                                            que aunque no permiten tener 
+                                            suficientes bases para establecer 
+                                            tendencias, el proceso es sistemático y 
+                                            se empiezan a tomar decisiones 
+                                            operativas con base en la información.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia==='3'">
+                                            Se presentan tendencias de 
+                                            mejoramiento de algunos factores 
+                                            claves del estándar. Proceso 
+                                            sistemático y estructurado.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia==='4'">
+                                            La mayoría de los indicadores alcanzan 
+                                            niveles satisfactorios y muestran firmes 
+                                            tendencias de mejoramiento de los 
+                                            servicios o procesos claves, factores, 
+                                            productos y/o servicios, lo cual se 
+                                            refleja en que van de bueno a 
+                                            excelente.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia==='5'">
+                                            Se observan tendencias positivas y 
+                                            sostenidas de mejoramiento de todos 
+                                            los datos a lo largo del tiempo.  
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-4">
+                                 <div class="form-group">
+                                  <label>Comparación</label>
+                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <select v-model="form.comparacion" name="pertinencia" class="form-control" :disabled="ver" >
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                  </div>
+                                </div>
+                                <div class="col-8">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Descripcion</h5>
+                                        <p class="small text-muted text-justify">
+                                            Grado en que los resultados son comparados 
+                                            con referentes
+                                            nacionales e internacionales y la calidad de 
+                                            los mismos.
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="col-6">
+                                      <div class="card p-3">
+                                        <h5 class="lead text-center">Criterios</h5>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion==='1'">
+                                            No existen políticas, ni prácticas 
+                                            de comparación de los procesos 
+                                            de la organización con los 
+                                            mejores.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion==='2'">
+                                            Se encuentran algunas prácticas 
+                                            independientes de comparación, poco 
+                                            estructuradas y no sistemáticas.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion==='3'">
+                                            Existe una política de comparación con 
+                                            las mejores prácticas y se encuentra en 
+                                            etapa temprana de comparación de 
+                                            algunos procesos, productos críticos y 
+                                            servicios solicitados en el estándar.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion==='4'">
+                                            Se encuentra en etapa madura de 
+                                            comparación con las mejores prácticas 
+                                            a nivel nacional de servicios o 
+                                            procesos, productos y/o factores claves 
+                                            solicitados en el estándar.
+                                        </p>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion==='5'">
+                                            Los resultados son comparados con 
+                                            referentes nacionales e internacionales 
+                                            y se ubican en niveles cercanos a las 
+                                            tendencias de clase mundial. Cuenta 
+                                            con un sistema de evaluación y mejora 
+                                            de los sistemas de comparación.
+                                        </p>
+                                      </div> 
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </b-card-body>
+                          </b-collapse>
+                        </b-card>
                       </div>
-                    </b-row>
+                    </b-col>
+                  </b-row>
                 </ValidationObserver>
                 <div class="row mx-0 justify-content-between">
                       <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
@@ -450,8 +1168,23 @@ export default {
       programadas:0,
       form:{
             'id': '',
-            'nombre':'',
-            'descripcion':'',
+            'autoevaluacionc_id': '',
+            'numero':'',
+            'grupo_id':'',
+            'subgrupo_id':'',
+            'estandar_id':'',
+            'aplicabilidad':'',
+            'enfoque_sistematico':'',
+            'enfoque_proactivo':'',
+            'enfoque_em':'',
+            'despliegue_institucional':'',
+            'apropiacion_cie':'',            
+            'pertinencia':'',
+            'consistencia':'',
+            'avance_mediacion':'',
+            'tendencia':'',
+            'comparacion':'',
+            'promedio':'',
           },
       mejora:[],
       accion:{
@@ -482,6 +1215,39 @@ export default {
   },
 
   methods: {
+        buscarGrupos(){
+        if (this.form.numero<75) {
+            this.form.grupo_id=1;
+              for (let index = 0; index < this.subgrupos.length; index++) {
+                if ( parseInt(this.subgrupos[index].desde)<=parseInt(this.form.numero)) {
+                      console.log(this.subgrupos[index].desde);
+                      console.log(this.subgrupos[index].hasta);
+                    this.form.subgrupo_id= this.subgrupos[index].id;
+                    this.setearCriterios();
+                }
+            }
+         }else{
+            for (let index = 0; index < this.grupos.length; index++) {
+                if ( parseInt(this.grupos[index].desde)<=parseInt(this.form.numero)) {
+                      console.log(this.grupos[index].desde);
+                      console.log(this.grupos[index].hasta);
+                    this.form.grupo_id= this.grupos[index].id;
+                    this.form.subgrupo_id="";
+                    this.setearCriterios();
+                }
+            }
+         }
+    },
+    setearCriterios(){
+        for (let index = 0; index < this.estandares.length; index++) {
+            if (this.estandares[index].numero===this.form.numero) {
+               this.form.criterios=this.estandares[index].criterios; 
+               this.form.descripcion=this.estandares[index].descripcion; 
+               this.form.estandar_id=this.estandares[index].id; 
+
+            }   
+        }
+    },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
@@ -876,15 +1642,13 @@ export default {
     async listarPlan(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
-        await this.axios.post('api/planes/accion/find', data)
+        await this.axios.post('api/autoevaluacion/cuantitativa/find', data)
           .then((response) => {
              if (response.status==200) {
                console.log(response.data);
               this.form.id=response.data.id; 
               this.form.nombre=response.data.nombre; 
-              this.form.descripcion=response.data.descripcion; 
-              this.form.base_id=response.data.base_id; 
-              this.mejoras=response.data.mejoras; 
+              this.form.periodo=response.data.periodo.nombre; 
              }
           })
           .catch((e)=>{
@@ -992,6 +1756,15 @@ export default {
                      this.subgrupos=this.grupos[index].subgrupo_estandares;
                   } 
                 }
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
+        async  listarestandares(){
+            await this.axios.get('api/estandares/listar')
+            .then((response) => {
+                this.estandares = response.data;
             })
             .catch((e)=>{
                 console.log('error' + e);
@@ -1117,6 +1890,7 @@ export default {
         this.session();
         this.listarPlan();
         this.listargruposestandares();
+        this.listarestandares();
         this.listarCargos();
         this.listarProceso();
         this.listarSubproceso();
@@ -1131,6 +1905,7 @@ export default {
        this.title=this.cliente.nombre_prestador;
        this.form.cliente_id=this.usuarioDB.id;
        this.listargruposestandares();
+       this.listarestandares();
        this.listarProceso();
        this.listarSubproceso();
        this.listarclasificacion();
