@@ -359,10 +359,11 @@ export default {
           this.content_history.length = this.undo_count + 1; // remove all redo items
         }
         this._mute_next_content_watcher = false;
-        this.content = this.doctexto
         this.cargarDocumento(this.content);
-           
       },
+      doc() {
+        this.content = this.doctexto
+      }
     },
   },
 

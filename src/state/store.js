@@ -48,8 +48,7 @@ mutations:{
         state.load=!state.load;
     },
     cargarDocs(state,payload){
-        state.doctexto.push(payload)
-        console.log(state.doctexto)
+        state.doctexto = payload
     },
     docs(state, value){
         state.archivo = value;
