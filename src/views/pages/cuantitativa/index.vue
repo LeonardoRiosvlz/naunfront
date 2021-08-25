@@ -262,7 +262,7 @@
 
 
 
-      <b-modal id="modal_acciones" false size="lg"  title="Programar acciones" hide-footer>
+      <b-modal id="modal_acciones" false size="xl"  title="Calificar estandar" hide-footer>
                 <ValidationObserver  ref="form">
                   <b-row>
                     <b-col>
@@ -344,11 +344,8 @@
                     </div>
                    </b-col>
                   </b-row>
-                  <pre>
-                    {{form}}
-                  </pre>
                   <b-row>
-                    <b-col>
+                    <div class="col-10">
                       <div class="accordion" role="tablist">
                         <b-card no-body class="mb-1">
                           <b-card-header header-tag="header" class="p-1" role="tab">
@@ -361,7 +358,7 @@
                                  <div class="form-group">
                                   <label>Enfoque sistémico</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.enfoque_sistematico" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                        <select v-model="form.enfoque_sistematico" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -433,7 +430,7 @@
                                  <div class="form-group">
                                   <label>Enfoque proactivo</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.enfoque_proactivo" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                        <select v-model="form.enfoque_proactivo" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -504,7 +501,7 @@
                                  <div class="form-group">
                                   <label>Enfoque evaluado y mejorado</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.enfoque_em" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                        <select v-model="form.enfoque_em" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -581,7 +578,7 @@
                                  <div class="form-group">
                                   <label>Despliegue en la institución</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.despliegue_institucional" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                        <select v-model="form.despliegue_institucional" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -650,7 +647,7 @@
                                  <div class="form-group">
                                   <label>Apropiación por el cliente interno y/o externo</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.apropiacion_cie" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                        <select v-model="form.apropiacion_cie" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -723,7 +720,7 @@
                                  <div class="form-group">
                                   <label>Pertinencia</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.pertinencia" name="pertinencia" class="form-control" :disabled="ver" >
+                                        <select v-model="form.pertinencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -793,7 +790,7 @@
                                  <div class="form-group">
                                   <label>Consistencia</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.consistencias" name="pertinencia" class="form-control" :disabled="ver" >
+                                        <select v-model="form.consistencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -819,30 +816,30 @@
                                     <div class="col-6">
                                       <div class="card p-3">
                                         <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.consistencias==='1'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia==='1'">
                                             Solo existen ejemplos 
                                             anecdóticos de aspectos poco 
                                             relevantes y no hay evidencia de 
                                             que sean resultado de la 
                                             implementación del enfoque.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencias==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia==='2'">
                                             Se comienzan a obtener resultados 
                                             todavía incipientes de la aplicación del 
                                             enfoque.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencias==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia==='3'">
                                             Existe evidencia que algunos logros 
                                             son causados por el enfoque 
                                             implementado y por las acciones de 
                                             mejoramiento.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencias==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia==='4'">
                                             La mayoría de los resultados responden 
                                             a la implementación del enfoque y a las 
                                             acciones de mejoramiento.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencias==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia==='5'">
                                             Todos los resultados son causados por 
                                             la implementación de enfoques y las 
                                             acciones sistemáticas de mejoramiento.
@@ -858,7 +855,7 @@
                                  <div class="form-group">
                                   <label>Avance de la medición</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.avance_mediacion" name="pertinencia" class="form-control" :disabled="ver" >
+                                        <select v-model="form.avance_mediacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -937,7 +934,7 @@
                                  <div class="form-group">
                                   <label>Tendencia</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.tendencia" name="pertinencia" class="form-control" :disabled="ver" >
+                                        <select v-model="form.tendencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -1008,7 +1005,7 @@
                                  <div class="form-group">
                                   <label>Comparación</label>
                                   <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.comparacion" name="pertinencia" class="form-control" :disabled="ver" >
+                                        <select v-model="form.comparacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -1073,12 +1070,85 @@
                                   </div>
                                 </div>
                               </div>
+                              <hr>
                             </b-card-body>
                           </b-collapse>
                         </b-card>
                       </div>
-                    </b-col>
+                    </div>
+                    <div class="col-2 text-center">
+                      <div class="col-sm-12">
+                        <div>
+                          <div class="mb-3">
+                            <apexchart
+                              class="apex-charts"
+                              height="60"
+                              wight="60"
+                              dir="ltr"
+                              :series="enfoque.series"
+                              :options="enfoque.chartOptions"
+                            ></apexchart>
+                          </div>
+                          <p class="text-muted text-truncate mb-2">ENFOQUE</p>
+                          <h5 class="mb-0">{{form.total_enfoque | decimales}} %</h5>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-12">
+                        <div class="mt-5 mt-sm-0">
+                          <div class="mb-3">
+                            <apexchart
+                              class="apex-charts"
+                              height="60"
+                              wight="60"
+                              dir="ltr"
+                              :series="implementacion.series"
+                              :options="implementacion.chartOptions"
+                            ></apexchart>
+                          </div>
+
+                          <p class="text-muted text-truncate mb-2">IMPLEMENTACION</p>
+                          <h5 class="mb-0">{{form.total_implementacion}} %</h5>
+                        </div>
+                      </div>
+
+                    <div class="col-sm-12">
+                        <div class="mt-5 mt-sm-0">
+                          <div class="mb-3">
+                            <apexchart
+                              class="apex-charts"
+                              height="60"
+                              wight="60"
+                              dir="ltr"
+                              :series="resultados.series"
+                              :options="resultados.chartOptions"
+                            ></apexchart>
+                          </div>
+
+                          <p class="text-muted text-truncate mb-2">RESULTADOS</p>
+                          <h5 class="mb-0">{{form.total_resultados}} %</h5>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="mt-5 mt-sm-0">
+                          <div class="mb-3">
+                            <apexchart
+                              class="apex-charts"
+                              height="60"
+                              wight="60"
+                              dir="ltr"
+                              :series="resultados.series"
+                              :options="total.chartOptions"
+                            ></apexchart>
+                          </div>
+
+                          <p class="text-muted text-truncate mb-2">TOTAL</p>
+                          <h5 class="mb-0">{{form.total_total}} %</h5>
+                        </div>
+                      </div>
+                    </div>
                   </b-row>
+
                 </ValidationObserver>
                 <div class="row mx-0 justify-content-between">
                       <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode">Guardar</button>
@@ -1147,7 +1217,7 @@ export default {
       cargos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["periodo","grupo_de_estandares","numero_de_estandar","total","status","actions"],
+      fields: ["id","total","promedio","actions"],
       bases: [], 
       libres: [], 
       todas: [],
@@ -1168,7 +1238,6 @@ export default {
       programadas:0,
       form:{
             'id': '',
-            'autoevaluacionc_id': '',
             'numero':'',
             'grupo_id':'',
             'subgrupo_id':'',
@@ -1186,23 +1255,146 @@ export default {
             'comparacion':'',
             'promedio':'',
           },
-      mejora:[],
-      accion:{
-            'id': '',
-            'mejora_id': '',
-            'clasificacion_id': '',
-            'proceso_id': '',
-            'subproceso_id': '',
-            'responsable_id': '',
-            'total':1,
-            'fecha_ejecucion':'',
-            'fecha_programada':'',
-            'evidencia_solicita':'',
-            'descripcion_accion':'',
-            'responsable_id':'',
-            'subproceso_id':'',
-            'proceso_id':'',
+      enfoque: {
+        series: [0],
+        chartOptions: {
+          chart: {
+            type: "radialBar",
+            wight: 60,
+            height: 60,
+            sparkline: {
+              enabled: true
+            }
           },
+          dataLabels: {
+            enabled: false
+          },
+          colors: ["#5664d2"],
+          stroke: {
+            lineCap: "round"
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                margin: 0,
+                size: "70%"
+              },
+              track: {
+                margin: 0
+              },
+              dataLabels: {
+                show: false
+              }
+            }
+          }
+        }
+      },
+      implementacion: {
+        series: [0],
+        chartOptions: {
+          chart: {
+            type: "radialBar",
+            wight: 60,
+            height: 60,
+            sparkline: {
+              enabled: true
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          colors: ["#1cbb8c"],
+          stroke: {
+            lineCap: "round"
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                margin: 0,
+                size: "70%"
+              },
+              track: {
+                margin: 0
+              },
+
+              dataLabels: {
+                show: false
+              }
+            }
+          }
+        }
+      },
+      resultados: {
+        series: [0],
+        chartOptions: {
+          chart: {
+            type: "radialBar",
+            wight: 60,
+            height: 60,
+            sparkline: {
+              enabled: true
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          colors: ["#1cbb8c"],
+          stroke: {
+            lineCap: "round"
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                margin: 0,
+                size: "70%"
+              },
+              track: {
+                margin: 0
+              },
+
+              dataLabels: {
+                show: false
+              }
+            }
+          }
+        }
+      }, 
+      total: {
+        series: [0],
+        chartOptions: {
+          chart: {
+            type: "radialBar",
+            wight: 60,
+            height: 60,
+            sparkline: {
+              enabled: true
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          colors: ["#1cbb8c"],
+          stroke: {
+            lineCap: "round"
+          },
+          plotOptions: {
+            radialBar: {
+              hollow: {
+                margin: 0,
+                size: "70%"
+              },
+              track: {
+                margin: 0
+              },
+
+              dataLabels: {
+                show: false
+              }
+            }
+          }
+        }
+      },     
+      mejora:[],
           buscador:{
               'tipo_id': '',
               'subproceso_id':'',
@@ -1213,30 +1405,48 @@ export default {
           search:'',
     }
   },
-
+  filters: {
+        decimales: function (value) {
+           let valueFinal = parseInt(value);
+           return valueFinal
+        }
+  },
   methods: {
-        buscarGrupos(){
-        if (this.form.numero<75) {
-            this.form.grupo_id=1;
-              for (let index = 0; index < this.subgrupos.length; index++) {
-                if ( parseInt(this.subgrupos[index].desde)<=parseInt(this.form.numero)) {
-                      console.log(this.subgrupos[index].desde);
-                      console.log(this.subgrupos[index].hasta);
-                    this.form.subgrupo_id= this.subgrupos[index].id;
-                    this.setearCriterios();
-                }
+    calcularPromedio(){
+      this.form.total=0;
+      this.form.total_enfoque= ((parseInt(this.form.enfoque_sistematico)+parseInt(this.form.enfoque_proactivo)+parseInt(this.form.enfoque_em))*100)/15;
+      this.enfoque.series=[this.form.total_enfoque];
+      this.form.total_implementacion= ((parseInt(this.form.despliegue_institucional)+parseInt(this.form.apropiacion_cie))*100)/10;
+      this.implementacion.series=[this.form.total_implementacion];
+      this.form.total_resultados= ((parseInt(this.form.pertinencia)+parseInt(this.form.consistencia)+parseInt(this.form.avance_mediacion)+parseInt(this.form.tendencia)+parseInt(this.form.comparacion))*100)/25;
+      this.resultados.series=[this.form.total_resultados];
+      this.form.total_total= ((parseInt(this.form.enfoque_sistematico)+parseInt(this.form.enfoque_proactivo)+parseInt(this.form.enfoque_em)+parseInt(this.form.despliegue_institucional)+parseInt(this.form.apropiacion_cie)+parseInt(this.form.pertinencia)+parseInt(this.form.consistencia)+parseInt(this.form.avance_mediacion)+parseInt(this.form.tendencia)+parseInt(this.form.comparacion))*100)/50;
+      this.total.series=[this.form.total_total];
+      this.form.total= parseInt(this.form.enfoque_sistematico)+parseInt(this.form.enfoque_proactivo)+parseInt(this.form.enfoque_em)+parseInt(this.form.despliegue_institucional)+parseInt(this.form.apropiacion_cie)+parseInt(this.form.pertinencia)+parseInt(this.form.consistencia)+parseInt(this.form.avance_mediacion)+parseInt(this.form.tendencia)+parseInt(this.form.comparacion); 
+      this.form.promedio=parseInt(this.form.total)/10;
+    },
+    buscarGrupos(){
+    if (this.form.numero<75) {
+        this.form.grupo_id=1;
+          for (let index = 0; index < this.subgrupos.length; index++) {
+            if ( parseInt(this.subgrupos[index].desde)<=parseInt(this.form.numero)) {
+                  console.log(this.subgrupos[index].desde);
+                  console.log(this.subgrupos[index].hasta);
+                this.form.subgrupo_id= this.subgrupos[index].id;
+                this.setearCriterios();
             }
-         }else{
-            for (let index = 0; index < this.grupos.length; index++) {
-                if ( parseInt(this.grupos[index].desde)<=parseInt(this.form.numero)) {
-                      console.log(this.grupos[index].desde);
-                      console.log(this.grupos[index].hasta);
-                    this.form.grupo_id= this.grupos[index].id;
-                    this.form.subgrupo_id="";
-                    this.setearCriterios();
-                }
+        }
+     }else{
+        for (let index = 0; index < this.grupos.length; index++) {
+            if ( parseInt(this.grupos[index].desde)<=parseInt(this.form.numero)) {
+                  console.log(this.grupos[index].desde);
+                  console.log(this.grupos[index].hasta);
+                this.form.grupo_id= this.grupos[index].id;
+                this.form.subgrupo_id="";
+                this.setearCriterios();
             }
-         }
+        }
+     }
     },
     setearCriterios(){
         for (let index = 0; index < this.estandares.length; index++) {
@@ -1289,7 +1499,7 @@ export default {
       },
     agregarAcccionCuestion(id){
         this.$swal({
-          title: 'Desea progrmar una acción para esta mejora?',
+          title: 'Desea calificar este estandar ?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -1304,11 +1514,12 @@ export default {
     },
     async  programarAcccion(){
      let data = new FormData();
-       var formulario = this.accion;
+       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.post('api/acciones', data, {
+      data.append('autoevaluacionc_id',this.$route.params.id);
+       await this.axios.post('api/autoevaluacion/cuantitativa/items', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -1346,7 +1557,7 @@ export default {
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
-       await this.axios.put('api/acciones', data, {
+       await this.axios.put('api/autoevaluacion/cuantitativa/items', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
@@ -1364,7 +1575,7 @@ export default {
       },
           eliminarAccionC(id){
         this.$swal({
-          title: 'Desea borrar esta acción?',
+          title: 'Desea borrar esta evaluacion?',
           icon: 'question',
           iconHtml: '',
           confirmButtonText: 'Si',
@@ -1379,8 +1590,9 @@ export default {
       },
       async eliminarAccion(id){
         let data = new FormData();
+        console.log(id);
         data.append('id',id);
-        await this.axios.post('api/acciones/delete',data, {
+        await this.axios.post('api/autoevaluacion/cuantitativa/items/delete',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
@@ -1405,29 +1617,32 @@ export default {
         for (let index = 0; index < this.acciones.length; index++) {
           this.acciones[index];
           if (this.acciones[index].id===id) {
-            console.log(this.acciones[index]);
-            this.accion.id=this.acciones[index].id;
-            this.accion.mejora_id=this.acciones[index].mejora_id;
-            this.accion.clasificacion_id=this.acciones[index].clasificacion_id;
-            this.accion.proceso_id=this.acciones[index].proceso_id;
-            this.accion.subproceso_id=this.acciones[index].subproceso_id;
-            this.accion.responsable_id=this.acciones[index].responsable_id;
-            this.accion.total=this.acciones[index].total;
-            this.mejora=this.acciones[index].mejora;
-            this.accion.fecha_ejecucion=moment(this.acciones[index].fecha_ejecucion).format("YYYY-MM-DDTHH:MM");
-            this.accion.fecha_programada=moment(this.acciones[index].fecha_programada).format("YYYY-MM-DDTHH:MM");
-            this.accion.evidencia_solicitada=this.acciones[index].evidencia_solicitada;
-            this.accion.descripcion_accion=this.acciones[index].descripcion_accion;
-            this.accion.responsable_id=this.acciones[index].responsable_id;
-            if (!this.acciones[index].subproceso_id) {
-              this.accion.subproceso_id="NA"
-            }else{
-              this.accion.subproceso_id=this.acciones[index].subproceso_id;
-            }
-            this.accion.proceso_id=this.acciones[index].proceso_id;
+            this.form.id=this.acciones[index].id;
+            this.form.numero=this.acciones[index].numero;
+            this.form.grupo_id=this.acciones[index].grupo_id;
+            this.form.subgrupo_id=this.acciones[index].subgrupo_id;
+            this.form.numero=this.acciones[index].estandar_id;
+            this.form.aplicabilidad=this.acciones[index].aplicabilidad;
+            this.form.enfoque_sistematico=this.acciones[index].enfoque_sistematico;
+            this.form.enfoque_proactivo=this.acciones[index].enfoque_proactivo;
+            this.form.enfoque_em=this.acciones[index].enfoque_em;
+            this.form.despliegue_institucional=this.acciones[index].despliegue_institucional;
+            this.form.apropiacion_cie=this.acciones[index].apropiacion_cie;
+            this.form.pertinencia=this.acciones[index].pertinencia;
+            this.form.consistencia=this.acciones[index].consistencia;
+            this.form.avance_mediacion=this.acciones[index].avance_mediacion;
+            this.form.tendencia=this.acciones[index].tendencia;
+            this.form.comparacion=this.acciones[index].comparacion;
+            this.form.promedio=this.acciones[index].promedio;
+            this.form.cliente_id=this.acciones[index].cliente_id;
+            this.form.nombre=this.acciones[index].nombre;
+            this.form.periodo=this.acciones[index].periodo;
+            this.form.total=this.acciones[index].total;
+            this.form.ev=this.acciones[index];
             this.editMode=true;
+            this.buscarGrupos();
+            this.calcularPromedio();
             this.$root.$emit("bv::show::modal", "modal_acciones", "#btnShow");
-           
           }
         }
           
@@ -1658,7 +1873,7 @@ export default {
       async listarAcciones(){
       let data = new FormData();
       data.append('id',this.$route.params.id);
-        await this.axios.post('api/acciones/listar', data)
+        await this.axios.post('api/autoevaluacion/cuantitativa/items/listar', data)
           .then((response) => {
              if (response.status==200) {
                console.log(response);

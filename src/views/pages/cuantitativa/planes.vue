@@ -59,10 +59,10 @@
                     Action
                     <i class="mdi mdi-chevron-down"></i>
                   </template>
+                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/panel-evaluacion-cuantitativa/'+data.item.id" style="color:#000">Gestionar</a></b-dropdown-item-button>
                     <b-dropdown-item-button @click="editMode=true;ver=false;setear(data.item.id)"><b-icon icon="pencil" class=""></b-icon> Editar </b-dropdown-item-button>
                     <b-dropdown-item-button @click="eliminarbases(data.item.id)"><b-icon icon="trash" class=""></b-icon> Eliminar </b-dropdown-item-button>
-                     <b-dropdown-item-button @click="setear(data.item.id);ver=true;"><b-icon icon="trash" class=""></b-icon> Ver </b-dropdown-item-button>
-                    <b-dropdown-item-button ><b-icon icon="eye" class=""></b-icon><a :href="'/panel-evaluacion-cuantitativa/'+data.item.id" style="color:#000">Gestionar</a></b-dropdown-item-button>
+                    <b-dropdown-item-button @click="setear(data.item.id);ver=true;"><b-icon icon="trash" class=""></b-icon> Ver </b-dropdown-item-button>
                 </b-dropdown>
                 </template>
               </b-table>
