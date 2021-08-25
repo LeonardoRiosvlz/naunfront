@@ -361,8 +361,8 @@ export default {
         this._mute_next_content_watcher = false;
         this.cargarDocumento(this.content);
       },
-      doc() {
-        this.content = this.doctexto
+       doc:function(){
+        this.content=this.doctexto;
       }
     },
   },

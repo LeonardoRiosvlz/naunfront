@@ -3333,7 +3333,7 @@ export default {
                 this.edit.aprueba_v_id = response.data.aprueba_v_id;
                 this.edit.revisa_v_id = response.data.revisa_v_id;
                 
-                this.cargarDocumento(this.edit.archivo_texto)
+                this.$store.commit('cargarDocs',  this.edit.archivo_texto)
 
                 if (this.edit.nombre_revisa == null || this.edit.nombre_revisa == "") {
                 this.edit.nombre_revisa = 'Por revisar'
