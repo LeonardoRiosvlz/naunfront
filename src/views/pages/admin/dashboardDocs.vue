@@ -257,12 +257,13 @@
             <div class="chat-conversation p-3 flex-column row justify-content-center align-items-center ">
            
                 <div class="row justify-content-center align-items-center w-100 h-100" >
-                  <div v-if="showEditor">
+                <p>{{archivo_texto}}</p>
+                  <div v-show="showEditor">
                     <button class="btn btn-success " @click="$bvModal.show('modal_elaborar')">Guardar</button>
-                    <Editor style="overflow:auto" class="ex1" @value="archivo_texto"/>
+                    <Editor style="overflow:auto" class="ex1" />
                   </div>
-                    <img v-else src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
-                    <p>{{archivo_texto}}</p>
+                    <img v-if="!showEditor" src="@/assets/images/document-info.svg" alt="" class="img-fluid" style="max-width:20rem">
+                    
                 </div>  
             </div>
             </div>
@@ -2650,7 +2651,7 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     }, 
-    ...mapActions(['guardarUsuario']),
+    ...mapActions(['guardarUsuario', 'cargarDocumento']),
     switchLoc(){
       if (!this.editMode) {
         this.$refs.form.validate().then(esValido => {
@@ -2734,13 +2735,14 @@ export default {
         }
       }
       if (this.doctexto) {
-        data.append('archivo_texto',this.doctexto);
+        console.log(data, 'hola')
+          data.append('archivo_texto',JSON.stringify(this.doctexto));
        }
        await this.axios.post('api/documentos/versiones/elaborar', data, {
            headers: {
             'Content-Type': 'multipart/form-data'
            }}).then(response => {
-            console.log(data)
+            console.log(response.data)
             if (response.status==200) {
                this.$swal(
                    'Agregado exito!',
@@ -3292,15 +3294,10 @@ export default {
          await this.axios.post('api/documentos/versiones/find',data)
            .then((response) => {
              console.log(response.data)
-             
               if (response.status==200) {
-
                 this.edit.archivo_texto = response.data.archivo_texto;
-                this.$store.commit('cargarDocs',  this.edit.archivo_texto)
-
                 this.edit.id = response.data.id;
                 this.edit.tipo_id = response.data.tipo_id;
-                this.edit.normativas = JSON.parse(response.data.normativas);
                 this.edit.nombre = response.data.nombre;
                 this.edit.nombre_elabora = response.data.nombre_elabora;
                 this.edit.nombre_revisa = response.data.nombre_revisa;
@@ -3336,6 +3333,8 @@ export default {
                 this.edit.aprueba_v_id = response.data.aprueba_v_id;
                 this.edit.revisa_v_id = response.data.revisa_v_id;
                 
+                this.cargarDocumento(this.edit.archivo_texto)
+
                 if (this.edit.nombre_revisa == null || this.edit.nombre_revisa == "") {
                 this.edit.nombre_revisa = 'Por revisar'
               }
