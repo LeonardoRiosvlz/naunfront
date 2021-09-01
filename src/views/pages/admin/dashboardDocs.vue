@@ -542,7 +542,7 @@
                <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
             </div>
             <div class="col-2">
-              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=3">Siguiente</button>
+              <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=2">Siguiente</button>
               <div v-else>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && !editMode && tabIndex == 3">Guardar</button>
                 <button class="btn btn-block float-right btn-success" @click="switchLoc" v-if="!ver && editMode">Editar</button>
@@ -1640,21 +1640,6 @@
                 
                 <p>Consecutivo: {{edit.consecutivo}}</p>
                 <span>{{items.texto}}</span>
-                    
-                      <b-card>
-                        <div class="row">
-                          <div class="col-8">
-                            <h5>Normativas</h5>
-                              <div v-for="(items,index) in edit.normativas" :key="index">
-                                <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
-                                <span>{{items.texto}}</span>
-                              </div>
-                          </div>
-                          <div class="col-4">
-                            <img src="@/assets/images/info-general.svg" alt="" class="img-fluid">
-                          </div>
-                        </div>
-                      </b-card>
                       <b-card>
                         <div class="row">
                           <div class="col-4">
@@ -1707,15 +1692,6 @@
                       </b-col>
                       <b-col class="col-sm-12">
                         <div class="form-group ">
-                          <label>Observaciones del diagrama</label>
-                          <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
-                            <textarea v-model="edit.observaciones_diagramas"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
-                            <span style="color:red">{{ errors[0] }}</span>
-                        </ValidationProvider>
-                        </div>
-                      </b-col>
-                      <b-col class="col-sm-12">
-                        <div class="form-group ">
                           <label>Observaciones del documentos</label>
                           <ValidationProvider name="observaciones" rules="required" v-slot="{ errors }" >
                             <textarea v-model="edit.observaciones_documentos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
@@ -1756,8 +1732,11 @@
                
                 
             </ValidationObserver>
-                <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Aprobar</button>
+            <div style="    z-index: 99; position: relative;" >
+              <button v-if="edit.status_revision == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="revisar()">Aprobar</button>
                 <button v-if="edit.status_revision == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="revisar()">Rechazar</button>
+            </div>
+                
         </b-modal>
 
         <b-modal id="modal_aprobacion" false size="lg"  title="APROBACIÓN DE DOCUMENTOS" hide-footer>
@@ -1793,21 +1772,6 @@
                 
                 <p>Consecutivo: {{edit.consecutivo}}</p>
                 <span>{{items.texto}}</span>
-                    
-                      <b-card>
-                        <div class="row">
-                          <div class="col-8">
-                            <h5>Normativas</h5>
-                              <div v-for="(items,index) in edit.normativas" :key="index">
-                                <p class="text-info" style="font-size:16px;">{{items.nombre}}</p>
-                                <span>{{items.texto}}</span>
-                              </div>
-                          </div>
-                          <div class="col-4">
-                            <img src="@/assets/images/info-general.svg" alt="" class="img-fluid">
-                          </div>
-                        </div>
-                      </b-card>
                       <b-card>
                         <div class="row">
                           <div class="col-4">
@@ -1885,8 +1849,11 @@
                
                   
             </ValidationObserver>
-                <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Probar</button>
+            <div style="    z-index: 99; position: relative;">
+               <button v-if="edit.status_aprobacion == 'Aprobado'" class="btn btn-block float-right btn-success mb-5 mt-3" @click="aprueba()">Aprobar</button>
                 <button v-if="edit.status_aprobacion == 'Rechazado'" class="btn btn-block float-right btn-danger mb-5 mt-3" @click="aprueba()">Rechazar</button>
+            </div>
+               
 
         </b-modal>
 
@@ -2123,20 +2090,6 @@
                               </div>
                             </b-col>
                       </b-tab>
-
-                      <b-tab>
-                          <template v-slot:title>
-                            <span class="d-inline-block d-sm-none">
-                              <i class="far fa-user"></i>
-                            </span>
-                            <span class="d-none d-sm-inline-block">ARCHIVO</span>
-                          </template>
-                            <b-row class="mt-3 w-100">
-                              <b-col>
-                                <VueDocPreview class="w-100" :value="edit.firma_aprueba" type="office" />
-                              </b-col>
-                            </b-row>
-                      </b-tab>
                 </b-tabs>
 
             </ValidationObserver>
@@ -2145,7 +2098,7 @@
                 <button @click="tabIndex--" class="btn btn-block float-right btn-success">Atras</button>
               </div>
               <div class="col-2">
-                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=4">Siguiente</button>
+                <button @click="tabIndex++" class="btn btn-block float-right btn-success" v-if="tabIndex !=2">Siguiente</button>
                 <div v-else>
                   <button class="btn btn-block float-right btn-success" @click="habilitar()">Habilitar</button>
                 </div>
@@ -3335,6 +3288,10 @@ export default {
                 
                 this.$store.commit('cargarDocs',  this.edit.archivo_texto)
 
+                if(this.edit.subproceso_id === null){
+                  this.edit.subproceso_id = "NA"
+                }
+              
                 if (this.edit.nombre_revisa == null || this.edit.nombre_revisa == "") {
                 this.edit.nombre_revisa = 'Por revisar'
               }
