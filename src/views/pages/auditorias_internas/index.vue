@@ -2,160 +2,174 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Crear</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Planificar</b-button>
     </div>
-    <b-button class="mb-3" v-b-toggle.sidebar-right>Filtrar enventos</b-button>
-    <b-sidebar id="sidebar-right" title="Filtros" right shadow>
-      <div class="px-3 py-2">
-        <div class="accordion" role="tablist">
-          <b-card no-body class="mb-1">
-            <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-button block v-b-toggle.accordion-1 variant="info">Rango</b-button>
-            </b-card-header>
-            <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
-              <b-card-body>
-                  <b-col>
-                    <div class="form-group">
-                      <label >Desde </label>
-                        <b-form-input id="date-time" v-model="buscador.desde"  type="datetime-local"></b-form-input>
-                    </div>
-                  </b-col>
-                   <b-col>
-                    <div class="form-group">
-                      <label >Hasta </label>
-                        <b-form-input id="date-time" v-model="buscador.hasta"  type="datetime-local" @change="filtro()" :disabled="!buscador.desde"></b-form-input>
-                    </div>
-                  </b-col>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
-          <b-card no-body class="mb-1">
-            <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-button block v-b-toggle.accordion-2 variant="info">Caracteristicas</b-button>
-            </b-card-header>
-            <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
-              <b-card-body>
-                  <b-col>
-                    <label>Clasificacion del evento</label>
-                      <select class="custom-select" id="date-time" v-model="buscador.clasificacion_id" @change="filtro()">
-                          <option :value="clasificacion.id" v-for="clasificacion in clasificacion" :key="clasificacion.id">{{clasificacion.nombre}}</option>
-                      </select>
-                    </b-col>
-                    <b-col>
-                        <label>Estado</label>
-                          <select class="custom-select" id="date-time" v-model="buscador.status" @change="filtro()">
-                              <option value="Creada">Creada</option>
-                              <option value="Programada">Programada</option>
-                              <option value="Cumplida">Cumplida</option>
-                              <option value="No realizada">No realizada</option>
-                          </select>
-                    </b-col>
-                    <b-col>
-                        <label>Periodo</label>
-                          <select class="custom-select" id="date-time" v-model="buscador.periodo" @change="filtro()">
-                              <option value="2021">2021</option>
-                              <option value="2022">2022</option>
-                              <option value="2023">2023</option>
-                              <option value="2024">2024</option>
-                          </select>
-                  </b-col>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
-        </div>
-      </div>
-    </b-sidebar>
     <div class="row">
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title"></h4>
-            <div class="row mt-4">
-              <div class="col-md-4">
-                <b-card bg-variant="warning" class="text-white-15">
-                  <h5 class="mt-0 mb-0 text-white">
-                    <i class="mdi mdi-clock mr-3"></i> PROGRAMADAS
-                  </h5>
-                </b-card>
-              </div>
-              <div class="col-md-4">
-                <b-card bg-variant="success" class="text-white-15">
-                  <h5 class="mt-0 mb-0 text-white">
-                    <i class="mdi mdi-calendar-check mr-3"></i> CUMPLIDAS
-                  </h5>
-                </b-card>
-              </div>
-              <div class="col-md-4">
-                <b-card bg-variant="danger" class="text-white-15">
-                  <h5 class="mt-0 mb-0 text-white">
-                    <i class="mdi mdi-alert-outline mr-3"></i> NO REALIZADAS
-                  </h5>
-                </b-card>
-              </div>  
-            </div> 
-            <div class="row mt-4">
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_length" class="dataTables_length">
-                  <label class="d-inline-flex align-items-center">
-                    Show&nbsp;
-                    <b-form-select v-model="perPage" size="sm" :options="pageOptions"></b-form-select>&nbsp;entries
-                  </label>
-                </div>
-              </div>
-              <!-- Search -->
-              <div class="col-sm-12 col-md-6">
-                <div id="tickets-table_filter" class="dataTables_filter text-md-right">
-                  <label class="d-inline-flex align-items-center">
-                    Search:
-                    <b-form-input
-                      v-model="filter"
-                      type="search"
-                      placeholder="Search..."
-                      class="form-control form-control-sm ml-2"
-                    ></b-form-input>
-                  </label>
-                </div>
-              </div>
-              <!-- End search -->
-            </div>
-            <!-- Table -->
-            <div class="table-responsive mb-0">
-            <b-table
-                      :items="eventos"
-                      :fields="fields"
-                      responsive="sm"
-                      :per-page="perPage"
-                      :current-page="currentPage"
-                      :sort-by.sync="sortBy"
-                      :sort-desc.sync="sortDesc"
-                      :filter="filter"
-                      :filter-included-fields="filterOn"
-                      @filtered="onFiltered"
-                    >
-                      <template v-slot:cell(actions)="data">
-
-                      <b-dropdown size="sm" class="">
-                        <template v-slot:button-content>
-                          Action
-                          <i class="mdi mdi-chevron-down"></i>
-                        </template>
-                          <b-dropdown-item-button @click="editMode=true;ver=false;buscarEvento(data.item.id)"> Editar </b-dropdown-item-button>
-                          <b-dropdown-item-button @click="eliminarEvento(data.item.id)"> Eliminar </b-dropdown-item-button>
-                          <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                          <b-dropdown-item-button v-if="data.item.clasificacion_evento.nombre==='Auditorias internas'&& data.item.plan_auditorias_is.length>0"><a :href="'/auditorias-internas/'+data.item.id" style="color:#000">Plan de auditoria</a></b-dropdown-item-button>
-                          <b-dropdown-item-button v-if="data.item.clasificacion_evento.nombre==='Auditorias internas'&& data.item.plan_auditorias_is.length<1" @click="planearCuestion(data.item.id)"> Planear </b-dropdown-item-button>
-                      </b-dropdown>
-                      </template>
-                    </b-table>
-                </div>
-                
+            <div class="card-title">Plan de auditorias</div>
+            <h4 class="text-center">TITULO DEL EVENTO</h4>
+            <b-alert show variant="light"> <b> Descripción:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
             <div class="row">
-              <div class="col">
-                <div class="dataTables_paginate paging_simple_numbers float-right">
-                  <ul class="pagination pagination-rounded mb-0">
-                    <!-- pagination -->
-                    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage"></b-pagination>
-                  </ul>
+              <div class="col-6">
+                <b-alert show variant="success text-justify"> <b> Objetivos:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+              </div>
+              <div class="col-6">
+                <b-alert show variant="info text-justify"> <b> Alcances:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+              </div>
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-3">
+                     <b-card no-body>
+                       <b-row no-gutters class="align-items-center">
+                         <b-col md="2">
+                           <b-card-img src="https://picsum.photos/200/300" height="100px" width="100" class="rounded-0"></b-card-img>
+                         </b-col>
+                         <b-col md="10 py-0">
+                           <h6 class="lead text-center my-0">LIDER DE CALIDAD</h6>
+
+                           <b-card-body title="">
+                             <b-card-text  class="m-0">Gerente</b-card-text>
+                             <b-card-text  class="m-0">Leonardo Rios</b-card-text>
+                           </b-card-body>
+                         </b-col>
+                       </b-row>
+                     </b-card>
+                  </div>
+                  <div class="col-3">
+                     <b-card no-body>
+                       <b-row no-gutters class="align-items-center">
+                         <b-col md="2">
+                           <b-card-img src="https://picsum.photos/200/300" height="100px" width="100" class="rounded-0"></b-card-img>
+                         </b-col>
+                         <b-col md="10 py-0">
+                           <h6 class="lead text-center my-0">RESPONSABLE DE SEGUIMIENTO</h6>
+                           <b-card-body title="">
+                             <b-card-text  class="m-0">Gerente</b-card-text>
+                             <b-card-text  class="m-0">Leonardo Rios</b-card-text>
+                           </b-card-body>
+                         </b-col>
+                       </b-row>
+                     </b-card>
+                  </div>
+                  <div class="col-3">
+                     <b-card no-body>
+                       <b-row no-gutters class="align-items-center">
+                         <b-col md="2">
+                           <b-card-img src="https://picsum.photos/200/300" height="100px" width="100" class="rounded-0"></b-card-img>
+                         </b-col>
+                         <b-col md="10 py-0">
+                           <h6 class="lead text-center my-0">AUDITOR</h6>
+                           <b-card-body title="">
+                             <b-card-text  class="m-0">Gerente</b-card-text>
+                             <b-card-text  class="m-0">Leonardo Rios</b-card-text>
+                           </b-card-body>
+                         </b-col>
+                       </b-row>
+                     </b-card>
+                  </div>
+                  <div class="col-3">
+                     <b-card no-body>
+                       <b-row no-gutters class="align-items-center">
+                         <b-col md="2">
+                           <b-card-img src="https://picsum.photos/200/300" height="100px" width="100" class="rounded-0"></b-card-img>
+                         </b-col>
+                         <b-col md="10 py-0">
+                           <h6 class="lead text-center my-0">AUDITADO</h6>
+                           <b-card-body title="">
+                             <b-card-text  class="m-0">Gerente</b-card-text>
+                             <b-card-text  class="m-0">Leonardo Rios</b-card-text>
+                           </b-card-body>
+                         </b-col>
+                       </b-row>
+                     </b-card>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="row">
+                  <div class="col-12 my-2">
+                    <b-card-text>
+                      <button class="btn btn-block btn-primary" style="border-radius:0px">OTROS ASISTENTES</button>
+                      <ul class="list-unstyled chat-list" style="overflow-y: scroll; height:500px">
+                        <li v-for="mejora in filtrados"  :key="mejora.id">
+                            <div class="media align-items-center pl-4 my-3">
+                              <div class="avatar-xs mr-3">
+                                <span
+                                  class="avatar-title rounded-circle bg-light text-body">EC</span>
+                              </div>
+                              <div class="media-body p-0">
+                                <h5 class="font-size-14 mb-0"> {{mejora.id}}</h5>
+                                <p class="text-mouted m-0">Código {{mejora.codigo}}</p>
+                                <b-button class="float-right btn-success btn-sm mr-2" left @click="$bvModal.show('modal_acciones');editMode=false;resete(mejora.id);ver=false;">Evaluar</b-button>
+                              </div>
+                            </div>
+                          <hr class="m-0">
+                        </li>
+                      </ul>
+                    </b-card-text>
+                  </div>
+                  <div class="col-12 my-2">
+                    <b-card-text>
+                      <button class="btn btn-block btn-info" style="border-radius:0px">INVITADOS EXTERNOS</button>
+                      <ul class="list-unstyled chat-list" style="overflow-y: scroll; height:500px">
+                        <li v-for="mejora in filtrados"  :key="mejora.id">
+                            <div class="media align-items-center pl-4 my-3">
+                              <div class="avatar-xs mr-3">
+                                <span
+                                  class="avatar-title rounded-circle bg-light text-body">EC</span>
+                              </div>
+                              <div class="media-body p-0">
+                                <h5 class="font-size-14 mb-0"> {{mejora.id}}</h5>
+                                <p class="text-mouted m-0">Código {{mejora.codigo}}</p>
+                                <b-button class="float-right btn-success btn-sm mr-2" left @click="$bvModal.show('modal_acciones');editMode=false;resete(mejora.id);ver=false;">Evaluar</b-button>
+                              </div>
+                            </div>
+                          <hr class="m-0">
+                        </li>
+                      </ul>
+                    </b-card-text>
+                  </div>
+                </div>
+              </div>
+              <div class="col-9">
+                <div class="row">
+                    <div class="col-6">
+                      <b-alert show variant="light text-justify"> <b> Fundamentos de la auditoria:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                    </div>
+                    <div class="col-6">
+                      <b-alert show variant="light text-justify"> <b> Recursos del programa de auditoria:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                    </div>
+                    <div class="col-12">
+                      <h3 class="text-center  mb-5">PROCESOS RELACIONADOS</h3>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Proceso</th>
+                            <th scope="col">Subproceso</th>
+                            <th scope="col">action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                          </tr>
+                          <tr>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                          </tr>
+                          <tr>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                 </div>
               </div>
             </div>
@@ -164,11 +178,7 @@
       </div>
     </div>
 
-
-
-
     <b-modal id="modal" false size="lg"  title="Gestión de actividades" hide-footer>
-
           <ValidationObserver ref="form">
             <div class="row">
                 <div class="col-lg-12">
@@ -422,10 +432,10 @@ export default {
       title: "Administracion",
       items: [
         {
-          text: "Gestión de eventos"
+          text: "Auditorias interanas"
         },
         {
-          text: "actividades",
+          text: "Planeamiento",
           active: true
         }
       ],
@@ -530,104 +540,9 @@ export default {
       } 
      }
    },
-   async filtro(){
-     let data = new FormData();
-     var formulario = this.buscador;
-        for (var key in formulario) {
-          if (key=='invitados_externos') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
-      }
-      data.append('cliente_id',this.cliente.id);
-    await this.axios.post('api/eventos/filtro',data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }}).then(response => {
-          if (response.status==200) {
-                this.eventos=response.data;
-                }
-          }).catch(e => {
-            console.log(e.response.data.menssage);
-            this.$swal(e.response.data);
-      });
-  },
-   async agregarEvento(){
-     let data = new FormData();
-     var formulario = this.form;
-        for (var key in formulario) {
-          if (key=='invitados_externos') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
-      }
-       await this.axios.post('api/eventos', data, {
-           headers: {
-            'Content-Type': 'multipart/form-data'
-           }}).then(response => {
-            if (response.status==200) {
-               this.$swal(
-                   'Agregado exito!',
-                    '',
-                    'success');
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               this.listarEventos();
-               this.buscarEvento(response.data.id);
-               this.editMode=true;         
-              }
-            }).catch(e => {
-              console.log(e.response.data.menssage);
-              this.$swal(e.response.data);
-          });
-      },
-
-    async editarEvento(){
-     let data = new FormData();
-     var formulario = this.form;
-        for (var key in formulario) {
-          if (key=='invitados_externos') {
-              data.append(key,JSON.stringify(formulario[key]));
-          } else {
-              data.append(key,formulario[key]);
-          }
-      }
-        await this.axios.put('api/eventos', data).then(response => {
-            if (response.status==200) {
-               this.$swal('Editado con exito','','success');
-               this.listarEventos();
-               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
-               ///limpiar el formulario
-              this.resete();
-              }
-            }).catch(e => {
-                this.$swal('ocurrio un problema','','warning');
-            });
-     },
-     async eliminarEventos(id){
+    async buscarEvento(){
         let data = new FormData();
-        data.append('id',id);
-        await this.axios.post('api/eventos/delete',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Eliminado con exito!',
-                      '',
-                      'success'
-                );
-                this.listarEventos();
-                }
-              }).catch(e => {
-                console.log(e.response.data.menssage);
-                this.$swal(e.response.data);
-          });
-      }, 
-    async buscarEvento(id){
-        let data = new FormData();
-        data.append('id',id);
+        data.append('id',this.$route.params.id);
         await this.axios.post('api/eventos/find',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -654,205 +569,6 @@ export default {
                 this.$swal(e.response.data);
           });
       },
-      vincularResponsable(){
-        this.$swal({
-          title: 'Desea vincularlo a esta activida?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.vincularResponsables();
-          }
-        })
-      },
-      async vincularResponsables(){
-        let data = new FormData();
-        data.append('cargo_id',this.form.cargo_id);
-        data.append('evento_id',this.form.id);
-
-        await this.axios.post('api/eventos/responsables/agregar',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Vinculado con exito!',
-                      '',
-                      'success'
-                );
-                this.buscarEvento(this.form.id);
-                }
-              }).catch(e => {
-                this.$swal(
-                      'Ocurrio un problema!',
-                      '',
-                      'danger'
-                );
-          });
-      },
-            vincularComprometido(){
-        this.$swal({
-          title: 'Desea vincularlo a esta activida?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.vincularComprometidos();
-          }
-        })
-      },
-      async vincularComprometidos(){
-        let data = new FormData();
-        data.append('cargo_id',this.form.cargo_id);
-        data.append('evento_id',this.form.id);
-
-        await this.axios.post('api/eventos/comprometidos/agregar',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Vinculado con exito!',
-                      '',
-                      'success'
-                );
-                this.buscarEvento(this.form.id);
-                }
-              }).catch(e => {
-                this.$swal(
-                      'Ocurrio un problema!',
-                      '',
-                      'danger'
-                );
-          });
-      },  
-      eliminarEvento(id){
-        this.$swal({
-          title: 'Desea borrar esta actividad?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.eliminarEventos(id);
-          }
-        })
-      },
-      async desvincularResponsables(id){
-        let data = new FormData();
-        data.append('id',id);
-        await this.axios.post('api/eventos/responsables/eliminar',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Desvinculado con exito!',
-                      '',
-                      'success'
-                );
-                this.buscarEvento(this.form.id);
-                }
-              }).catch(e => {
-                this.$swal(
-                      'Ocurrio un problema!',
-                      '',
-                      'danger'
-                );
-          });
-      }, 
-     desvincularResponsable(id){
-        this.$swal({
-          title: 'Desea desvincular este cargo?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.desvincularResponsables(id);
-          }
-        })
-      },
-            async desvincularComprometidos(id){
-        let data = new FormData();
-        data.append('id',id);
-        await this.axios.post('api/eventos/comprometidos/eliminar',data, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }}).then(response => {
-              if (response.status==200) {
-                this.$swal(
-                    'Desvinculado con exito!',
-                      '',
-                      'success'
-                );
-                this.buscarEvento(this.form.id);
-                }
-              }).catch(e => {
-                this.$swal(
-                      'Ocurrio un problema!',
-                      '',
-                      'danger'
-                );
-          });
-      }, 
-      planearCuestion(id){
-        this.$swal({
-          title: 'Desea planear esta auditoria?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.planear(id);
-          }
-        })
-      },
-    async planear(id){
-     let data = new FormData();
-     data.append('evento_id',id);
-       await this.axios.post('api/eventos/planear',data)
-        .then((response) => {
-            if (response.status==200) {
-              this.$router.push({ path: `/auditorias-internas/${id}` }) 
-            }
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
-     desvincularComprometido(id){
-        this.$swal({
-          title: 'Desea desvincular este cargo?',
-          icon: 'question',
-          iconHtml: '',
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No',
-          showCancelButton: true,
-          showCloseButton: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.desvincularComprometidos(id);
-          }
-        })
-      },
       resete(){
         var formulario = this.form;
         for (var key in formulario) {
@@ -862,37 +578,7 @@ export default {
        }
        this.form.cliente_id=this.cliente.id;
       },
-      setear(id) {
-        for (let index = 0; index < this.eventos.length; index++) {
-          if (this.eventos[index].id===id) {
-            this.form.id=this.eventos[index].id;
-            this.form.nombre=this.eventos[index].nombre;
-            this.form.descripcion=this.eventos[index].descripcion;
-            this.form.observaciones=this.eventos[index].observaciones;
-            this.form.lugar=this.eventos[index].lugar;
-            this.form.inivitados_externos=JSON.parse(this.eventos[index].inivitados_externos);
-            this.form.periodo=this.eventos[index].periodo;
-            this.form.status=this.eventos[index].status;
-            this.form.fecha_programada=moment(this.eventos[index].fecha_programada).format("YYYY-MM-DDTHH:MM");
-            this.form.fecha_ejecucion=this.eventos[index].fecha_ejecucion;
-            this.form.cliente_id=this.eventos[index].cliente_id;
-            this.form.clasificacion_id=this.eventos[index].clasificacion_id;
-            this.$root.$emit("bv::show::modal", "modal", "#btnShow");
-            return;
-          }
-        }
-      },
-    async listarclasificacion(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/eventos/calisficacion/listar',data)
-        .then((response) => {
-          this.clasificacion = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
+
     async listarCargos(){
       let data = new FormData();
       data.append('cliente_id',this.cliente.id);
@@ -905,28 +591,8 @@ export default {
             console.log('error' + e);
           })
       },
-    async listarEventos(){
-     let data = new FormData();
-     data.append('cliente_id',this.cliente.id);
-       await this.axios.post('api/eventos/listar',data)
-        .then((response) => {
-          this.eventos = response.data;
-        })
-        .catch((e)=>{
-          console.log('error' + e);
-        })
-      },
-      async listarperiodos(){
-        let data = new FormData();
-        data.append('cliente_id',this.cliente.id);
-        await this.axios.post('api/periodo/listar',data)
-            .then((response) => {
-            this.periodos = response.data;
-            })
-            .catch((e)=>{
-            console.log('error' + e);
-            })
-        },
+
+
     cargarInvitados(){
       this.form.invitados_externos.push({
        nombre:this.nombre,
@@ -956,17 +622,14 @@ export default {
   },
     created(){
         this.session();
-        this.listarclasificacion();
-        this.listarEventos();
         this.listarCargos();
-        this.listarperiodos();
+        this.buscarEvento();
+     
       },
    watch: {
       cliente: function () {
-        this.listarclasificacion();
-        this.listarEventos();
         this.listarCargos();
-        this.listarperiodos();
+        this.buscarEvento();
        this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.cliente_id;

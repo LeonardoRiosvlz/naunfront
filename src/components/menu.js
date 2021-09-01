@@ -179,8 +179,8 @@ export const menuItems = [
             },
             {
                 id: 23,
-                label: 'Auditorias',
-                link: ''
+                label: 'Auditorias internas',
+                link: '/auditorias-internas'
             },
             {
                 id: 23,

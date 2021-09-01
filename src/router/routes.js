@@ -465,6 +465,23 @@ export default [
         },
     },
     {
+        path: '/auditorias-internas/:id',
+        name: 'plan-accion',
+        component: () => import('../views/pages/auditorias_internas/index'),
+        meta: {
+            beforeEnter: (to, from, next) => {
+                if (!store.state.usuarioDB) {
+                    console.log(store.state.usuarioDB);
+                    // Redirect to the home page instead
+                    next({ name: 'login' })
+                } else {
+                    // Continue to the login page
+                   next()
+                }
+            }
+        },
+    },
+    {
         path: '/normativa',
         name: 'normativa',
         component: () => import('../views/pages/admin/normativa'),

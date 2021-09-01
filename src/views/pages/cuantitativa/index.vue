@@ -27,8 +27,7 @@
           <b-tabs pills fill content-class="py-4" justified>
              <b-tab active>
               <template v-slot:title>
-                <i class="ri-attachment-line font-size-20"></i>
-                <span class="mt-2 d-none d-sm-block">O.M. VINCULADAS</span>
+                <span class="mt-2 d-none d-sm-block">ESTANDARES DE CALIDAD</span>
               </template>
               <div class="card-body border-bottom py-2">
                 <div class="search-box chat-search-box">
@@ -39,58 +38,21 @@
                 </div>
               </div>
               <b-card-text>
-                <ul class="list-unstyled chat-list">
-                  <li v-for="mejora in filteredItems"  :key="mejora.di" v-if="mejora.acciones.length==0">
-                      <div class="media align-items-center pl-4">
+                <ul class="list-unstyled chat-list" style="overflow-y: scroll; height:500px">
+                  <li v-for="mejora in filtrados"  :key="mejora.id">
+                      <div class="media align-items-center pl-4 my-3">
                         <div class="avatar-xs mr-3">
                           <span
-                            class="avatar-title rounded-circle bg-light text-body">OM</span
-                          >
+                            class="avatar-title rounded-circle bg-light text-body">EC</span>
                         </div>
 
                         <div class="media-body p-0">
-                          <h5 class="font-size-14 mb-0">{{mejora.oportunidad_mejoras}}</h5>
-                          <p class="text-mouted m-0">Acciones programadas: {{mejora.acciones.length}}</p>
-                          <button class="btn btn-danger btn-sm  mr-2" v-if="mejora.acciones.length<1" @click="desvincularCuestion(mejora.id)">Desvincular <i class="ri-close-line"></i></button>
-                          <button class="btn btn-success btn-sm  ml-1" @click="setear_mejora(mejora.id,mejora.oportunidad_mejoras)">Programar <i class="ri-time-line"></i></button>
+                          <h5 class="font-size-14 mb-0"> {{mejora.id}}</h5>
+                          <p class="text-mouted m-0">Código {{mejora.codigo}}</p>
+                          <b-button class="float-right btn-success btn-sm mr-2" left @click="$bvModal.show('modal_acciones');editMode=false;resete(mejora.id);ver=false;">Evaluar</b-button>
                         </div>
                       </div>
-                      <hr>
-                  </li>
-                </ul>
-              </b-card-text>
-            </b-tab>
-            <b-tab>
-              <template v-slot:title>
-                <i class="ri-time-line font-size-20"></i>
-                <span class="mt-2 d-none d-sm-block">O.M. PROGRAMADAS</span>
-              </template>
-              <div class="card-body border-bottom py-2">
-                <div class="search-box chat-search-box">
-                  <div class="position-relative">
-                    <input type="text" v-model="search" class="form-control" placeholder="Buscar..." />
-                    <i class="ri-search-line search-icon"></i>
-                  </div>
-                </div>
-              </div>
-              <b-card-text>
-                <ul class="list-unstyled chat-list">
-                  <li v-for="mejora in filteredItems"  :key="mejora.di" v-if="!mejora.acciones.length==0">
-                      <div class="media align-items-center pl-4">
-                        <div class="avatar-xs mr-3">
-                          <span
-                            class="avatar-title rounded-circle bg-light text-body">OM</span
-                          >
-                        </div>
-
-                        <div class="media-body p-0">
-                          <h5 class="font-size-14 mb-0">{{mejora.oportunidad_mejoras}}</h5>
-                          <p class="text-mouted m-0">Acciones programadas: {{mejora.acciones.length}}</p>
-                          <button class="btn btn-danger btn-sm  mr-2" v-if="mejora.acciones.length<1" @click="desvincularCuestion(mejora.id)">Desvincular <i class="ri-close-line"></i></button>
-                          <button class="btn btn-success btn-sm  ml-1" @click="setear_mejora(mejora.id,mejora.oportunidad_mejoras)">Programar <i class="ri-time-line"></i></button>
-                        </div>
-                      </div>
-                      <hr>
+                     <hr class="m-0">
                   </li>
                 </ul>
               </b-card-text>
@@ -117,9 +79,28 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title"></h4>
-                    <div class="clearfix mb-3">
-                      <b-button class="float-right btn-info" left @click="$bvModal.show('modal_acciones');editMode=false;resete();ver=false;">Crear Evaluacion Cuantitativa</b-button>
-                    </div>
+                          <div class="clearfix mb-3">
+                            <b-button class="float-right btn-info" left @click="cerrarEvaluacionC">Cerrar evaluación</b-button>
+                          </div>
+                      <div class="row">
+                        <div class="col-sm-3 text-center">
+                            <p class="text-muted text-truncate mb-2">EVALUADOS</p>
+                            <h5 class="mb-0 text-success">{{acciones.length}}/160</h5>
+                        </div>
+                        <div class="col-sm-3 text-center">
+                            <p class="text-muted text-truncate mb-2">APLICAN</p>
+                            <h5 class="mb-0 text-success">{{evaluadas.length}}/160</h5>
+                        </div>
+                        <div class="col-sm-3 text-center">
+                            <p class="text-muted text-truncate mb-2">PUNTAJE</p>
+                            <h5 class="mb-0">{{totales}}/ {{evaluadas.length*50}}</h5>
+                        </div>
+                        <div class="col-sm-3 text-center">
+                            <p class="text-muted text-truncate mb-2">PROMEDIO</p>
+                            <h5 class="mb-0">{{promedio}}</h5>
+                        </div>
+                      </div>
+                      <hr class="">
                     <div class="row mt-4" style="min-heigth:500px">
                       <div class="col-sm-12 col-md-6">
                         <div id="tickets-table_length" class="dataTables_length">
@@ -162,8 +143,11 @@
                         <template v-slot:cell(periodo)="data">
                           {{data.item.mejora.plan_accion.bases_autoevaluacion.periodo.nombre}}
                         </template>
-                        <template v-slot:cell(grupo_de_estandares)="data">
-                          {{data.item.mejora.autoevaluacion.grupo_estandare.nombre}}
+                        <template v-slot:cell(numero_estandar)="data">
+                          {{data.item.estandare.numero}}
+                        </template>
+                        <template v-slot:cell(codigo)="data">
+                          {{data.item.estandare.codigo}}
                         </template>
                         <template v-slot:cell(numero_de_estandar)="data">
                           {{data.item.mejora.autoevaluacion.estandare.numero}}
@@ -208,56 +192,6 @@
         </div>
       </div>
     </div>
-    <b-modal id="modal_libres" false size="xl"  title="Oportunidades de mejora no vinculadas al plan de acción" hide-footer>
-      <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body m-0 py-0 pb-0">
-                   
-                    <div class="row">
-                      <div class="col-md-12">
-                         <h5 class="text-LEFT">Vinculación Masiva</h5>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="form-group">
-                          <input type="number" min="1" v-model="desde" max="124" class="form-control" id="formGroupExampleInput" placeholder="entre">
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="form-group">
-                          <input type="number" min="2" v-model="hasta" max="125" class="form-control" id="formGroupExampleInput" placeholder="hasta">
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                          <button class="btn btn-success btn-block" :disabled="!desde||!hasta" @click="adjuntarMasivamenteCuestion()"> Vincular </button>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                                <select  v-model="grupoid"  name="tipo" class="form-control" >
-                                    <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
-                                </select>
-                        </div>
-                      </div>
-                    <div class="col-md-2">
-                          <button class="btn btn-success btn-block" @click="filtrar()"> BUSCAR </button>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <b-row>
-      <div class="card col-6" v-for="libre in libres" :key="libre.id">
-        <div class="card-body">
-          <h5 class="card-title">{{libre.oportunidad_mejoras}}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Número de estandar: {{libre.autoevaluacion.estandare.numero}}</h6>
-          <h6 class="card-subtitle mb-2 text-muted">Código de estandar: {{libre.autoevaluacion.estandare.codigo}}</h6>
-          <h4 class="card-subtitle mb-2 text-center text-success">Total: <span class="badge badge-primary">{{libre.total}}</span></h4>
-          <a href="#" @click="ajuntarLibreCuestion(libre.id)" class="card-link"><i class="ri-attachment-2"></i> Programar</a>
-        </div>
-      </div>
-    </b-row>
-</b-modal>
 
 
 
@@ -269,7 +203,7 @@
                         <div class="form-group">
                             <label>Numero del estandar</label>
                             <ValidationProvider name="numero" rules="required" v-slot="{ errors }" >
-                                <input v-model="form.numero" @change="buscarGrupos()"  type="text" class="form-control" placeholder=" " :disabled="ver">
+                                <input v-model="form.numero" @change="buscarGrupos()"  type="text" class="form-control" placeholder=" " disabled>
                                 <span style="color:red">{{ errors[0] }}</span>
                             </ValidationProvider>
                         </div>
@@ -277,8 +211,8 @@
                     <b-col>
                     <div class="form-group">
                       <label> Codigo del estandar</label>
-                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
-                        <select v-model="form.numero"  @change="buscarGrupos()"  name="tipo" class="form-control " :disabled="ver">
+                      <ValidationProvider name="codigo" rules="required" v-slot="{ errors }" disabled>
+                        <select v-model="form.numero"  @change="buscarGrupos()"  name="tipo" class="form-control " >
                             <option :value="estandar.numero" v-for="(estandar,index) in estandares" :key="index">{{estandar.codigo}}</option>
                         </select>
                         <span style="color:red">{{ errors[0] }}</span>
@@ -290,7 +224,7 @@
                     <b-col>
                     <div class="form-group">
                       <label> Grupo de estandares</label>
-                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                      <ValidationProvider name="grupo" rules="required" v-slot="{ errors }" >
                         <select v-model="form.grupo_id"  name="tipo" class="form-control " disabled>
                             <option :value="grupo.id" v-for="(grupo,index) in grupos" :key="index">{{grupo.nombre}}</option>
                         </select>
@@ -301,7 +235,7 @@
                    <b-col v-if="form.subgrupo_id">
                     <div class="form-group">
                       <label> Sub grupo</label>
-                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                      <ValidationProvider name="sub grupo" rules="required" v-slot="{ errors }" >
                         <select v-model="form.subgrupo_id"  name="tipo" class="form-control " disabled>
                             <option :value="grupo.id" v-for="(grupo,index) in subgrupos" :key="index">{{grupo.nombre}} {{grupo.desde}}-{{grupo.hasta}}</option>
                         </select>
@@ -315,7 +249,7 @@
                         <div class="form-group">
                         <label>Descripción</label>
                         <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " disabled></textarea>
+                                <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" "></textarea>
                                 <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -323,8 +257,8 @@
                      <b-col>
                         <div class="form-group">
                         <label>Criterios</label>
-                        <ValidationProvider name="descripcion" rules="required" v-slot="{ errors }">
-                                <textarea v-model="form.descripcion"  type="text" class="form-control" placeholder=" " disabled></textarea>
+                        <ValidationProvider name="criterios" rules="required" v-slot="{ errors }">
+                                <textarea v-model="form.criterios"  type="text" class="form-control" placeholder=" " ></textarea>
                                 <span style="color:red">{{ errors[0] }}</span>
                         </ValidationProvider>
                         </div>
@@ -334,7 +268,7 @@
                     <b-col>
                     <div class="form-group">
                       <label> Aplicabilidad</label>
-                      <ValidationProvider name="tipo" rules="required" v-slot="{ errors }" >
+                      <ValidationProvider name="aplicabilidad" rules="required" v-slot="{ errors }" >
                         <select v-model="form.aplicabilidad" name="tipo" class="form-control " :disabled="ver">
                             <option value="APLICA">APLICA</option>
                             <option value="NO APLICA">NO APLICA</option>
@@ -344,7 +278,8 @@
                     </div>
                    </b-col>
                   </b-row>
-                  <b-row>
+
+                  <b-row v-if="form.aplicabilidad==='APLICA'">
                     <div class="col-10">
                       <div class="accordion" role="tablist">
                         <b-card no-body class="mb-1">
@@ -354,10 +289,18 @@
                           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                             <b-card-body>
                               <div class="row">
-                                <div class="col-4">
-                                 <div class="form-group">
+                                <div class="col-12">
                                   <label>Enfoque sistémico</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
+                                        <p class="small text-muted text-justify">
+                                         <b> Descripción:</b> Ejercicio de aplicación disciplinado que 
+                                          abarca todos los procesos y el contenido del 
+                                          estándar; que hace una visión de conjunto de 
+                                          la institución; que contempla un ciclo PHVA
+                                        </p>
+                                 <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-2">
+                                      <ValidationProvider name="enfoque sistematico" rules="required" v-slot="{ errors }">
                                         <select v-model="form.enfoque_sistematico" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -367,31 +310,16 @@
                                         </select>
                                         <span style="color:red">{{ errors[0] }}</span>
                                   </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                          Ejercicio de aplicación disciplinado que 
-                                          abarca todos los procesos y el contenido del 
-                                          estándar; que hace una visión de conjunto de 
-                                          la institución; que contempla un ciclo PHVA
-                                        </p>
-                                      </div>
                                     </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='1'">
+                                    <div class="col-10 my-0">
+                                      <h6 class=" my-0" v-if="form.enfoque_sistematico">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico=='1'">
                                           Ejercicio de aplicación disciplinado que 
                                           abarca todos los procesos y el contenido del 
                                           estándar; que hace una visión de conjunto de 
                                           la institución; que contempla un ciclo PHVA.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico=='2'">
                                           Comienzo de un enfoque sistémico 
                                           para los propósitos básicos del 
                                           estándar y empieza a estar presente 
@@ -399,65 +327,58 @@
                                           enfoque y los procesos a través de los 
                                           cuales se despliega está documentado.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico=='3'">
                                           El enfoque es sistémico, alcanzable 
                                           para lograr los propósitos del estándar 
                                           que se desea evaluar en procesos 
                                           clave.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico=='4'">
                                           El enfoque es sistémico tiene buen 
                                           grado de integración que responde a 
                                           todos los propósitos del estándar en la 
                                           mayoría de los procesos. Relacionado 
                                           con el direccionamiento estratégico.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_sistematico=='5'">
                                           El enfoque es explícito y se aplica de 
                                           manera organizada en todos los 
                                           procesos, responde a los distintos 
                                           criterios del estándar y está relacionado 
                                           con el direccionamiento estratégico.
                                         </p>
-                                      </div> 
                                     </div>
                                   </div>
+                                  </div>  
                                 </div>
                               </div>
-                              <hr>
+                              <hr class="m-0">
                               <div class="row">
-                                <div class="col-4">
-                                 <div class="form-group">
-                                  <label>Enfoque proactivo</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.enfoque_proactivo" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
+                                <div class="col-12 py-1">
+                                <label>Enfoque proactivo</label>
                                         <p class="small text-muted text-justify">
-                                            Grado en que el enfoque es preventivo y se 
+                                          <b> Descripción:</b>  Grado en que el enfoque es preventivo y se 
                                             adelanta a la
                                             ocurrencia del problema de calidad, a partir 
                                             de la gestión del riesgo
                                         </p>
-                                      </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='1'">
+                                 <div class="form-group">
+                                <div class="row">
+                                  <div class="col-2">
+                                    <ValidationProvider name="enfoque proactivo" rules="required" v-slot="{ errors }">
+                                          <select v-model="form.enfoque_proactivo" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                          </select>
+                                          <span style="color:red">{{ errors[0] }}</span>
+                                    </ValidationProvider>
+                                  </div>
+                                  <div class="col-10 my-0">
+                                        <h6 class="my-0"  v-if="form.enfoque_proactivo">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo=='1'">
                                           Los enfoques son 
                                           mayoritariamente reactivos, la 
                                           información presentada es 
@@ -465,13 +386,13 @@
                                           evidencia de la gestión del 
                                           riesgo.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo=='2'">
                                           Etapas iniciales de transición de la 
                                           reacción a la prevención de 
                                           problemas. Etapas iniciales de la 
                                           gestión del riesgo.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo=='3'">
                                           Enfoque mayoritariamente preventivo 
                                           hacia el manejo y control de los 
                                           procesos aun cuando existen algunos 
@@ -479,85 +400,79 @@
                                           identifican herramientas de la gestión 
                                           del riesgo.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo=='4'">
                                           El enfoque es mayoritariamente 
                                           proactivo y preventivo en todos los 
                                           procesos y se evidencian resultados 
                                           parciales de la gestión del riesgo.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_proactivo=='5'">
                                           El enfoque es proactivo y preventivo en 
                                           todos los procesos. Hay evidencia de la 
                                           gestión del riesgo.
                                         </p>
-                                      </div> 
-                                    </div>
+                                  </div>
+                                </div>
+
                                   </div>
                                 </div>
                               </div>
-                              <hr>
+                               <hr class="m-0">
                               <div class="row">
-                                <div class="col-4">
-                                 <div class="form-group">
-                                  <label>Enfoque evaluado y mejorado</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.enfoque_em" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
+                                <div class="col-12">
+                                <label>Enfoque evaluado y mejorado</label>
+                                  <p class="small text-muted text-justify">
+                                    <b> Descripción:</b> Forma en que se evalúa y mejora el enfoque 
+                                      y su asimilación.
+                                  </p>
                                   <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                            Forma en que se evalúa y mejora el enfoque 
-                                            y su asimilación.
-                                        </p>
+                                    <div class="col-2">
+                                      <div class="form-group">
+                                        <ValidationProvider name="enfoque evaluado y mejorado" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.enfoque_em" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
                                     </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='1'">
+                                    <div class="col-10 ">
+                                        <h6 class=" my-0 ext-center" v-if="form.enfoque_em">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em=='1'">
                                             La información presentada es 
                                             anecdótica y desarticulada, no 
                                             hay evidencias (hechos y datos).
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em=='2'">
                                             La evidencia de un proceso de 
                                             evaluación y mejoramiento del 
                                             enfoque es limitada. Esbozo de 
                                             algunos hechos y datos, 
                                             desarticulados.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em=='3'">
                                             El proceso de mejoramiento está 
                                             basado en hechos y datos (acciones 
                                             específicas realizadas y registradas) 
                                             sobre procesos claves que abarcan la 
                                             mayoría de productos y servicios.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em=='4'">
                                           Existe un proceso de mejoramiento 
                                           basado en hechos y datos como 
                                           herramienta básica de dirección.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.enfoque_em==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.enfoque_em=='5'">
                                           Existen ciclos sistemáticos de 
                                           evaluación, la información recogida es 
                                           consistente y válida, oportuna y se 
                                           emplea para la evaluación y definir 
                                           acciones de mejoramiento.
                                         </p>
-                                      </div> 
                                     </div>
                                   </div>
                                 </div>
@@ -569,66 +484,60 @@
 
                         <b-card no-body class="mb-1">
                           <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block v-b-toggle.accordion-2 variant="dark">IMPLEMENTACION</b-button>
+                            <b-button block v-b-toggle.accordion-2 variant="primary">IMPLEMENTACION</b-button>
                           </b-card-header>
                           <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
                             <b-card-body>
                                <div class="row">
-                                <div class="col-4">
-                                 <div class="form-group">
+                                <div class="col-12">
                                   <label>Despliegue en la institución</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.despliegue_institucional" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
                                         <p class="small text-muted text-justify">
-                                            Grado en que se ha implementado el enfoque 
+                                           <b> Descripción:</b>  Grado en que se ha implementado el enfoque 
                                             y es consistente en los distintos servicios o 
                                             procesos de la organización.
                                         </p>
-                                      </div>
+                                  <div class="row">
+                                    <div class="col-2">
+                                      <div class="form-group">
+                                        <ValidationProvider name="despliegue institucional" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.despliegue_institucional" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
+                                        </div>
                                     </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='1'">
+                                    <div class="col-10">
+                                        <h6 class=" m-0" v-if="form.despliegue_institucional">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional=='1'">
                                             El enfoque se ha implementado 
                                             en algunos servicios o procesos 
                                             pero se refleja su debilidad.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional=='2'">
                                             La implementación del enfoque se da 
                                             en algunos servicios o procesos 
                                             operativos principales y existen 
                                             brechas muy significativas en procesos 
                                             importantes.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional=='3'">
                                             La implementación está más avanzada 
                                             en servicios o procesos claves y no 
                                             existen grandes brechas con respec-to 
                                             a otros servicios o procesos.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional=='4'">
                                           Existe un enfoque bien desplegado en 
                                           todos los servicios o procesos, con 
                                           brechas no significativas en aquellos de 
                                           sop.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.despliegue_institucional=='5'">
                                           La implementación del enfoque se 
                                           amplía continuamente para cubrir 
                                           nuevos servicios o procesos en forma 
@@ -636,255 +545,226 @@
                                           en todos los servicios o procesos 
                                           claves.
                                         </p>
-                                      </div> 
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <hr>
+                              <hr class="m-1">
                               <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Apropiación por el cliente interno y/o externo</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.apropiacion_cie" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
                                         <p class="small text-muted text-justify">
-                                            Grado en que el cliente del despliegue 
+                                           <b> Descripción:</b>  Grado en que el cliente del despliegue 
                                             (cliente interno y/o externo) entiende y aplica 
                                             el enfoque, según la naturaleza y propósitos 
                                             del estándar.
                                         </p>
-                                      </div>
+                                  <div class="row">
+                                    <div class="col-2">
+                                      <ValidationProvider name="apropiacion cliente i/e" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.apropiacion_cie" @change="calcularPromedio()" name="enfonque_sitematico" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                     </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='1'">
+                                    <div class="col-10">
+                                        <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie=='1'">
                                             El enfoque no lo apropian los 
                                             clientes.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie=='2'">
                                             Hay evidencias de apropiación en unos 
                                             pocos clientes internos o externos, 
                                             pero este no es consistente.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie=='3'">
                                             Hay evidencias de apropiación parcial 
                                             del enfoque en los principales clientes 
                                             con un grado mínimo de consistencia.
 
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie=='4'">
                                             El enfoque lo apropian la mayoría de 
                                             los usuarios y es medianamente 
                                             consistente.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.apropiacion_cie=='5'">
                                           El enfoque está apropiado en la 
                                           totalidad de los usuarios y es 
                                           totalmente consistente.
                                         </p>
-                                      </div> 
                                     </div>
+                                  </div>
                                   </div>
                                 </div>
                               </div>
-                              <hr>
                             </b-card-body>
                           </b-collapse>
                         </b-card>
 
                         <b-card no-body class="mb-1">
                           <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block v-b-toggle.accordion-3 variant="dark">RESULTADOS</b-button>
+                            <b-button block v-b-toggle.accordion-3 variant="info">RESULTADOS</b-button>
                           </b-card-header>
                           <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
                             <b-card-body>
                               <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Pertinencia</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.pertinencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                          Grado en que los resultados referidos 
-                                          (hechos, datos e indicadores) se relacionan 
-                                          los criterios y requisitos del estándar 
-                                          evaluado.
-                                        </p>
+                                    <p class="small text-muted text-justify">
+                                     <b> Descripción:</b>  Grado en que los resultados referidos 
+                                      (hechos, datos e indicadores) se relacionan 
+                                      los criterios y requisitos del estándar 
+                                      evaluado.
+                                    </p>
+                                    <div class="row">
+                                      <div class="col-2">
+                                        <ValidationProvider name="pertenencia" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.pertinencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='1'">
+                                      <div class="col-10">
+                                         <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia=='1'">
                                             Los datos presentados no 
                                             responden a los factores, 
                                             productos o servicios claves del 
                                             estándar.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia=='2'">
                                             Los datos presentados son parciales y 
                                             se refieren a unos pocos factores, 
                                             productos o servicios claves solicitados 
                                             en el estándar.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia=='3'">
                                             Los datos presentados se refieren al 
                                             desempeño de algunos servicios o 
                                             procesos claves, factores, productos 
                                             y/o servicios solicitados.
 
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia=='4'">
                                             La mayoría de los resultados referidos 
                                             se relacionan con el servicio o proceso, 
                                             factores, productos y/o servicios 
                                             solicitados en el estándar, alcanzando 
                                             los objetivos y metas propuestas.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.pertinencia==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.pertinencia=='5'">
                                             Todos los resultados se relacionan con 
                                             el servicio o proceso o el punto del 
                                             estándar a evaluar y alcanzan los 
                                             objetivos y metas propuestas.
                                         </p>
-                                      </div> 
+                                      </div>
                                     </div>
+
                                   </div>
                                 </div>
                               </div>
-                            <hr>
+                            <hr class="m-0">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Consistencia</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.consistencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                          Relación de los resultados como producto de 
-                                          la implementación
-                                          del enfoque.
-                                        </p>
+                                    <p class="small text-muted text-justify">
+                                      <b> Descripción:</b> Relación de los resultados como producto de 
+                                      la implementación
+                                      del enfoque.
+                                    </p>
+                                    <div class="row">
+                                      <div class="col-2">
+                                        <ValidationProvider name="consistencia" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.consistencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.consistencia==='1'">
+                                      <div class="col-10">
+                                        <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.consistencia=='1'">
                                             Solo existen ejemplos 
                                             anecdóticos de aspectos poco 
                                             relevantes y no hay evidencia de 
                                             que sean resultado de la 
                                             implementación del enfoque.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencia==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia=='2'">
                                             Se comienzan a obtener resultados 
                                             todavía incipientes de la aplicación del 
                                             enfoque.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencia==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia=='3'">
                                             Existe evidencia que algunos logros 
                                             son causados por el enfoque 
                                             implementado y por las acciones de 
                                             mejoramiento.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencia==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia=='4'">
                                             La mayoría de los resultados responden 
                                             a la implementación del enfoque y a las 
                                             acciones de mejoramiento.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.consistencia==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.consistencia=='5'">
                                             Todos los resultados son causados por 
                                             la implementación de enfoques y las 
                                             acciones sistemáticas de mejoramiento.
                                         </p>
-                                      </div> 
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            <hr>
+                           <hr class="m-0">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Avance de la medición</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.avance_mediacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                          Grado en que la medición responde a una 
-                                          práctica sistémica de la organización en un 
-                                          período de tiempo que le permita su
-                                          Consolidación y existen indicadores definidos 
-                                          para la medición del estándar evaluado, 
-                                          calidad y pertinencia de los mismos.
-                                        </p>
+                                    <p class="small text-muted text-justify">
+                                      <b> Descripción:</b> Grado en que la medición responde a una 
+                                      práctica sistémica de la organización en un 
+                                      período de tiempo que le permita su
+                                      Consolidación y existen indicadores definidos 
+                                      para la medición del estándar evaluado, 
+                                      calidad y pertinencia de los mismos.
+                                    </p>
+                                    <div class="row">
+                                      <div class="col-2">
+                                        <ValidationProvider name="avance de la mediacion" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.avance_mediacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='1'">
+                                      <div class="col-10">
+                                        <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion=='1'">
                                           No existen indicadores que 
                                           muestren tendencias en la 
                                           calidad y el desempeño de los 
@@ -892,14 +772,14 @@
                                           encuentra en una etapa muy 
                                           temprana de medición.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion=='2'">
                                           Existen algunos indicadores que 
                                           muestran el desempeño de procesos. 
                                           La organización se encuentra en una 
                                           etapa media del desarrollo de la 
                                           medición.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion=='3'">
                                           Existen indicadores que monitorean los 
                                           procesos y muestran ya tendencias 
                                           positivas de mejoramiento en algunos 
@@ -909,13 +789,13 @@
                                           reportados pueden estar en etapas 
                                           recientes de medición.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion=='4'">
                                           Existen procesos de medición 
                                           sistémicos para la mayoría de los 
                                           servicios o procesos y factores claves 
                                           de éxito solicitados en el estándar.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.avance_mediacion=='5'">
                                           Los resultados son monitoreados 
                                           directamente por los líderes de todos 
                                           los niveles de la organización y la 
@@ -923,50 +803,43 @@
                                           decisiones y el mejoramiento de los 
                                           procesos.
                                         </p>
-                                      </div> 
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            <hr>
+                            <hr class="m-0">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Tendencia</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.tendencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                            Desempeño de los indicadores en el tiempo. 
-                                            Puede ser positiva
-                                            cuando los datos muestran una mejoría 
-                                            general a lo largo del tiempo.
-                                        </p>
+                                    <p class="small text-muted text-justify">
+                                       <b> Descripción:</b> Desempeño de los indicadores en el tiempo. 
+                                        Puede ser positiva
+                                        cuando los datos muestran una mejoría 
+                                        general a lo largo del tiempo.
+                                    </p>
+                                    <div class="row">
+                                      <div class="col-2">
+                                        <ValidationProvider name="tendencia" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.tendencia" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.tendencia==='1'">
+                                      <div class="col-10">
+                                        <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.tendencia=='1'">
                                             El estadio de la medición y por lo 
                                             tanto de los resultados, no 
                                             garantizan tendencias confiables.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.tendencia==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.tendencia=='2'">
                                             Se muestran resultados muy recientes 
                                             que aunque no permiten tener 
                                             suficientes bases para establecer 
@@ -974,13 +847,13 @@
                                             se empiezan a tomar decisiones 
                                             operativas con base en la información.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.tendencia==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.tendencia=='3'">
                                             Se presentan tendencias de 
                                             mejoramiento de algunos factores 
                                             claves del estándar. Proceso 
                                             sistemático y estructurado.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.tendencia==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.tendencia=='4'">
                                             La mayoría de los indicadores alcanzan 
                                             niveles satisfactorios y muestran firmes 
                                             tendencias de mejoramiento de los 
@@ -989,75 +862,69 @@
                                             refleja en que van de bueno a 
                                             excelente.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.tendencia==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.tendencia=='5'">
                                             Se observan tendencias positivas y 
                                             sostenidas de mejoramiento de todos 
                                             los datos a lo largo del tiempo.  
                                         </p>
-                                      </div> 
+                                      </div>
                                     </div>
+
                                   </div>
                                 </div>
                               </div>
-                            <hr>
+                           <hr class="m-0">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-12">
                                  <div class="form-group">
                                   <label>Comparación</label>
-                                  <ValidationProvider name="total" rules="required" v-slot="{ errors }">
-                                        <select v-model="form.comparacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                        <span style="color:red">{{ errors[0] }}</span>
-                                  </ValidationProvider>
-                                  </div>
-                                </div>
-                                <div class="col-8">
-                                  <div class="row">
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Descripcion</h5>
-                                        <p class="small text-muted text-justify">
-                                            Grado en que los resultados son comparados 
-                                            con referentes
-                                            nacionales e internacionales y la calidad de 
-                                            los mismos.
-                                        </p>
+                                    <p class="small text-muted text-justify">
+                                      <b> Descripción:</b>  Grado en que los resultados son comparados 
+                                        con referentes
+                                        nacionales e internacionales y la calidad de 
+                                        los mismos.
+                                    </p>
+                                    <div class="row">
+                                      <div class="col-2">
+                                        <ValidationProvider name="comparacion" rules="required" v-slot="{ errors }">
+                                              <select v-model="form.comparacion" @change="calcularPromedio()" name="pertinencia" class="form-control" :disabled="ver" >
+                                                  <option value="1">1</option>
+                                                  <option value="2">2</option>
+                                                  <option value="3">3</option>
+                                                  <option value="4">4</option>
+                                                  <option value="5">5</option>
+                                              </select>
+                                              <span style="color:red">{{ errors[0] }}</span>
+                                        </ValidationProvider>
                                       </div>
-                                    </div>
-                                    <div class="col-6">
-                                      <div class="card p-3">
-                                        <h5 class="lead text-center">Criterios</h5>
-                                        <p class="small text-muted text-justify" v-if="form.comparacion==='1'">
+                                      <div class="col-10">
+                                        <h6 class="my-0">Criterios</h6>
+                                        <p class="small text-muted text-justify" v-if="form.comparacion=='1'">
                                             No existen políticas, ni prácticas 
                                             de comparación de los procesos 
                                             de la organización con los 
                                             mejores.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.comparacion==='2'">
+                                        <p class="small text-muted text-justify" v-if="form.comparacion=='2'">
                                             Se encuentran algunas prácticas 
                                             independientes de comparación, poco 
                                             estructuradas y no sistemáticas.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.comparacion==='3'">
+                                        <p class="small text-muted text-justify" v-if="form.comparacion=='3'">
                                             Existe una política de comparación con 
                                             las mejores prácticas y se encuentra en 
                                             etapa temprana de comparación de 
                                             algunos procesos, productos críticos y 
                                             servicios solicitados en el estándar.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.comparacion==='4'">
+                                        <p class="small text-muted text-justify" v-if="form.comparacion=='4'">
                                             Se encuentra en etapa madura de 
                                             comparación con las mejores prácticas 
                                             a nivel nacional de servicios o 
                                             procesos, productos y/o factores claves 
                                             solicitados en el estándar.
                                         </p>
-                                        <p class="small text-muted text-justify" v-if="form.comparacion==='5'">
+                                        <p class="small text-muted text-justify" v-if="form.comparacion=='5'">
                                             Los resultados son comparados con 
                                             referentes nacionales e internacionales 
                                             y se ubican en niveles cercanos a las 
@@ -1065,12 +932,13 @@
                                             con un sistema de evaluación y mejora 
                                             de los sistemas de comparación.
                                         </p>
-                                      </div> 
+                                      </div>
                                     </div>
+
                                   </div>
                                 </div>
                               </div>
-                              <hr>
+                             <hr class="m-0">
                             </b-card-body>
                           </b-collapse>
                         </b-card>
@@ -1078,6 +946,15 @@
                     </div>
                     <div class="col-2 text-center">
                       <div class="col-sm-12">
+                          <p class="text-muted text-truncate mb-2">PUNTAJE</p>
+                          <h5 class="mb-0">{{form.total}}</h5>
+                      </div>
+                      <div class="col-sm-12">
+                          <p class="text-muted text-truncate mb-2">PROMEDIO</p>
+                          <h5 class="mb-0">{{form.promedio}}</h5>
+                      </div>
+                      <hr>
+                      <div class="col-sm-12 my-1">
                         <div>
                           <div class="mb-3">
                             <apexchart
@@ -1156,7 +1033,6 @@
                 </div>
         </b-modal>
 
-
   </Layout>
 </template>
 
@@ -1214,10 +1090,11 @@ export default {
       filter: null,
       filterOn: [],
       periodos: [],
+      evaluadas: [],
       cargos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["id","total","promedio","actions"],
+      fields: ["codigo","numero_estandar","total","promedio","actions"],
       bases: [], 
       libres: [], 
       todas: [],
@@ -1227,6 +1104,7 @@ export default {
       mejoras: [], 
       acciones: [], 
       estandares:[], 
+      estandares_ae:[],
       autoevaluaciones:[],
       clasificacion:[],
       grupos:[], 
@@ -1236,6 +1114,8 @@ export default {
       priorizada:0,
       sinpriorizar:0,
       programadas:0,
+      totales:0,
+      promedio:0,
       form:{
             'id': '',
             'numero':'',
@@ -1254,6 +1134,8 @@ export default {
             'tendencia':'',
             'comparacion':'',
             'promedio':'',
+            'descripcion':'',
+            'criterios':'',
           },
       enfoque: {
         series: [0],
@@ -1269,7 +1151,7 @@ export default {
           dataLabels: {
             enabled: false
           },
-          colors: ["#5664d2"],
+          colors: ["#343a40"],
           stroke: {
             lineCap: "round"
           },
@@ -1303,7 +1185,7 @@ export default {
           dataLabels: {
             enabled: false
           },
-          colors: ["#1cbb8c"],
+          colors: ["#5664d2"],
           stroke: {
             lineCap: "round"
           },
@@ -1338,7 +1220,7 @@ export default {
           dataLabels: {
             enabled: false
           },
-          colors: ["#1cbb8c"],
+          colors: ["#4aa3ff"],
           stroke: {
             lineCap: "round"
           },
@@ -1412,6 +1294,14 @@ export default {
         }
   },
   methods: {
+    resete(id){
+        var formulario = this.form;
+        for (var key in formulario) {
+             this.form[key]="";
+       }
+       this.form.numero=id;
+       this.buscarGrupos();
+    },
     calcularPromedio(){
       this.form.total=0;
       this.form.total_enfoque= ((parseInt(this.form.enfoque_sistematico)+parseInt(this.form.enfoque_proactivo)+parseInt(this.form.enfoque_em))*100)/15;
@@ -1430,8 +1320,6 @@ export default {
         this.form.grupo_id=1;
           for (let index = 0; index < this.subgrupos.length; index++) {
             if ( parseInt(this.subgrupos[index].desde)<=parseInt(this.form.numero)) {
-                  console.log(this.subgrupos[index].desde);
-                  console.log(this.subgrupos[index].hasta);
                 this.form.subgrupo_id= this.subgrupos[index].id;
                 this.setearCriterios();
             }
@@ -1439,8 +1327,6 @@ export default {
      }else{
         for (let index = 0; index < this.grupos.length; index++) {
             if ( parseInt(this.grupos[index].desde)<=parseInt(this.form.numero)) {
-                  console.log(this.grupos[index].desde);
-                  console.log(this.grupos[index].hasta);
                 this.form.grupo_id= this.grupos[index].id;
                 this.form.subgrupo_id="";
                 this.setearCriterios();
@@ -1450,11 +1336,11 @@ export default {
     },
     setearCriterios(){
         for (let index = 0; index < this.estandares.length; index++) {
-            if (this.estandares[index].numero===this.form.numero) {
+            if (this.estandares[index].numero==this.form.numero) {
                this.form.criterios=this.estandares[index].criterios; 
                this.form.descripcion=this.estandares[index].descripcion; 
                this.form.estandar_id=this.estandares[index].id; 
-
+               console.log("setear criterios");
             }   
         }
     },
@@ -1512,6 +1398,41 @@ export default {
           }
         })
     },
+    cerrarEvaluacionC(id){
+        this.$swal({
+          title: 'Desea cerrar esta evaluación?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.cerrarEvaluacion();
+          }
+        })
+    },
+    async  cerrarEvaluacion(){
+     let data = new FormData();
+      data.append('id',this.$route.params.id);
+      data.append('promedio',this.promedio);
+       await this.axios.post('api/autoevaluacion/cuantitativa/cerrar', data, {
+           headers: {
+            'Content-Type': 'multipart/form-data'
+           }}).then(response => {
+            if (response.status==200) {
+               this.$swal(
+                   'Cerrado con exito!',
+                    '',
+                    'success');
+              this.listarAcciones();
+              this.listarPlan();
+              }
+            }).catch(e => {
+               this.$swal('No se pudo cerrar!','','warning');
+          });
+      },
     async  programarAcccion(){
      let data = new FormData();
        var formulario = this.form;
@@ -1553,7 +1474,7 @@ export default {
     },
     async  editarAcccion(){
      let data = new FormData();
-       var formulario = this.accion;
+       var formulario = this.form;
         for (var key in formulario) {
           data.append(key,formulario[key]);
         }
@@ -1590,7 +1511,6 @@ export default {
       },
       async eliminarAccion(id){
         let data = new FormData();
-        console.log(id);
         data.append('id',id);
         await this.axios.post('api/autoevaluacion/cuantitativa/items/delete',data, {
             headers: {
@@ -1638,7 +1558,6 @@ export default {
             this.form.nombre=this.acciones[index].nombre;
             this.form.periodo=this.acciones[index].periodo;
             this.form.total=this.acciones[index].total;
-            this.form.ev=this.acciones[index];
             this.editMode=true;
             this.buscarGrupos();
             this.calcularPromedio();
@@ -1651,11 +1570,9 @@ export default {
       for (let index = 0; index < this.procesos.length; index++) {
        if(this.procesos[index].id == this.accion.proceso_id){
          this.subproceso = this.procesos[index].subprocesos
-         console.log(this.subproceso)
        }
       if(this.procesos[index].id == this.buscador.proceso_id){
          this.subproceso = this.procesos[index].subprocesos
-         console.log(this.subproceso)
        }
       }
     },
@@ -1849,7 +1766,6 @@ export default {
                 this.setear_mejoras(this.form.id);
                 }
               }).catch(e => {
-                console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       },
@@ -1860,7 +1776,6 @@ export default {
         await this.axios.post('api/autoevaluacion/cuantitativa/find', data)
           .then((response) => {
              if (response.status==200) {
-               console.log(response.data);
               this.form.id=response.data.id; 
               this.form.nombre=response.data.nombre; 
               this.form.periodo=response.data.periodo.nombre; 
@@ -1876,8 +1791,28 @@ export default {
         await this.axios.post('api/autoevaluacion/cuantitativa/items/listar', data)
           .then((response) => {
              if (response.status==200) {
-               console.log(response);
               this.acciones=response.data; 
+              this.listarestandaresae();
+              this.listarAccionesEvaluadas();
+             }
+          })
+          .catch((e)=>{
+            console.log('error' + e);
+          })
+      },
+      async listarAccionesEvaluadas(){
+      let data = new FormData();
+      data.append('id',this.$route.params.id);
+        await this.axios.post('api/autoevaluacion/cuantitativa/items/evaluadas', data)
+          .then((response) => {
+             if (response.status==200) {
+              this.evaluadas=response.data;
+              this.totales=0;
+              for (let index = 0; index < this.evaluadas.length; index++) {
+               this.totales=this.totales+parseInt(this.evaluadas[index].total);
+               console.log(this.totales);
+              } 
+             this.promedio = this.totales/(this.evaluadas.length*10);
              }
           })
           .catch((e)=>{
@@ -1885,12 +1820,10 @@ export default {
           })
       },
       async setear_mejoras(id){
-        console.log(id);
       let data = new FormData();
       data.append('id',id);
         await this.axios.post('api/autoevaluacion/find',data)
           .then((response) => {
-            console.log(response);
              if (response.status==200) {
               this.mejoras=response.data.mejoras;   
              }
@@ -1900,14 +1833,11 @@ export default {
           })
       },
       async setear_mejora(id){
-        console.log(id);
       let data = new FormData();
       data.append('id',id);
         await this.axios.post('api/mejoras/find',data)
           .then((response) => {
-            console.log(response);
              if (response.status==200) {
-               console.log(response.data.id);
                this.mejora=response.data; 
                this.accion.mejora_id=response.data.id;
                this.editModeMejora=true;
@@ -1931,7 +1861,6 @@ export default {
         })
       },
    async listarAutoevaluacion(){
-       console.log("hey");
      let data = new FormData();
      data.append('cliente_id',this.cliente.id);
        await this.axios.post('api/autoevaluacion/listar',data)
@@ -1942,16 +1871,23 @@ export default {
           console.log('error' + e);
         })
       },
-      async  listarestandares(){
-          await this.axios.get('api/estandares/listar')
-          .then((response) => {
-              this.estandares = response.data;
-          })
-          .catch((e)=>{
-              console.log('error' + e);
-          })
-      },
-
+      async  listarestandaresae(){
+            await this.axios.get('api/estandares/listar')
+            .then((response) => {
+                this.estandares_ae = response.data;
+            for (let index = 0; index < this.acciones.length; index++) {
+                 for (let llave = 0; llave < this.estandares_ae.length; llave++) {
+                   if (this.acciones[index].estandar_id===this.estandares_ae[llave].id) {
+                      this.estandares_ae.splice(llave, 1);
+                   }               
+                 }
+                
+              }
+            })
+            .catch((e)=>{
+                console.log('error' + e);
+            })
+        },
         async  listarestandares(){
             await this.axios.get('api/estandares/listar')
             .then((response) => {
@@ -1964,7 +1900,6 @@ export default {
         async  listargruposestandares(){
             await this.axios.get('api/estandares/grupos/listar')
             .then((response) => {
-                console.log(response.data)
                 this.grupos = response.data;
                 for (let index = 0; index < this.grupos.length; index++) {
                   if (this.grupos[index].id==1) {
@@ -1976,18 +1911,8 @@ export default {
                 console.log('error' + e);
             })
         },
-        async  listarestandares(){
-            await this.axios.get('api/estandares/listar')
-            .then((response) => {
-                this.estandares = response.data;
-            })
-            .catch((e)=>{
-                console.log('error' + e);
-            })
-        },
       setEmail(){
         this.form.username=this.form.email;
-        console.log("holas");
       },
       setRoles(){
         if (this.form.tipo==="Administrador") {
@@ -2027,7 +1952,6 @@ export default {
             await this.axios.post('api/subprocesos/listar',data)
             .then((response) => {
                 this.subprocesos = response.data.rows;
-                console.log(response.data)
             })
             .catch((e)=>{
                 console.log('error' + e);
@@ -2105,12 +2029,12 @@ export default {
         this.session();
         this.listarPlan();
         this.listargruposestandares();
-        this.listarestandares();
         this.listarCargos();
         this.listarProceso();
         this.listarSubproceso();
         this.listarclasificacion();
         this.listarAcciones();
+        this.listarestandares();
       },
    watch: {
       cliente: function () {
@@ -2120,11 +2044,11 @@ export default {
        this.title=this.cliente.nombre_prestador;
        this.form.cliente_id=this.usuarioDB.id;
        this.listargruposestandares();
-       this.listarestandares();
        this.listarProceso();
        this.listarSubproceso();
        this.listarclasificacion();
        this.listarAcciones();
+       this.listarestandares();
       },
     },
     computed: {
@@ -2132,9 +2056,9 @@ export default {
     rows() {
       return this.acciones.length;
     },
-    filteredItems() {
-      return this.mejoras.filter(item => {
-         return item.oportunidad_mejoras.indexOf(this.search.toLowerCase()) > -1
+    filtrados() {
+      return this.estandares_ae.filter(item => {
+         return item.numero.indexOf(this.search.toLowerCase()) > -1
       })
     }
   },

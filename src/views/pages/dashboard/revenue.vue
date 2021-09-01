@@ -36,14 +36,14 @@ export default {
           }
         },
         dataLabels: {
-          enabled: false
+          enabled:true
         },
         legend: {
-          show: false
+          show: true
         },
         colors: ["#5664d2", "#1cbb8c"],
         labels: [
-          "Jan",
+          "Jaan",
           "Feb",
           "Mar",
           "Apr",

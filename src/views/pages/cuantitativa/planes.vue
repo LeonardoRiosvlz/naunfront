@@ -184,7 +184,7 @@ export default {
       filterOn: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["nombre","periodo","actions"],
+      fields: ["nombre","promedio","periodo","actions"],
       bases:[], 
       auto:[], 
       grupos:[], 
