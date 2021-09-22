@@ -142,6 +142,7 @@
                       <!-- End search -->
                     </div>
                     <!-- Table -->
+          
                     <div class="table-responsive mb-0" style="min-heigth:500px">
                       <b-table
                         :items="acciones"
@@ -158,11 +159,14 @@
                         <template v-slot:cell(periodo)="data">
                           {{data.item.mejora.plan_accion.bases_autoevaluacion.periodo.nombre}}
                         </template>
-                        <template v-slot:cell(grupo_de_estandares)="data">
-                          {{data.item.mejora.autoevaluacion.grupo_estandare.nombre}}
+                        <template v-slot:cell(oportunidad_de_mejora)="data">
+                          {{data.item.mejora.oportunidad_mejoras}}
                         </template>
                         <template v-slot:cell(numero_de_estandar)="data">
                           {{data.item.mejora.autoevaluacion.estandare.numero}}
+                        </template>
+                        <template v-slot:cell(codigo_de_estandar)="data">
+                          {{data.item.mejora.autoevaluacion.estandare.codigo}}
                         </template>
                         <template v-slot:cell(status)="data">
                             <span v-if="data.item.status==='NO INICIADA'" class="badge badge-danger">NO INICIADA</span>
@@ -429,7 +433,7 @@ export default {
       cargos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["periodo","grupo_de_estandares","numero_de_estandar","total","status","actions"],
+      fields: ["oportunidad_de_mejora","numero_de_estandar","codigo_de_estandar","total","status","actions"],
       bases: [], 
       libres: [], 
       todas: [],

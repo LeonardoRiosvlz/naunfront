@@ -118,6 +118,8 @@
               </div>
               <!-- End search -->
             </div>
+            
+           
             <!-- Table -->
             <div class="table-responsive mb-0">
               <b-table
@@ -134,10 +136,13 @@
               >
               
                 <template v-slot:cell(grupo_de_estandares)="data">
-                    {{data.item.autoevaluacion.grupo_estandare.nombre}}
+                    {{data.item.oportunidad_mejoras}}
                 </template>
                  <template v-slot:cell(numero_de_estandar)="data">
                     {{data.item.autoevaluacion.estandare.numero}}
+                </template> 
+                <template v-slot:cell(codigo_de_estandar)="data">
+                    {{data.item.autoevaluacion.estandare.codigo}}
                 </template> 
                 <template v-slot:cell(status)="data">
                     <span v-if="data.item.status==='SIN PRIORIZAR'" class="badge badge-danger">SIN PRIORIZAR</span>
@@ -649,7 +654,7 @@ export default {
       periodos: [],
       sortBy: "age",
       sortDesc: false,
-      fields: ["id","grupo_de_estandares","numero_de_estandar","total","status","actions"],
+      fields: ["id","grupo_de_estandares","numero_de_estandar","codigo_de_estandar","total","status","actions"],
       bases: [], 
       base: [], 
       todas: [],

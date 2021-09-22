@@ -2,21 +2,22 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
     <div class="clearfix mb-3">
-      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=false;resete();">Planificar</b-button>
+      <b-button class="float-right btn-info" left @click="$bvModal.show('modal');editMode=true;">Planificar</b-button>
     </div>
+
     <div class="row">
       <div class="col-12">
         <div class="card">
           <div class="card-body">
             <div class="card-title">Plan de auditorias</div>
-            <h4 class="text-center">TITULO DEL EVENTO</h4>
-            <b-alert show variant="light"> <b> Descripción:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+            <h4 class="text-center">{{plan.nombre}}</h4>
+            <b-alert show variant="light"> <b> Descripción:</b> {{plan.descripcion}}</b-alert>
             <div class="row">
               <div class="col-6">
-                <b-alert show variant="success text-justify"> <b> Objetivos:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                <b-alert show variant="success text-justify"> <b> Objetivos:</b> {{form.obejtivos}}</b-alert>
               </div>
               <div class="col-6">
-                <b-alert show variant="info text-justify"> <b> Alcances:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                <b-alert show variant="info text-justify"> <b> Alcances:</b> {{form.alcances}}</b-alert>
               </div>
               <div class="col-12">
                 <div class="row">
@@ -93,16 +94,15 @@
                     <b-card-text>
                       <button class="btn btn-block btn-primary" style="border-radius:0px">OTROS ASISTENTES</button>
                       <ul class="list-unstyled chat-list" style="overflow-y: scroll; height:500px">
-                        <li v-for="mejora in filtrados"  :key="mejora.id">
+                        <li v-for="ivitado in asistentes"  :key="ivitado.id">
                             <div class="media align-items-center pl-4 my-3">
                               <div class="avatar-xs mr-3">
                                 <span
-                                  class="avatar-title rounded-circle bg-light text-body">EC</span>
+                                  class="avatar-title rounded-circle bg-light text-body"><b-img src="https://picsum.photos/200" width="50%" rounded="circle" alt="Circle image"></b-img></span>
                               </div>
                               <div class="media-body p-0">
-                                <h5 class="font-size-14 mb-0"> {{mejora.id}}</h5>
-                                <p class="text-mouted m-0">Código {{mejora.codigo}}</p>
-                                <b-button class="float-right btn-success btn-sm mr-2" left @click="$bvModal.show('modal_acciones');editMode=false;resete(mejora.id);ver=false;">Evaluar</b-button>
+                                <h5 class="font-size-14 mb-0"> {{ivitado.cargo.user.nombre}}</h5>
+                                <p class="text-mouted m-0">{{ivitado.cargo.nombre}}</p>
                               </div>
                             </div>
                           <hr class="m-0">
@@ -114,16 +114,16 @@
                     <b-card-text>
                       <button class="btn btn-block btn-info" style="border-radius:0px">INVITADOS EXTERNOS</button>
                       <ul class="list-unstyled chat-list" style="overflow-y: scroll; height:500px">
-                        <li v-for="mejora in filtrados"  :key="mejora.id">
+                        <li v-for="mejora in form.invitados_externos"  :key="mejora.id">
                             <div class="media align-items-center pl-4 my-3">
                               <div class="avatar-xs mr-3">
                                 <span
                                   class="avatar-title rounded-circle bg-light text-body">EC</span>
                               </div>
                               <div class="media-body p-0">
-                                <h5 class="font-size-14 mb-0"> {{mejora.id}}</h5>
-                                <p class="text-mouted m-0">Código {{mejora.codigo}}</p>
-                                <b-button class="float-right btn-success btn-sm mr-2" left @click="$bvModal.show('modal_acciones');editMode=false;resete(mejora.id);ver=false;">Evaluar</b-button>
+                                <h5 class="font-size-14 mb-0"> {{mejora.nombre}}</h5>
+                                <p class="text-mouted m-0">Email: {{mejora.email}}</p>
+                                <p class="sm-small m-0">Telefono: {{mejora.telefono}}</p>
                               </div>
                             </div>
                           <hr class="m-0">
@@ -136,10 +136,10 @@
               <div class="col-9">
                 <div class="row">
                     <div class="col-6">
-                      <b-alert show variant="light text-justify"> <b> Fundamentos de la auditoria:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                      <b-alert show variant="light text-justify"> <b> Fundamentos de la auditoria:</b> {{form.fundamentos}}</b-alert>
                     </div>
                     <div class="col-6">
-                      <b-alert show variant="light text-justify"> <b> Recursos del programa de auditoria:</b> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.</b-alert>
+                      <b-alert show variant="light text-justify"> <b> Recursos del programa de auditoria:</b> {{form.recursos}}</b-alert>
                     </div>
                     <div class="col-12">
                       <h3 class="text-center  mb-5">PROCESOS RELACIONADOS</h3>
@@ -169,6 +169,7 @@
                           </tr>
                         </tbody>
                       </table>
+
                     </div>
                 </div>
               </div>
@@ -178,7 +179,8 @@
       </div>
     </div>
 
-    <b-modal id="modal" false size="lg"  title="Gestión de actividades" hide-footer>
+    <b-modal id="modal" false size="xl"  title="Gestión de actividades" hide-footer>
+
           <ValidationObserver ref="form">
             <div class="row">
                 <div class="col-lg-12">
@@ -271,57 +273,114 @@
                             <span class="d-inline-block d-sm-none">
                               <i class="far fa-user"></i>
                             </span>
-                            <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                            <span class="d-none d-sm-inline-block">INFORMARCION ADICIONAL</span>
                           </template>
-                           <b-row>
-                              <div class="col-10">
+                              <b-row>
+                              <b-col>
                                 <div class="form-group">
-                                  <label>Cargo</label>
-                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                  <label>Objetivos</label>
+                                  <ValidationProvider name="objetivos" rules="required" v-slot="{ errors }">
+                                        <textarea v-model="form.objetivos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
                                 </div>
-                              </div>
-                               <div class="col-2">
-                                  <button class="btn btn-success my-4" @click="vincularResponsable()" :disabled="!form.cargo_id">Vincular</button>
-                               </div>
-                            </b-row>
-                            <div class="row" v-if="editMode">
-                              <div class="col-lg-6" v-for="responsable in responsables" :key="responsable.id">
-                                <b-card no-body>
-                                  <b-row no-gutters class="align-items-center">
-                                    <b-col md="4">
-                                      <b-card-img :src="require('@/assets/images/small/img-2.jpg')" class="rounded-0"></b-card-img>
-                                    </b-col>
-                                    <b-col md="8">
-                                      <b-card-body :title="responsable.cargo.nombre">
-                                        <b-card-text>{{responsable.cargo.user.nombre}}</b-card-text>
-                                         <button class="btn btn-danger" @click="desvincularResponsable(responsable.id)">Desvincular</button>
-                                      </b-card-body>
-                                    </b-col>
-                                  </b-row>
-                                </b-card>
-                              </div>
-                            </div>
+                              </b-col>
+                              </b-row> 
+                             <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Alcances</label>
+                                  <ValidationProvider name="alcances" rules="required" v-slot="{ errors }">
+                                        <textarea v-model="form.alcances"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              </b-row> 
+                              <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Fundamentos de la auditoria</label>
+                                  <ValidationProvider name="fundamentos" rules="required" v-slot="{ errors }">
+                                        <textarea v-model="form.fundamentos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              </b-row> 
+                              <b-row>
+                              <b-col>
+                                <div class="form-group">
+                                  <label>Recursos del programa de auditoria</label>
+                                  <ValidationProvider name="recursos" rules="required" v-slot="{ errors }">
+                                        <textarea v-model="form.recursos"  type="text" class="form-control" placeholder=" " :disabled="ver"></textarea>
+                                        <span style="color:red">{{ errors[0] }}</span>
+                                  </ValidationProvider>
+                                </div>
+                              </b-col>
+                              </b-row> 
                         </b-tab>
                         <b-tab>
                           <template v-slot:title  v-if="editMode">
                             <span class="d-inline-block d-sm-none">
                               <i class="far fa-user"></i>
                             </span>
-                            <span class="d-none d-sm-inline-block">COMPROMETIDOS</span>
+                            <span class="d-none d-sm-inline-block">RESPONSABLES</span>
+                          </template>
+                           <b-row>
+                              <div class="col-12">
+                                <div class="form-group">
+                                  <label>LIDER DE CALIDAD</label>
+                                      <v-select  v-model="form.calidad_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                </div>
+                              </div>
+                            </b-row>
+                            <b-row>
+                              <div class="col-12">
+                                <div class="form-group">
+                                  <label>RESPONSABLE DE SEGUIMIENTO</label>
+                                      <v-select  v-model="form.seguimiento_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                </div>
+                              </div>
+                            </b-row>
+                            <b-row>
+                              <div class="col-12">
+                                <div class="form-group">
+                                  <label>AUDITOR</label>
+                                      <v-select  v-model="form.auditor_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                </div>
+                              </div>
+                            </b-row>
+                            <b-row>
+                              <div class="col-12">
+                                <div class="form-group">
+                                  <label>AUDITADO</label>
+                                      <v-select  v-model="form.auditado_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                </div>
+                              </div>
+                            </b-row>
+                          <pre>{{}}</pre>
+                        </b-tab>
+                        <b-tab>
+                          <template v-slot:title  v-if="editMode">
+                            <span class="d-inline-block d-sm-none">
+                              <i class="far fa-user"></i>
+                            </span>
+                            <span class="d-none d-sm-inline-block">ASISTENTES</span>
                           </template>
                            <b-row>
                               <div class="col-10">
                                 <div class="form-group">
                                   <label>Cargo</label>
-                                      <v-select  v-model="cargo"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
+                                      <v-select  v-model="cargo_id"  :options="cargos" :disabled="ver" :reduce="cargos => cargos.id"  :getOptionLabel="option => option.nombre+' '+option.user.nombre" ></v-select>
                                 </div>
                               </div>
                                <div class="col-2">
-                                  <button class="btn btn-success my-4" @click="vincularComprometido()" :disabled="!form.cargo_id">Vincular</button>
+                                  <button class="btn btn-success my-4" @click="vincularComprometido()" :disabled="!cargo_id">Vincular</button>
                                </div>
                             </b-row>
                             <div class="row" v-if="editMode">
-                              <div class="col-lg-6" v-for="responsable in comprometidos" :key="responsable.id">
+                              <div class="col-lg-4" v-for="responsable in asistentes" :key="responsable.id">
                                 <b-card no-body>
                                   <b-row no-gutters class="align-items-center">
                                     <b-col md="4">
@@ -338,6 +397,7 @@
                               </div>
                             </div>
                         </b-tab>
+
                         <b-tab>
                           <template v-slot:title  v-if="editMode">
                             <span class="d-inline-block d-sm-none">
@@ -464,7 +524,9 @@ export default {
       clasificacion: [], 
       eventos: [],
       cargos: [],
-      cargo:'',
+      asistentes: [],
+      filtrados: [],
+      cargo_id:'',
       editMode:false,
       form:{
         'id':'',
@@ -475,21 +537,24 @@ export default {
         'invitados_externos':[],
         'periodo_id':'',
         'status':'',
+        'objetivos':'',
+        'fundamentos':'',
+        'recursos':'',
+        'alcances':'',
         'fecha_programada':'',
         'fecha_ejecucion':'',
+        'calidad_id':'',
+        'seguimiento_id':'',
+        'auditor_id':'',
+        'auditado_id':'',
         'cliente_id':'',
+        'cargo_id':'',
         'clasificacion_id':'',
-      },
-      buscador:{
-        'clasificacion_id':'',
-        'desde':'',
-        'hasta':'',
-        'status':'',
-        'periodo':'',
       },
       comprometidos:[],
       responsables:[],
       periodos:[],
+      plan:[],
       nombre:'',
       cargo:'',
       telefono:'',
@@ -540,59 +605,149 @@ export default {
       } 
      }
    },
+    async editarEvento(){
+     let data = new FormData();
+     var formulario = this.form;
+        for (var key in formulario) {
+          if (key=='invitados_externos') {
+              data.append(key,JSON.stringify(formulario[key]));
+          } else {
+              data.append(key,formulario[key]);
+          }
+      }
+        await this.axios.put('api/planes/auditorias', data).then(response => {
+            if (response.status==200) {
+               this.$swal('Editado con exito','','success');
+               this.buscarEvento();
+               this.$root.$emit("bv::hide::modal", "modal", "#btnShow");
+               ///limpiar el formulario
+              this.resete();
+              }
+            }).catch(e => {
+                this.$swal('ocurrio un problema','','warning');
+            });
+     },
     async buscarEvento(){
         let data = new FormData();
         data.append('id',this.$route.params.id);
-        await this.axios.post('api/eventos/find',data, {
+        await this.axios.post('api/planes/auditorias/find',data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }}).then(response => {
               if (response.status==200) {
+                    this.plan=response.data;
                     this.form.id=response.data.id;
-                    this.form.nombre=response.data.nombre;
-                    this.form.descripcion=response.data.descripcion;
-                    this.form.observaciones=response.data.observaciones;
-                    this.form.lugar=response.data.lugar;
-                    this.form.invitados_externos=JSON.parse(response.data.invitados_externos);
-                    this.form.periodo_id=response.data.periodo_id;
-                    this.form.status=response.data.status;
-                    this.form.fecha_programada=moment(response.data.fecha_programada).format("YYYY-MM-DDTHH:MM");
-                    this.form.fecha_ejecucion=response.data.fecha_ejecucion;
-                    this.form.cliente_id=response.data.cliente_id;
-                    this.form.clasificacion_id=response.data.clasificacion_id;
-                    this.responsables=response.data.responsables;
-                    this.comprometidos=response.data.comprometidos;
+                    this.form.nombre=response.data.evento.nombre;
+                    this.form.descripcion=response.data.evento.descripcion;
+                    this.form.observaciones=response.data.evento.observaciones;
+                    this.form.lugar=response.data.evento.lugar;
+                    if (!response.data.invitados_externos) {
+                      this.form.invitados_externos=[];
+                    }else{
+                      this.form.invitados_externos=JSON.parse(response.data.invitados_externos);
+                    }                   
+                    this.form.periodo_id=response.data.evento.periodo_id;
+                    this.form.status=response.data.evento.status;
+                    this.form.fecha_programada=moment(response.data.evento.fecha_programada).format("YYYY-MM-DDTHH:MM");
+                    this.form.fecha_ejecucion=response.data.evento.fecha_ejecucion;
+                    this.form.cliente_id=response.data.evento.cliente_id;
+                    this.form.clasificacion_id=response.data.evento.clasificacion_id;
+                    this.asistentes=response.data.otrosasistenes;
                     this.$root.$emit("bv::show::modal", "modal", "#btnShow");
+                    this.editMode=true;
                     }
               }).catch(e => {
                 console.log(e.response.data.menssage);
                 this.$swal(e.response.data);
           });
       },
-      resete(){
-        var formulario = this.form;
-        for (var key in formulario) {
-          if (!this.form[key]==="invitados_externos") {
-              this.form[key]="";
-          }  
-       }
-       this.form.cliente_id=this.cliente.id;
-      },
 
+      async listarperiodos(){
+        let data = new FormData();
+        data.append('cliente_id',this.cliente.id);
+        await this.axios.post('api/periodo/listar',data)
+            .then((response) => {
+            this.periodos = response.data;
+            })
+            .catch((e)=>{
+            console.log('error' + e);
+            })
+        },
     async listarCargos(){
       let data = new FormData();
       data.append('cliente_id',this.cliente.id);
         await this.axios.post('api/cargos/listar',data)
           .then((response) => {
             this.cargos = response.data;
-            this.listarperfil();
           })
           .catch((e)=>{
             console.log('error' + e);
           })
       },
 
+      vincularComprometido(){
+        this.$swal({
+          title: 'Desea vincularlo a esta activida?',
+          icon: 'question',
+          iconHtml: '',
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          showCancelButton: true,
+          showCloseButton: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.vincularComprometidos();
+          }
+        })
+      },
+      async vincularComprometidos(){
+        let data = new FormData();
+        data.append('cargo_id',this.cargo_id);
+        data.append('evento_id',this.form.id);
 
+        await this.axios.post('api/planes/auditorias/asistentes',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Vinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      },  
+      async desvincularComprometido(id){
+        let data = new FormData();
+        data.append('id',id);
+        await this.axios.post('api/planes/auditorias/asistentes/eliminar',data, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }}).then(response => {
+              if (response.status==200) {
+                this.$swal(
+                    'Desvinculado con exito!',
+                      '',
+                      'success'
+                );
+                this.buscarEvento(this.form.id);
+                }
+              }).catch(e => {
+                this.$swal(
+                      'Ocurrio un problema!',
+                      '',
+                      'danger'
+                );
+          });
+      }, 
     cargarInvitados(){
       this.form.invitados_externos.push({
        nombre:this.nombre,
@@ -624,12 +779,14 @@ export default {
         this.session();
         this.listarCargos();
         this.buscarEvento();
-     
+        this.listarperiodos();
       },
    watch: {
       cliente: function () {
         this.listarCargos();
         this.buscarEvento();
+         this.buscarEvento();
+        this.listarperiodos();
        this.form.cliente_id=this.cliente.id;
         this.title=this.cliente.nombre_prestador;
         this.form.cliente_id=this.usuarioDB.cliente_id;

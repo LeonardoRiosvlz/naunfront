@@ -142,7 +142,7 @@
                           <b-dropdown-item-button @click="editMode=true;ver=false;buscarEvento(data.item.id)"> Editar </b-dropdown-item-button>
                           <b-dropdown-item-button @click="eliminarEvento(data.item.id)"> Eliminar </b-dropdown-item-button>
                           <b-dropdown-item-button @click="editMode=false;ver=true;setear(data.item.id)"> Ver </b-dropdown-item-button>
-                          <b-dropdown-item-button v-if="data.item.clasificacion_evento.nombre==='Auditorias internas'&& data.item.plan_auditorias_is.length>0"><a :href="'/auditorias-internas/'+data.item.id" style="color:#000">Plan de auditoria</a></b-dropdown-item-button>
+                          <b-dropdown-item-button v-if="data.item.clasificacion_evento.nombre==='Auditorias internas'&& data.item.plan_auditorias_is.length>0"><a :href="'/auditorias-internas/'+data.item.plan_auditorias_is[0].id" style="color:#000">Plan de auditoria</a></b-dropdown-item-button>
                           <b-dropdown-item-button v-if="data.item.clasificacion_evento.nombre==='Auditorias internas'&& data.item.plan_auditorias_is.length<1" @click="planearCuestion(data.item.id)"> Planear </b-dropdown-item-button>
                       </b-dropdown>
                       </template>
@@ -787,7 +787,7 @@ export default {
           }
         })
       },
-            async desvincularComprometidos(id){
+      async desvincularComprometidos(id){
         let data = new FormData();
         data.append('id',id);
         await this.axios.post('api/eventos/comprometidos/eliminar',data, {
